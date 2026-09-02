@@ -6,6 +6,8 @@ list. The first working slice is an offline, deterministic recommendation engine
 
 It currently supports:
 
+- a responsive browser draft room with click-to-place picks, snake-draft tracking,
+  roster construction, undo, local persistence, and adjustable position weights;
 - configurable teams, starters, flex eligibility, bench, and position limits;
 - full-PPR, half-PPR, or custom stat scoring;
 - raw-stat projections or a source-provided fantasy-points override;
@@ -23,7 +25,25 @@ should be trusted until we connect current, attributable projection and ADP inpu
 
 ## Try it
 
-No third-party Python packages are required.
+### Browser draft room
+
+The browser app lives in `web/` and requires Node.js. It starts with clearly labeled
+synthetic data; use **League** to choose 8, 10, or 12 teams and your draft slot, then
+click **Draft** on your turn or **Mark gone** for every other selection. Picks and
+weights persist in the current browser.
+
+```bash
+cd web
+npm install
+npm run dev
+```
+
+The selected live-data architecture and its licensing/freshness constraints are in
+[`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md).
+
+### Python recommendation engine
+
+No third-party Python packages are required for the existing CLI.
 
 ```bash
 python3 -m unittest discover -s tests -v
