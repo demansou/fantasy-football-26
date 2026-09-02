@@ -28,9 +28,9 @@ should be trusted until we connect current, attributable projection and ADP inpu
 ### Browser draft room
 
 The browser app lives in `web/` and requires Node.js. It starts with clearly labeled
-synthetic data; use **League** to choose 8, 10, or 12 teams and your draft slot, then
-click **Draft** on your turn or **Mark gone** for every other selection. Picks and
-weights persist in the current browser.
+synthetic data; use **League** to choose 8, 10, or 12 teams, your draft slot, and
+0-12 bench spots, then click **Draft** on your turn or **Mark gone** for every other
+selection. Picks, league settings, and weights persist in the current browser.
 
 ```bash
 cd web

@@ -48,6 +48,7 @@ type Player = {
 };
 type Pick = { playerId: string; overall: number; teamIndex: number };
 type Weights = Record<Position, Record<Metric, number>>;
+type RosterSlot = Position | 'FLEX' | 'K' | 'DST' | 'BN';
 
 const TEAM_LABELS = [
   'Gridiron Ghosts', 'Sunday Scaries', 'Fourth & Long', 'Waiver Wired', 'Red Zone Radio',
@@ -55,6 +56,8 @@ const TEAM_LABELS = [
   'Route Concepts', 'Clock Managers',
 ];
 const STORAGE_KEY = 'fantasy-football-26:draft-room:v1';
+const DEFAULT_BENCH_COUNT = 6;
+const STARTER_SLOTS: RosterSlot[] = ['QB', 'RB', 'RB', 'WR', 'WR', 'TE', 'FLEX', 'K', 'DST'];
 
 const DEFAULT_WEIGHTS: Weights = {
   WR: { opportunity: 135, environment: 125, coaching: 110, line: 75, stability: 105, upside: 110 },
@@ -192,9 +195,11 @@ export default function Home() {
   const [query, setQuery] = useState('');
   const [teamCount, setTeamCount] = useState(10);
   const [draftSlot, setDraftSlot] = useState(5);
+  const [benchCount, setBenchCount] = useState(DEFAULT_BENCH_COUNT);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [pendingTeamCount, setPendingTeamCount] = useState(10);
   const [pendingDraftSlot, setPendingDraftSlot] = useState(5);
+  const [pendingBenchCount, setPendingBenchCount] = useState(DEFAULT_BENCH_COUNT);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -202,12 +207,13 @@ export default function Home() {
       try {
         const saved = window.localStorage.getItem(STORAGE_KEY);
         if (saved) {
-          const parsed = JSON.parse(saved) as { picks?: Pick[]; weights?: Weights; teamCount?: number; draftSlot?: number };
+          const parsed = JSON.parse(saved) as { picks?: Pick[]; weights?: Weights; teamCount?: number; draftSlot?: number; benchCount?: number };
           if (Array.isArray(parsed.picks)) setPicks(parsed.picks);
           if (parsed.weights) setWeights(parsed.weights);
           const savedTeamCount = [8, 10, 12].includes(parsed.teamCount ?? 0) ? parsed.teamCount! : 10;
           setTeamCount(savedTeamCount);
           if (typeof parsed.draftSlot === 'number' && parsed.draftSlot >= 1 && parsed.draftSlot <= savedTeamCount) setDraftSlot(parsed.draftSlot);
+          if (typeof parsed.benchCount === 'number' && Number.isInteger(parsed.benchCount) && parsed.benchCount >= 0 && parsed.benchCount <= 12) setBenchCount(parsed.benchCount);
         }
       } catch {
         try {
@@ -225,11 +231,11 @@ export default function Home() {
   useEffect(() => {
     if (!hydrated) return;
     try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ picks, weights, teamCount, draftSlot }));
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ picks, weights, teamCount, draftSlot, benchCount }));
     } catch {
       // The draft remains usable when browser storage is unavailable.
     }
-  }, [draftSlot, hydrated, picks, teamCount, weights]);
+  }, [benchCount, draftSlot, hydrated, picks, teamCount, weights]);
 
   const myTeamIndex = draftSlot - 1;
   const teamNames = useMemo(() => Array.from({ length: teamCount }, (_, index) => index === myTeamIndex ? 'My Team' : TEAM_LABELS[index]), [myTeamIndex, teamCount]);
@@ -262,16 +268,18 @@ export default function Home() {
 
   const rosterSlots = useMemo(() => {
     const used = new Set<string>();
-    return (['QB', 'RB', 'RB', 'WR', 'WR', 'TE', 'FLEX', 'K', 'DST'] as const).map((slot) => {
+    const slots: RosterSlot[] = [...STARTER_SLOTS, ...Array.from({ length: benchCount }, () => 'BN' as const)];
+    return slots.map((slot) => {
       const player = myPlayers.find((candidate) => {
         if (used.has(candidate.id)) return false;
+        if (slot === 'BN') return true;
         if (slot === 'FLEX') return ['RB', 'WR', 'TE'].includes(candidate.position);
         return slot === candidate.position;
       });
       if (player) used.add(player.id);
       return { slot, player };
     });
-  }, [myPlayers]);
+  }, [benchCount, myPlayers]);
 
   const draft = (playerId: string) => setPicks((current) => [
     ...current,
@@ -282,6 +290,7 @@ export default function Home() {
     if (open) {
       setPendingTeamCount(teamCount);
       setPendingDraftSlot(Math.min(draftSlot, teamCount));
+      setPendingBenchCount(benchCount);
     }
     setSettingsOpen(open);
   };
@@ -289,6 +298,7 @@ export default function Home() {
   const applyLeagueSettings = () => {
     setTeamCount(pendingTeamCount);
     setDraftSlot(Math.min(pendingDraftSlot, pendingTeamCount));
+    setBenchCount(pendingBenchCount);
     setPicks([]);
     setSettingsOpen(false);
   };
@@ -296,11 +306,13 @@ export default function Home() {
   const loadDemo = () => {
     setTeamCount(10);
     setDraftSlot(5);
+    setBenchCount(DEFAULT_BENCH_COUNT);
     setPicks(initialPicks);
     setSettingsOpen(false);
   };
 
   const currentOwnerIsMine = currentOwner === myTeamIndex;
+  const totalRosterSpots = STARTER_SLOTS.length + benchCount;
 
   return (
     <main className="draft-shell">
@@ -337,7 +349,7 @@ export default function Home() {
           </Dialog>
           <Dialog open={settingsOpen} onOpenChange={openSettings}>
             <DialogTrigger render={<Button variant="outline" size="sm" className="settings-trigger" />}><Settings2 /> <span>League</span></DialogTrigger>
-            <DialogContent className="league-dialog sm:max-w-md">
+            <DialogContent className="league-dialog sm:max-w-lg">
               <DialogHeader>
                 <DialogTitle>League setup</DialogTitle>
                 <DialogDescription>Set the snake draft shape before entering live picks. Applying a new setup starts a clean board.</DialogDescription>
@@ -359,8 +371,14 @@ export default function Home() {
                     {Array.from({ length: pendingTeamCount }, (_, index) => <NativeSelectOption key={index + 1} value={index + 1}>Pick {index + 1}</NativeSelectOption>)}
                   </NativeSelect>
                 </div>
+                <div className="settings-field">
+                  <Label htmlFor="bench-count">Bench spots</Label>
+                  <NativeSelect id="bench-count" value={pendingBenchCount} onChange={(event) => setPendingBenchCount(Number(event.target.value))}>
+                    {Array.from({ length: 13 }, (_, count) => <NativeSelectOption key={count} value={count}>{count} {count === 1 ? 'spot' : 'spots'}</NativeSelectOption>)}
+                  </NativeSelect>
+                </div>
               </div>
-              <div className="persistence-note"><Check /> Picks, league setup and all positional weights save in this browser.</div>
+              <div className="persistence-note"><Check /> Picks, all league settings and positional weights save in this browser.</div>
               <DialogFooter>
                 <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
                 <Button variant="secondary" onClick={loadDemo}><RotateCcw /> Load demo</Button>
@@ -394,22 +412,23 @@ export default function Home() {
 
       <div className="workspace-grid">
         <aside className="roster-panel panel-surface">
-          <div className="panel-heading"><div><p className="eyebrow">Roster construction</p><h2>My Team</h2></div><span className="panel-count">{myPlayers.length}/15</span></div>
+          <div className="panel-heading"><div><p className="eyebrow">Roster construction</p><h2>My Team</h2></div><span className="panel-count">{myPlayers.length}/{totalRosterSpots}</span></div>
           <div className="roster-summary">
             <div><span>Projected</span><strong>{myPlayers.reduce((sum, player) => sum + player.projection, 0)}</strong></div>
             <div><span>Draft slot</span><strong>{draftSlot}</strong></div>
+            <div><span>Bench</span><strong>{benchCount}</strong></div>
           </div>
           <ScrollArea className="roster-scroll">
             <div className="roster-slots">
               {rosterSlots.map(({ slot, player: rosterPlayer }, index) => {
                 return <div className={rosterPlayer ? 'roster-slot is-filled' : 'roster-slot'} key={`${slot}-${index}`}>
                   <span className="slot-label">{slot}</span>
-                  {rosterPlayer ? <><div><strong>{rosterPlayer.name}</strong><small>{rosterPlayer.team} · Bye {rosterPlayer.bye}</small></div><Check className="slot-check" /></> : <span className="empty-slot">Open roster slot</span>}
+                  {rosterPlayer ? <><div><strong>{rosterPlayer.name}</strong><small>{rosterPlayer.team} · Bye {rosterPlayer.bye}</small></div><Check className="slot-check" /></> : <span className="empty-slot">{slot === 'BN' ? 'Open bench spot' : 'Open roster slot'}</span>}
                 </div>;
               })}
             </div>
           </ScrollArea>
-          <div className="roster-footer"><span>{teamCount}-team Yahoo PPR</span><span>Snake</span></div>
+          <div className="roster-footer"><span>{teamCount}-team Yahoo PPR</span><span>{benchCount} bench · Snake</span></div>
         </aside>
 
         <section className="player-board panel-surface">
