@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.coverage
+.DS_Store
+.env
+.venv/
+build/
+dist/
+
+# Local Yahoo credentials and tokens must never be committed.
+secrets/
+*.token.json
+
+# User-specific exports. Keep schemas and synthetic examples in Git instead.
+data/private/
+exports/

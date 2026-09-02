@@ -1,0 +1,40 @@
+{
+  "name": "Synthetic 4-team full PPR demo",
+  "teams": 4,
+  "roster": {
+    "starters": {
+      "QB": 1,
+      "RB": 1,
+      "WR": 1,
+      "TE": 1,
+      "K": 1,
+      "DST": 1
+    },
+    "flex": [
+      {
+        "name": "FLEX",
+        "count": 1,
+        "eligible": ["RB", "WR", "TE"]
+      }
+    ],
+    "bench": 1,
+    "ir": 0,
+    "position_limits": {
+      "QB": 2,
+      "RB": 3,
+      "WR": 3,
+      "TE": 2,
+      "K": 1,
+      "DST": 1
+    }
+  },
+  "scoring": {
+    "receptions": 1.0
+  },
+  "strategy": {
+    "position_run_boost": 0.75,
+    "qb_variance_penalty": 16.0,
+    "specialist_round": 7,
+    "early_specialist_penalty": 8.0
+  }
+}

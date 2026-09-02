@@ -1,0 +1,63 @@
+{
+  "name": "Yahoo official 10-team default (half PPR)",
+  "teams": 10,
+  "roster": {
+    "starters": {
+      "QB": 1,
+      "RB": 2,
+      "WR": 2,
+      "TE": 1,
+      "K": 1,
+      "DST": 1
+    },
+    "flex": [
+      {
+        "name": "FLEX",
+        "count": 1,
+        "eligible": ["RB", "WR", "TE"]
+      }
+    ],
+    "bench": 6,
+    "ir": 2,
+    "position_limits": {
+      "QB": 4,
+      "RB": 6,
+      "WR": 8,
+      "TE": 4,
+      "K": 4,
+      "DST": 4
+    }
+  },
+  "scoring": {
+    "passing_yards": 0.04,
+    "passing_touchdowns": 4,
+    "interceptions": -1,
+    "rushing_yards": 0.1,
+    "rushing_touchdowns": 6,
+    "receptions": 0.5,
+    "receiving_yards": 0.1,
+    "receiving_touchdowns": 6,
+    "two_point_conversions": 2,
+    "fumbles_lost": -2,
+    "return_touchdowns": 6,
+    "field_goals_0_39": 3,
+    "field_goals_40_49": 4,
+    "field_goals_50_plus": 5,
+    "extra_points": 1
+  },
+  "strategy": {
+    "vorp_weight": 1.0,
+    "starter_need_weight": 0.4,
+    "scarcity_weight": 0.3,
+    "adp_weight": 0.35,
+    "analytics_weight": 10.0,
+    "upside_weight": 0.1,
+    "downside_weight": 0.08,
+    "late_need_boost": 1.0,
+    "position_run_boost": 0.75,
+    "long_turn_adp_boost": 0.35,
+    "qb_variance_penalty": 16.0,
+    "specialist_round": 13,
+    "early_specialist_penalty": 8.0
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "my_team": 1,
+  "draft_slot": 1,
+  "drafted": [
+    {"player_id": "rb-a", "team": 1},
+    {"player_id": "wr-a", "team": 2},
+    {"player_id": "rb-b", "team": 3},
+    {"player_id": "wr-b", "team": 4},
+    {"player_id": "rb-c", "team": 4},
+    {"player_id": "wr-c", "team": 3},
+    {"player_id": "rb-d", "team": 2}
+  ]
+}

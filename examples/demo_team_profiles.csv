@@ -1,0 +1,9 @@
+team,pass_volume_rating,rush_volume_rating,qb_play_rating,play_caller_rating,pass_blocking_rating,run_blocking_rating,pace_rating,scoring_environment_rating,positive_game_script_rating,continuity_rating
+AAA,0.92,0.76,0.91,0.90,0.84,0.82,0.86,0.92,0.84,0.88
+BBB,0.82,0.82,0.84,0.82,0.76,0.86,0.74,0.84,0.82,0.82
+CCC,0.74,0.78,0.76,0.74,0.70,0.74,0.76,0.76,0.72,0.70
+DDD,0.64,0.70,0.66,0.68,0.58,0.76,0.66,0.68,0.64,0.66
+EEE,0.58,0.54,0.60,0.58,0.62,0.56,0.60,0.60,0.56,0.58
+FFF,0.46,0.62,0.48,0.52,0.64,0.72,0.48,0.50,0.48,0.50
+GGG,0.38,0.42,0.36,0.40,0.42,0.46,0.42,0.40,0.38,0.42
+HHH,0.30,0.34,0.30,0.32,0.34,0.38,0.36,0.32,0.30,0.34
