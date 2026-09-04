@@ -22,6 +22,7 @@ import {
   Settings2,
   ShieldCheck,
   SlidersHorizontal,
+  Star,
   Undo2,
   Upload,
   Zap,
@@ -53,6 +54,7 @@ import {
   opponentAdjustedSurvival,
   opponentDemandForPosition,
   rosterNeeds,
+  tierCliffForPlayer,
   type OpponentDemand,
   type PositionCounts,
 } from '@/lib/draft-intelligence';
@@ -102,6 +104,7 @@ type DraftCache = {
   benchCount: number;
   teamNames: string[];
   avoidedPlayerIds: string[];
+  watchedPlayerIds: string[];
   hideInactivePlayers: boolean;
 };
 type RosterSlot = Position | 'FLEX' | 'BN';
@@ -314,6 +317,16 @@ function parseDraftCache(raw: string | null): DraftCache | null {
         ? [
             ...new Set(
               parsed.avoidedPlayerIds.filter(
+                (playerId): playerId is string =>
+                  typeof playerId === 'string' && knownPlayerIds.has(playerId),
+              ),
+            ),
+          ]
+        : [],
+      watchedPlayerIds: Array.isArray(parsed.watchedPlayerIds)
+        ? [
+            ...new Set(
+              parsed.watchedPlayerIds.filter(
                 (playerId): playerId is string =>
                   typeof playerId === 'string' && knownPlayerIds.has(playerId),
               ),
@@ -673,6 +686,7 @@ export default function Home() {
   const [benchCount, setBenchCount] = useState(DEFAULT_BENCH_COUNT);
   const [teamNames, setTeamNames] = useState(() => defaultTeamNames(5));
   const [avoidedPlayerIds, setAvoidedPlayerIds] = useState<string[]>([]);
+  const [watchedPlayerIds, setWatchedPlayerIds] = useState<string[]>([]);
   const [hideInactivePlayers, setHideInactivePlayers] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [boardOpen, setBoardOpen] = useState(false);
@@ -717,6 +731,7 @@ export default function Home() {
           setBenchCount(restored.benchCount);
           setTeamNames(restored.teamNames);
           setAvoidedPlayerIds(restored.avoidedPlayerIds);
+          setWatchedPlayerIds(restored.watchedPlayerIds);
           setHideInactivePlayers(restored.hideInactivePlayers);
         }
         writeDraftCache(
@@ -732,6 +747,7 @@ export default function Home() {
                 benchCount: DEFAULT_BENCH_COUNT,
                 teamNames: defaultTeamNames(5),
                 avoidedPlayerIds: [],
+                watchedPlayerIds: [],
                 hideInactivePlayers: false,
               },
         );
@@ -757,6 +773,7 @@ export default function Home() {
         benchCount,
         teamNames,
         avoidedPlayerIds,
+        watchedPlayerIds,
         hideInactivePlayers,
       });
     } catch {
@@ -771,6 +788,7 @@ export default function Home() {
     picks,
     teamCount,
     teamNames,
+    watchedPlayerIds,
     weights,
   ]);
 
@@ -788,6 +806,7 @@ export default function Home() {
           benchCount,
           teamNames,
           avoidedPlayerIds,
+          watchedPlayerIds,
           hideInactivePlayers,
         });
       } catch {
@@ -812,6 +831,7 @@ export default function Home() {
     picks,
     teamCount,
     teamNames,
+    watchedPlayerIds,
     weights,
   ]);
 
@@ -903,6 +923,10 @@ export default function Home() {
   const avoidedIds = useMemo(
     () => new Set(avoidedPlayerIds),
     [avoidedPlayerIds],
+  );
+  const watchedIds = useMemo(
+    () => new Set(watchedPlayerIds),
+    [watchedPlayerIds],
   );
   const currentPick = picks.length + 1;
   const currentOwner = ownerForPick(currentPick, teamCount);
@@ -1004,16 +1028,10 @@ export default function Home() {
       ) as Record<Position, Player[]>,
     [draftablePool],
   );
-  const available = useMemo(
+  const rankedCandidates = useMemo(
     () =>
       draftablePool
         .filter((player) => !avoidedIds.has(player.id))
-        .filter((player) => filter === 'ALL' || player.position === filter)
-        .filter((player) =>
-          `${player.name} ${player.team} ${player.position}`
-            .toLowerCase()
-            .includes(query.trim().toLowerCase()),
-        )
         .map((player) => {
           const demand = opponentDemands[player.position];
           const survival = chanceLasts(player, nextMyPick, demand);
@@ -1035,6 +1053,30 @@ export default function Home() {
             ),
           };
         })
+        .sort((a, b) => b.score.total - a.score.total),
+    [
+      currentRound,
+      avoidedIds,
+      currentPick,
+      draftablePool,
+      myPlayers,
+      nextMyPick,
+      opponentDemands,
+      positionPools,
+      recentPositionCounts,
+      rosterCounts,
+      weights,
+    ],
+  );
+  const available = useMemo(
+    () =>
+      rankedCandidates
+        .filter((item) => filter === 'ALL' || item.player.position === filter)
+        .filter((item) =>
+          `${item.player.name} ${item.player.team} ${item.player.position}`
+            .toLowerCase()
+            .includes(query.trim().toLowerCase()),
+        )
         .sort((a, b) =>
           sortMode === 'adp'
             ? a.player.adp - b.player.adp
@@ -1043,22 +1085,33 @@ export default function Home() {
                 a.player.adp - b.player.adp
               : b.score.total - a.score.total,
         ),
-    [
-      currentRound,
-      avoidedIds,
-      currentPick,
-      draftablePool,
-      filter,
-      myPlayers,
-      nextMyPick,
-      opponentDemands,
-      positionPools,
-      query,
-      recentPositionCounts,
-      rosterCounts,
-      sortMode,
-      weights,
-    ],
+    [filter, query, rankedCandidates, sortMode],
+  );
+  const watchedTargets = useMemo(
+    () =>
+      rankedCandidates
+        .filter((item) => watchedIds.has(item.player.id))
+        .map((item) => {
+          const cliff = tierCliffForPlayer({
+            player: item.player,
+            positionPool: positionPools[item.player.position],
+            demand: item.demand,
+            picksUntilNext: Math.max(1, nextMyPick - currentPick),
+            survivalPercent: item.survival,
+          });
+          return {
+            ...item,
+            cliff,
+            fallback: cliff.fallbackId
+              ? players.find((player) => player.id === cliff.fallbackId)
+              : null,
+          };
+        }),
+    [currentPick, nextMyPick, positionPools, rankedCandidates, watchedIds],
+  );
+  const watchedTargetById = useMemo(
+    () => new Map(watchedTargets.map((target) => [target.player.id, target])),
+    [watchedTargets],
   );
   const recentRun = useMemo(() => {
     const counts: Partial<Record<Position, number>> = {};
@@ -1137,11 +1190,22 @@ export default function Home() {
     benchCount,
     teamNames,
     avoidedPlayerIds,
+    watchedPlayerIds,
     hideInactivePlayers,
   });
   const avoidPlayer = (playerId: string) => {
     setAvoidedPlayerIds((current) =>
       current.includes(playerId) ? current : [...current, playerId],
+    );
+    setWatchedPlayerIds((current) =>
+      current.filter((candidate) => candidate !== playerId),
+    );
+  };
+  const toggleWatchPlayer = (playerId: string) => {
+    setWatchedPlayerIds((current) =>
+      current.includes(playerId)
+        ? current.filter((candidate) => candidate !== playerId)
+        : [...current, playerId],
     );
   };
   const restorePlayer = (playerId: string) => {
@@ -1180,6 +1244,7 @@ export default function Home() {
       setBenchCount(restored.benchCount);
       setTeamNames(restored.teamNames);
       setAvoidedPlayerIds(restored.avoidedPlayerIds);
+      setWatchedPlayerIds(restored.watchedPlayerIds);
       setHideInactivePlayers(restored.hideInactivePlayers);
       setEditingPickOverall(null);
       writeDraftCache({ ...restored, savedAt: Date.now() });
@@ -1772,8 +1837,8 @@ export default function Home() {
                 </div>
               </div>
               <div className="persistence-note">
-                <Check /> Team names, picks, settings, and custom weights save
-                in this browser.
+                <Check /> Team names, picks, target queue, settings, and custom
+                weights save in this browser.
               </div>
               <DialogFooter>
                 <DialogClose render={<Button variant="outline" />}>
@@ -1995,6 +2060,67 @@ export default function Home() {
               {available[0]?.survival ?? 0}% est. to last
             </span>
           </div>
+          <section className="target-queue" aria-label="Draft watchlist">
+            <div className="target-queue-heading">
+              <span className="target-queue-icon">
+                <Star />
+              </span>
+              <div>
+                <strong>Target queue</strong>
+                <span>
+                  {watchedTargets.length
+                    ? `${watchedTargets.length} available · sorted by live rank`
+                    : 'Star players to track tier risk and fallbacks'}
+                </span>
+              </div>
+            </div>
+            {watchedTargets.length > 0 && (
+              <div className="target-cards">
+                {watchedTargets.map(({ player, survival, cliff, fallback }) => (
+                  <div
+                    className={`target-card is-${cliff.level}`}
+                    key={player.id}
+                  >
+                    <button
+                      className="target-card-main"
+                      onClick={() => {
+                        setFilter('ALL');
+                        setQuery(player.name);
+                      }}
+                      title={`Show ${player.name} in the player list`}
+                      type="button"
+                    >
+                      <span
+                        className={`position-pill ${positionClass[player.position]}`}
+                      >
+                        {player.position}
+                      </span>
+                      <span>
+                        <strong>{player.name}</strong>
+                        <small>
+                          {cliff.label} · {survival}% est.
+                        </small>
+                        <small>
+                          {fallback
+                            ? `Fallback: ${fallback.name}`
+                            : `${cliff.remainingInTier} left in Tier ${player.tier}`}
+                        </small>
+                      </span>
+                    </button>
+                    <button
+                      aria-label={`Remove ${player.name} from target queue`}
+                      className="target-remove"
+                      onClick={() => toggleWatchPlayer(player.id)}
+                      title="Remove from target queue"
+                      type="button"
+                    >
+                      <Star fill="currentColor" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
           <div className="opponent-intelligence">
             <div>
               <strong>Opponent roster intelligence</strong>
@@ -2032,15 +2158,17 @@ export default function Home() {
             <div className="player-list">
               {available.map(({ player, score, survival, demand }, index) => {
                 const liveAlert = injuryCache?.alerts[player.id];
+                const watchedTarget = watchedTargetById.get(player.id);
                 return (
                   <article
-                    className={
-                      liveAlert
-                        ? 'player-row has-live-injury'
-                        : !player.currentActive
-                          ? 'player-row is-inactive'
-                          : 'player-row'
-                    }
+                    className={[
+                      'player-row',
+                      liveAlert ? 'has-live-injury' : '',
+                      !player.currentActive ? 'is-inactive' : '',
+                      watchedTarget ? 'is-watched' : '',
+                    ]
+                      .filter(Boolean)
+                      .join(' ')}
                     key={player.id}
                   >
                     <div className="player-identity">
@@ -2056,6 +2184,15 @@ export default function Home() {
                           {player.team} · Bye {player.bye} · {player.position}
                           {player.positionRank} · Tier {player.tier}
                         </small>
+                        {watchedTarget && (
+                          <span
+                            className={`tier-alert is-${watchedTarget.cliff.level}`}
+                            title={`${watchedTarget.cliff.remainingInTier} players remain in Tier ${player.tier}; about ${watchedTarget.cliff.expectedPositionPicks} ${player.position}s may be selected before pick ${nextMyPick}. Next-tier score drop: ${watchedTarget.cliff.scoreDrop.toFixed(1)}.`}
+                          >
+                            <Star fill="currentColor" />{' '}
+                            {watchedTarget.cliff.label}
+                          </span>
+                        )}
                         {liveAlert && (
                           <span
                             className="injury-pill"
@@ -2118,6 +2255,32 @@ export default function Home() {
                           : currentOwnerIsMine
                             ? 'Draft'
                             : 'Mark gone'}
+                      </Button>
+                      <Button
+                        aria-label={
+                          watchedIds.has(player.id)
+                            ? `Remove ${player.name} from target queue`
+                            : `Add ${player.name} to target queue`
+                        }
+                        className={
+                          watchedIds.has(player.id)
+                            ? 'watch-toggle is-active'
+                            : 'watch-toggle'
+                        }
+                        size="icon-sm"
+                        title={
+                          watchedIds.has(player.id)
+                            ? 'Remove from target queue'
+                            : 'Add to target queue'
+                        }
+                        variant="ghost"
+                        onClick={() => toggleWatchPlayer(player.id)}
+                      >
+                        <Star
+                          fill={
+                            watchedIds.has(player.id) ? 'currentColor' : 'none'
+                          }
+                        />
                       </Button>
                       <Button
                         aria-label={`Avoid ${player.name}`}

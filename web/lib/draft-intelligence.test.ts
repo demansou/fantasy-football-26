@@ -6,6 +6,7 @@ import {
   opponentAdjustedSurvival,
   opponentDemandForPosition,
   ownerForPick,
+  tierCliffForPlayer,
 } from './draft-intelligence.ts';
 
 const market = {
@@ -60,4 +61,35 @@ void test('needy opponents lower the estimate that an RB survives', () => {
     opponentAdjustedSurvival(market, 35, demand) <
       marketSurvivalEstimate(market, 35),
   );
+});
+
+void test('tier cliff warns when demand can exhaust the current tier', () => {
+  const player = {
+    id: 'rb-1',
+    position: 'RB' as const,
+    tier: 2,
+    draftScore: 98,
+  };
+  const cliff = tierCliffForPlayer({
+    player,
+    positionPool: [
+      player,
+      { id: 'rb-2', position: 'RB', tier: 2, draftScore: 97.5 },
+      { id: 'rb-3', position: 'RB', tier: 3, draftScore: 95.5 },
+    ],
+    demand: {
+      position: 'RB',
+      upcomingPicks: 8,
+      starterPicks: 6,
+      flexPicks: 1,
+      pressure: 1.5,
+      label: 'high',
+    },
+    picksUntilNext: 8,
+    survivalPercent: 42,
+  });
+  assert.equal(cliff.level, 'critical');
+  assert.equal(cliff.remainingInTier, 2);
+  assert.equal(cliff.fallbackId, 'rb-2');
+  assert.equal(cliff.scoreDrop, 2);
 });

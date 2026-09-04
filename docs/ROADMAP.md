@@ -173,6 +173,9 @@ held-out historical drafts under predeclared metrics.
   - [x] Expose opponent roster intelligence through league-board needs, before-turn
     demand pressure, and per-player availability explanations without simulating the
     remainder of the draft.
+  - [x] Add a browser-persisted target queue that follows live recommendation order,
+    identifies tier exhaustion risk before the next turn, and names the next
+    same-position fallback.
 - One-click draft event entry plus Yahoo refresh/reconciliation.
   - [x] Add a free, no-token, once-daily Sleeper injury/roster-status refresh with
     local caching, complete current skill-player reconciliation, visible source age,

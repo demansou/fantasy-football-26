@@ -19,6 +19,22 @@ export type OpponentDemand = {
   label: 'light' | 'normal' | 'elevated' | 'high';
 };
 
+export type TierCandidate = {
+  id: string;
+  position: DraftPosition;
+  tier: number;
+  draftScore: number;
+};
+
+export type TierCliff = {
+  level: 'safe' | 'warning' | 'critical';
+  label: 'Can wait' | 'Tier at risk' | 'Tier likely gone';
+  remainingInTier: number;
+  expectedPositionPicks: number;
+  scoreDrop: number;
+  fallbackId: string | null;
+};
+
 const FIXED_STARTERS: Record<DraftPosition, number> = {
   QB: 1,
   RB: 2,
@@ -28,6 +44,14 @@ const FIXED_STARTERS: Record<DraftPosition, number> = {
   DST: 1,
 };
 const FLEX_POSITIONS = new Set<DraftPosition>(['RB', 'WR', 'TE']);
+const POSITION_PICK_SHARE: Record<DraftPosition, number> = {
+  QB: 0.11,
+  RB: 0.27,
+  WR: 0.27,
+  TE: 0.11,
+  K: 0.12,
+  DST: 0.12,
+};
 
 function normalCdf(value: number) {
   const sign = value < 0 ? -1 : 1;
@@ -193,4 +217,61 @@ export function rosterNeeds(counts: PositionCounts, currentRound: number) {
       lineupStatus(position, counts) === 'starter' &&
       !((position === 'K' || position === 'DST') && currentRound < 11),
   );
+}
+
+export function tierCliffForPlayer({
+  player,
+  positionPool,
+  demand,
+  picksUntilNext,
+  survivalPercent,
+}: {
+  player: TierCandidate;
+  positionPool: TierCandidate[];
+  demand: OpponentDemand;
+  picksUntilNext: number;
+  survivalPercent: number;
+}): TierCliff {
+  const currentTier = positionPool.filter(
+    (candidate) => candidate.tier === player.tier,
+  );
+  const tierFloor = currentTier.reduce(
+    (lowest, candidate) => Math.min(lowest, candidate.draftScore),
+    player.draftScore,
+  );
+  const nextTier = positionPool.find(
+    (candidate) => candidate.tier > player.tier,
+  );
+  const playerIndex = positionPool.findIndex(
+    (candidate) => candidate.id === player.id,
+  );
+  const fallback =
+    playerIndex >= 0 ? (positionPool[playerIndex + 1] ?? nextTier) : nextTier;
+  const scoreDrop = nextTier ? Math.max(0, tierFloor - nextTier.draftScore) : 0;
+  const expectedPositionPicks = Math.max(
+    1,
+    Math.ceil(
+      picksUntilNext * POSITION_PICK_SHARE[player.position] * demand.pressure,
+    ),
+  );
+  const tierExhaustion = expectedPositionPicks >= currentTier.length;
+  const level =
+    survivalPercent <= 25 || (tierExhaustion && scoreDrop >= 1)
+      ? 'critical'
+      : survivalPercent <= 50 || tierExhaustion
+        ? 'warning'
+        : 'safe';
+  return {
+    level,
+    label:
+      level === 'critical'
+        ? 'Tier likely gone'
+        : level === 'warning'
+          ? 'Tier at risk'
+          : 'Can wait',
+    remainingInTier: currentTier.length,
+    expectedPositionPicks,
+    scoreDrop,
+    fallbackId: fallback?.id ?? null,
+  };
 }

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fantasy-football-26-shell-v2';
+const CACHE_NAME = 'fantasy-football-26-shell-v3';
 const APP_SHELL = ['/', '/favicon.svg', '/og.png'];
 
 self.addEventListener('install', (event) => {

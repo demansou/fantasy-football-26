@@ -476,6 +476,124 @@ select {
   padding: 7px 16px;
   border-bottom: 1px solid var(--border);
 }
+.target-queue {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 74px;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border);
+  background: oklch(0.82 0.18 143 / 3%);
+}
+.target-queue-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 178px;
+}
+.target-queue-icon {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border-radius: 8px;
+  color: var(--primary);
+  background: oklch(0.82 0.18 143 / 10%);
+}
+.target-queue-icon svg {
+  width: 14px;
+}
+.target-queue-heading > div {
+  display: grid;
+}
+.target-queue-heading strong {
+  font-size: 11px;
+}
+.target-queue-heading span {
+  color: var(--muted-foreground);
+  font-size: 9px;
+}
+.target-cards {
+  display: flex;
+  gap: 7px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.target-card {
+  position: relative;
+  width: 224px;
+  min-width: 224px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: oklch(0.15 0.014 166 / 65%);
+}
+.target-card.is-warning {
+  border-color: oklch(0.79 0.14 78 / 28%);
+}
+.target-card.is-critical {
+  border-color: oklch(0.66 0.2 25 / 36%);
+  background: oklch(0.66 0.2 25 / 5%);
+}
+.target-card-main {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 31px 7px 7px;
+  border: 0;
+  background: transparent;
+  color: var(--foreground);
+  cursor: pointer;
+  text-align: left;
+}
+.target-card-main > span:last-child {
+  min-width: 0;
+}
+.target-card-main strong,
+.target-card-main small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.target-card-main strong {
+  font-size: 11px;
+}
+.target-card-main small {
+  color: var(--muted-foreground);
+  font-size: 9px;
+}
+.target-card.is-warning .target-card-main small:first-of-type {
+  color: oklch(0.84 0.12 78);
+}
+.target-card.is-critical .target-card-main small:first-of-type {
+  color: oklch(0.78 0.12 28);
+}
+.target-remove {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 23px;
+  height: 23px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--primary);
+  cursor: pointer;
+}
+.target-remove:hover {
+  background: oklch(0.82 0.18 143 / 10%);
+}
+.target-remove svg {
+  width: 12px;
+}
 .opponent-intelligence {
   display: flex;
   align-items: center;
@@ -549,7 +667,7 @@ select {
   grid-template-columns: minmax(240px, 1.15fr) 56px 56px minmax(
       170px,
       1fr
-    ) 118px;
+    ) 148px;
   gap: 10px;
 }
 .player-table-header {
@@ -587,6 +705,9 @@ select {
 .player-row.has-live-injury {
   background: oklch(0.79 0.14 78 / 4%);
 }
+.player-row.is-watched {
+  box-shadow: inset 2px 0 var(--primary);
+}
 .player-actions {
   display: flex;
   align-items: center;
@@ -595,6 +716,29 @@ select {
 }
 .player-actions > button:first-child {
   flex: 1;
+}
+.watch-toggle.is-active {
+  color: var(--primary);
+  background: oklch(0.82 0.18 143 / 8%);
+}
+.tier-alert {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  width: fit-content;
+  margin-top: 3px;
+  color: var(--primary);
+  font-size: 9px;
+  font-weight: 700;
+}
+.tier-alert.is-warning {
+  color: oklch(0.84 0.12 78);
+}
+.tier-alert.is-critical {
+  color: oklch(0.78 0.12 28);
+}
+.tier-alert svg {
+  width: 10px;
 }
 .injury-pill {
   display: block;
@@ -1256,6 +1400,14 @@ select {
   }
   .pick-correction {
     gap: 8px;
+  }
+  .target-queue {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .target-queue-heading {
+    min-width: 0;
   }
   .search-wrap {
     width: 100%;

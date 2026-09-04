@@ -67,6 +67,26 @@ counted twice.
 The interface exposes this state in three places: demand chips above the player
 list, per-team needs in the league board, and each player's estimate tooltip.
 
+## Target queue and tier cliffs
+
+Any available player can be starred into a target queue. The queue is stored with
+the same redundant local/session browser cache and downloadable backup as the draft
+state. It follows the live decision rank as picks, roster needs, opponent pressure,
+and custom weights change; drafted targets disappear automatically and return after
+an undo.
+
+For every target, the browser counts the remaining same-position players in that
+tier and estimates how many players at the position may be selected before the next
+turn. The alert is `Tier likely gone` when the player's next-turn estimate is at
+most 25%, or when expected position demand can exhaust the tier and the next tier
+has at least a one-point production-rank drop. It is `Tier at risk` at 50% or lower,
+or whenever expected demand can exhaust the tier. All other targets are labeled
+`Can wait`. The next lower-ranked available player at the position is named as the
+fallback.
+
+These are decision alerts, not simulated opponent picks. They inherit the same
+market-data and opponent-demand limitations as the availability estimate.
+
 ## Verification and remaining calibration gap
 
 `npm run test:intelligence` checks snake ownership, monotonic market survival,

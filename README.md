@@ -19,6 +19,8 @@ It currently supports:
 - browser-native lineup fit, same-position drop-off, ADP urgency, live run pressure,
   and construction penalties, with visible score explanations and opponent needs on
   the league board;
+- a persistent target queue with live-rank ordering, opponent-aware tier-cliff alerts,
+  and a same-position fallback for every watched player;
 - configurable teams, starters, flex eligibility, bench, and position limits;
 - full-PPR, half-PPR, or custom stat scoring;
 - raw-stat projections or a source-provided fantasy-points override;
