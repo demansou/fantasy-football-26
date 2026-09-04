@@ -48,6 +48,14 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { PLAYERS, RANKING_METADATA } from '@/data/players';
+import {
+  lineupStatus,
+  opponentAdjustedSurvival,
+  opponentDemandForPosition,
+  rosterNeeds,
+  type OpponentDemand,
+  type PositionCounts,
+} from '@/lib/draft-intelligence';
 
 type Position = 'QB' | 'RB' | 'WR' | 'TE' | 'K' | 'DST';
 type ModeledPosition = 'QB' | 'RB' | 'WR' | 'TE';
@@ -345,25 +353,12 @@ function readDraftCache(storage: Storage, key: string) {
   }
 }
 
-function normalCdf(value: number) {
-  const sign = value < 0 ? -1 : 1;
-  const x = Math.abs(value) / Math.sqrt(2);
-  const t = 1 / (1 + 0.3275911 * x);
-  const erf =
-    sign *
-    (1 -
-      ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) *
-        t +
-        0.254829592) *
-        t *
-        Math.exp(-x * x));
-  return 0.5 * (1 + erf);
-}
-
-function chanceLasts(player: Player, targetPick: number) {
-  const deviation = Math.max(1, player.adpStdev);
-  const survival = 1 - normalCdf((targetPick - 0.5 - player.adp) / deviation);
-  return Math.round(Math.max(0.01, Math.min(0.99, survival)) * 100);
+function chanceLasts(
+  player: Player,
+  targetPick: number,
+  demand: OpponentDemand,
+) {
+  return Math.round(opponentAdjustedSurvival(player, targetPick, demand) * 100);
 }
 
 function normalizePlayerName(value: string) {
@@ -443,40 +438,120 @@ function injurySummary(alert: InjuryAlert) {
 function scorePlayer(
   player: Player,
   weights: Weights,
-  picks: Pick[],
-  rosterCounts: Partial<Record<Position, number>>,
+  rosterCounts: PositionCounts,
   currentRound: number,
+  recentPositionPicks: number,
+  survival: number,
+  demand: OpponentDemand,
+  positionPool: Player[],
+  picksUntilNext: number,
+  myPlayers: Player[],
 ) {
-  if (player.coverage === 'market_only') return player.draftScore;
-  const position = player.position as ModeledPosition;
-  const personalized = FACTORS.reduce(
-    (total, factor) =>
-      total +
-      ((player.metrics[factor.key] - 50) / 50) *
-        ((weights[position][factor.key] - 100) / 100) *
-        2,
-    0,
-  );
-  const run = picks
-    .slice(-8)
-    .filter(
-      (pick) =>
-        players.find((item) => item.id === pick.playerId)?.position ===
-        position,
-    ).length;
-  const needs: Record<ModeledPosition, number> = { QB: 1, RB: 2, WR: 2, TE: 1 };
-  const openStarter = (rosterCounts[position] ?? 0) < needs[position];
-  const needBoost =
-    openStarter &&
-    currentRound >= (position === 'QB' || position === 'TE' ? 5 : 2)
-      ? 0.8
+  const position = player.position;
+  const modeledPosition = position as ModeledPosition;
+  const personalized =
+    player.coverage === 'modeled'
+      ? FACTORS.reduce(
+          (total, factor) =>
+            total +
+            ((player.metrics[factor.key] - 50) / 50) *
+              ((weights[modeledPosition][factor.key] - 100) / 100) *
+              2,
+          0,
+        )
       : 0;
-  return player.draftScore + personalized + run * 0.16 + needBoost;
+  const status = lineupStatus(position, rosterCounts);
+  const draftProgress = Math.min(1, Math.max(0, (currentRound - 1) / 12));
+  const need =
+    status === 'starter'
+      ? 0.45 + draftProgress * 1.2
+      : status === 'flex'
+        ? 0.25 + draftProgress * 0.65
+        : 0;
+  const positionShare: Record<Position, number> = {
+    QB: 0.11,
+    RB: 0.27,
+    WR: 0.27,
+    TE: 0.11,
+    K: 0.12,
+    DST: 0.12,
+  };
+  const expectedGone = Math.max(
+    1,
+    Math.ceil(picksUntilNext * positionShare[position] * demand.pressure),
+  );
+  const positionIndex = positionPool.findIndex(
+    (candidate) => candidate.id === player.id,
+  );
+  const comparison =
+    positionIndex >= 0
+      ? positionPool[
+          Math.min(positionPool.length - 1, positionIndex + expectedGone)
+        ]
+      : undefined;
+  const rawDrop = comparison
+    ? Math.max(0, player.draftScore - comparison.draftScore)
+    : 0;
+  const scarcity = Math.min(2.4, rawDrop * 0.55);
+  const urgency = Math.max(-1.4, Math.min(1.4, ((50 - survival) / 50) * 1.4));
+  const opponent = Math.max(-0.8, Math.min(0.8, (demand.pressure - 1) * 0.9));
+  const run = Math.min(1.28, recentPositionPicks * 0.16);
+  let penalty = 0;
+  if ((position === 'K' || position === 'DST') && currentRound < 12) {
+    penalty -= (12 - currentRound) * 0.65;
+  }
+  if (status === 'bench') {
+    const starterCapacity =
+      position === 'RB' || position === 'WR' || position === 'TE'
+        ? ({ RB: 3, WR: 3, TE: 2 } as const)[position]
+        : 1;
+    penalty -=
+      Math.max(0, (rosterCounts[position] ?? 0) - starterCapacity + 1) * 0.8;
+  }
+  if (myPlayers.length >= 8 && player.bye) {
+    penalty -=
+      myPlayers.filter(
+        (teammate) =>
+          teammate.position === position && teammate.bye === player.bye,
+      ).length * 0.5;
+  }
+  const total =
+    player.draftScore +
+    personalized +
+    need +
+    scarcity +
+    urgency +
+    opponent +
+    run +
+    penalty;
+  const signals = [
+    `${status} fit`,
+    scarcity >= 0.5 ? `${rawDrop.toFixed(1)} rank-point drop` : null,
+    demand.label !== 'normal' ? `${demand.label} ${position} demand` : null,
+    survival <= 35 ? `${survival}% next-turn estimate` : null,
+    recentPositionPicks >= 3 ? `${recentPositionPicks} in last 8` : null,
+    penalty <= -2 ? 'roster timing penalty' : null,
+  ].filter(Boolean);
+  return {
+    total,
+    status,
+    summary: signals.slice(0, 3).join(' · '),
+    components: {
+      personalized,
+      need,
+      scarcity,
+      urgency,
+      opponent,
+      run,
+      penalty,
+    },
+  };
 }
 
 type WeightControlsProps = {
   activePosition: ModeledPosition;
   currentOwnerIsMine: boolean;
+  opponentSignal: string;
   recentRun: string;
   setActivePosition: (position: ModeledPosition) => void;
   setWeights: Dispatch<SetStateAction<Weights>>;
@@ -485,6 +560,7 @@ type WeightControlsProps = {
 function WeightControls({
   activePosition,
   currentOwnerIsMine,
+  opponentSignal,
   recentRun,
   setActivePosition,
   setWeights,
@@ -571,6 +647,10 @@ function WeightControls({
         <div>
           <span>Recent run</span>
           <strong>{recentRun}</strong>
+        </div>
+        <div>
+          <span>Opponent needs</span>
+          <strong>{opponentSignal}</strong>
         </div>
         <div>
           <span>Next turn</span>
@@ -741,6 +821,17 @@ export default function Home() {
       const timer = window.setTimeout(() => setOfflineStatus('unavailable'), 0);
       return () => window.clearTimeout(timer);
     }
+    if (process.env.NODE_ENV !== 'production') {
+      void navigator.serviceWorker
+        .getRegistrations()
+        .then((registrations) =>
+          Promise.all(
+            registrations.map((registration) => registration.unregister()),
+          ),
+        );
+      const timer = window.setTimeout(() => setOfflineStatus('unavailable'), 0);
+      return () => window.clearTimeout(timer);
+    }
     navigator.serviceWorker
       .register('/sw.js')
       .then(() => navigator.serviceWorker.ready)
@@ -841,44 +932,129 @@ export default function Home() {
       ),
     [myPlayers],
   );
+  const teamRosters = useMemo(
+    () =>
+      Array.from({ length: teamCount }, (_, teamIndex) =>
+        picks
+          .filter((pick) => pick.teamIndex === teamIndex)
+          .reduce<PositionCounts>((counts, pick) => {
+            const position = players.find(
+              (player) => player.id === pick.playerId,
+            )?.position;
+            if (position) counts[position] = (counts[position] ?? 0) + 1;
+            return counts;
+          }, {}),
+      ),
+    [picks, teamCount],
+  );
+  const firstOpponentPick = currentPick + (currentOwnerIsMine ? 1 : 0);
+  const opponentDemands = useMemo(
+    () =>
+      Object.fromEntries(
+        ALL_POSITIONS.map((position) => [
+          position,
+          opponentDemandForPosition({
+            position,
+            firstOpponentPick,
+            targetPick: nextMyPick,
+            teamCount,
+            myTeamIndex,
+            teamRosters,
+            currentRound,
+          }),
+        ]),
+      ) as Record<Position, OpponentDemand>,
+    [
+      currentRound,
+      firstOpponentPick,
+      myTeamIndex,
+      nextMyPick,
+      teamCount,
+      teamRosters,
+    ],
+  );
+  const recentPositionCounts = useMemo(() => {
+    const counts: PositionCounts = {};
+    picks.slice(-8).forEach((pick) => {
+      const position = players.find(
+        (player) => player.id === pick.playerId,
+      )?.position;
+      if (position) counts[position] = (counts[position] ?? 0) + 1;
+    });
+    return counts;
+  }, [picks]);
+  const draftablePool = useMemo(
+    () =>
+      players.filter(
+        (player) =>
+          !draftedIds.has(player.id) &&
+          (!hideInactivePlayers || player.currentActive),
+      ),
+    [draftedIds, hideInactivePlayers],
+  );
+  const positionPools = useMemo(
+    () =>
+      Object.fromEntries(
+        ALL_POSITIONS.map((position) => [
+          position,
+          draftablePool
+            .filter((candidate) => candidate.position === position)
+            .sort((a, b) => b.draftScore - a.draftScore),
+        ]),
+      ) as Record<Position, Player[]>,
+    [draftablePool],
+  );
   const available = useMemo(
     () =>
-      players
-        .filter((player) => !draftedIds.has(player.id))
+      draftablePool
         .filter((player) => !avoidedIds.has(player.id))
-        .filter((player) => !hideInactivePlayers || player.currentActive)
         .filter((player) => filter === 'ALL' || player.position === filter)
         .filter((player) =>
           `${player.name} ${player.team} ${player.position}`
             .toLowerCase()
             .includes(query.trim().toLowerCase()),
         )
-        .map((player) => ({
-          player,
-          score: scorePlayer(
+        .map((player) => {
+          const demand = opponentDemands[player.position];
+          const survival = chanceLasts(player, nextMyPick, demand);
+          return {
             player,
-            weights,
-            picks,
-            rosterCounts,
-            currentRound,
-          ),
-        }))
+            survival,
+            demand,
+            score: scorePlayer(
+              player,
+              weights,
+              rosterCounts,
+              currentRound,
+              recentPositionCounts[player.position] ?? 0,
+              survival,
+              demand,
+              positionPools[player.position],
+              Math.max(1, nextMyPick - currentPick),
+              myPlayers,
+            ),
+          };
+        })
         .sort((a, b) =>
           sortMode === 'adp'
             ? a.player.adp - b.player.adp
             : sortMode === 'opportunity'
               ? b.player.metrics.opportunity - a.player.metrics.opportunity ||
                 a.player.adp - b.player.adp
-              : b.score - a.score,
+              : b.score.total - a.score.total,
         ),
     [
       currentRound,
-      draftedIds,
       avoidedIds,
+      currentPick,
+      draftablePool,
       filter,
-      hideInactivePlayers,
-      picks,
+      myPlayers,
+      nextMyPick,
+      opponentDemands,
+      positionPools,
       query,
+      recentPositionCounts,
       rosterCounts,
       sortMode,
       weights,
@@ -899,6 +1075,16 @@ export default function Home() {
       ? `${leader[0]} · ${leader[1]} of last ${Math.min(4, picks.length)}`
       : 'No picks yet';
   }, [picks]);
+  const hottestOpponentDemand = useMemo(
+    () =>
+      MODELED_POSITIONS.map((position) => opponentDemands[position]).sort(
+        (a, b) => b.pressure - a.pressure,
+      )[0],
+    [opponentDemands],
+  );
+  const opponentSignal = hottestOpponentDemand
+    ? `${hottestOpponentDemand.position} · ${hottestOpponentDemand.label}`
+    : 'Normal';
   const rosterSlots = useMemo(() => {
     const used = new Set<string>();
     return [
@@ -1164,6 +1350,19 @@ export default function Home() {
                       : 'No draft-day refresh yet'}
                   </small>
                 </div>
+                <div>
+                  <span>Availability</span>
+                  <strong>Opponent-aware</strong>
+                  <small>FFC range + every roster before your turn</small>
+                </div>
+                <div>
+                  <span>Demand pressure</span>
+                  <strong>{opponentSignal}</strong>
+                  <small>
+                    {hottestOpponentDemand?.starterPicks ?? 0} upcoming starter
+                    needs
+                  </small>
+                </div>
               </div>
               <div className="reliability-controls">
                 <div className="reliability-toggle">
@@ -1291,7 +1490,10 @@ export default function Home() {
                 <Button variant="outline" size="sm" className="data-badge" />
               }
             >
-              <Database /> <span>Fresh · ADP Sep 2</span>
+              <Database />{' '}
+              <span>
+                Fresh · ADP {RANKING_METADATA.ffcWindow.split(' to ')[1]}
+              </span>
             </DialogTrigger>
             <DialogContent className="source-dialog sm:max-w-xl">
               <DialogHeader>
@@ -1319,10 +1521,12 @@ export default function Home() {
                   <span>
                     {RANKING_METADATA.ffcDrafts.toLocaleString()} recent 10-team
                     PPR drafts from {RANKING_METADATA.ffcWindow}. ADP anchors
-                    cross-position timing, and its observed spread powers the
-                    normal-curve estimate of whether a player lasts to your next
-                    pick. That heuristic is not a calibrated probability or a
-                    point projection. Freshness gate passed at{' '}
+                    cross-position timing. The published mean, spread, high/low
+                    range, and sample count now feed a bounded market estimate,
+                    then the actual roster needs of teams selecting before your
+                    next turn adjust it. It remains an estimate—not a calibrated
+                    probability or point projection—because the free feed does
+                    not expose pick-level outcomes. Freshness gate passed at{' '}
                     {RANKING_METADATA.ffcAgeDays} day old.
                   </span>
                 </div>
@@ -1354,11 +1558,11 @@ export default function Home() {
               <DialogFooter showCloseButton>
                 <a
                   className="source-link"
-                  href="https://github.com/demansou/fantasy-football-26/blob/main/docs/NFL_ENVIRONMENT_RECOMMENDATION_2026.md"
+                  href="https://github.com/demansou/fantasy-football-26/blob/main/docs/DRAFT_INTELLIGENCE_2026.md"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Read the methodology
+                  Read the draft-intelligence method
                 </a>
               </DialogFooter>
             </DialogContent>
@@ -1394,6 +1598,12 @@ export default function Home() {
                     >
                       <strong>{teamName}</strong>
                       <span>Pick {teamIndex + 1}</span>
+                      <small>
+                        Needs{' '}
+                        {rosterNeeds(teamRosters[teamIndex] ?? {}, currentRound)
+                          .slice(0, 4)
+                          .join('/') || 'depth'}
+                      </small>
                     </div>
                   ))}
                   {Array.from(
@@ -1603,6 +1813,7 @@ export default function Home() {
                 <WeightControls
                   activePosition={activePosition}
                   currentOwnerIsMine={currentOwnerIsMine}
+                  opponentSignal={opponentSignal}
                   recentRun={recentRun}
                   setActivePosition={setActivePosition}
                   setWeights={setWeights}
@@ -1781,9 +1992,29 @@ export default function Home() {
             ))}
             <span className="rank-note">
               Next pick {nextMyPick} · top {available[0]?.player.name ?? '—'} ·{' '}
-              {available[0] ? chanceLasts(available[0].player, nextMyPick) : 0}%
-              lasts
+              {available[0]?.survival ?? 0}% est. to last
             </span>
+          </div>
+          <div className="opponent-intelligence">
+            <div>
+              <strong>Opponent roster intelligence</strong>
+              <span>
+                {opponentDemands.RB.upcomingPicks} selections before pick{' '}
+                {nextMyPick}
+              </span>
+            </div>
+            {MODELED_POSITIONS.map((position) => {
+              const demand = opponentDemands[position];
+              return (
+                <span
+                  className={`demand-chip is-${demand.label}`}
+                  key={position}
+                  title={`${demand.starterPicks} teams have an open ${position} starter; ${demand.flexPicks} can use ${position} in flex`}
+                >
+                  {position} {demand.label} · {demand.starterPicks} need
+                </span>
+              );
+            })}
           </div>
           {injuryError && (
             <div className="injury-notice" role="alert">
@@ -1799,7 +2030,7 @@ export default function Home() {
           </div>
           <ScrollArea className="player-scroll">
             <div className="player-list">
-              {available.map(({ player, score }, index) => {
+              {available.map(({ player, score, survival, demand }, index) => {
                 const liveAlert = injuryCache?.alerts[player.id];
                 return (
                   <article
@@ -1852,9 +2083,9 @@ export default function Home() {
                     <div className="stat-cell">
                       <strong>{player.adp.toFixed(1)}</strong>
                       <small
-                        title={`Observed pick range ${player.marketHighPick}-${player.marketLowPick} across ${player.timesDrafted} drafts`}
+                        title={`Opponent-adjusted market estimate. FFC observed range ${player.marketHighPick}-${player.marketLowPick} across ${player.timesDrafted} drafts; ${demand.starterPicks} upcoming teams need a ${player.position} starter.`}
                       >
-                        {chanceLasts(player, nextMyPick)}% lasts ·{' '}
+                        {survival}% est. ·{' '}
                         {player.rankDelta > 0
                           ? `↑${player.rankDelta}`
                           : player.rankDelta < 0
@@ -1863,11 +2094,13 @@ export default function Home() {
                       </small>
                     </div>
                     <div className="model-cell">
-                      <strong>{score.toFixed(1)}</strong>
-                      <span title={player.context}>
+                      <strong>{score.total.toFixed(1)}</strong>
+                      <span
+                        title={`${score.summary}. ${player.context}. Components: need ${score.components.need.toFixed(1)}, scarcity ${score.components.scarcity.toFixed(1)}, timing ${score.components.urgency.toFixed(1)}, opponents ${score.components.opponent.toFixed(1)}, run ${score.components.run.toFixed(1)}, penalty ${score.components.penalty.toFixed(1)}.`}
+                      >
                         {!player.currentActive
-                          ? `${player.status} · ${player.context}`
-                          : player.context}
+                          ? `${player.status} · ${score.summary}`
+                          : score.summary || player.context}
                       </span>
                     </div>
                     <div className="player-actions">
@@ -1913,6 +2146,7 @@ export default function Home() {
           <WeightControls
             activePosition={activePosition}
             currentOwnerIsMine={currentOwnerIsMine}
+            opponentSignal={opponentSignal}
             recentRun={recentRun}
             setActivePosition={setActivePosition}
             setWeights={setWeights}

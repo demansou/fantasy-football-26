@@ -86,8 +86,11 @@ calibration supports that conclusion.
 
 ## 5. What the baseline does not yet model
 
-- Opponent-specific behavior or roster needs.
-- Probability that each player survives to a future pick.
+- Empirically calibrated probability that each player survives to a future pick.
+  The browser now publishes a bounded market estimate adjusted for actual opponent
+  roster needs, but the free ADP feed does not expose the pick-level outcomes needed
+  for reliability calibration.
+- Opponent-specific behavioral tendencies beyond visible starter/flex demand.
 - Correlated weekly outcomes, stacking, best-ball effects, or playoff schedules.
 - Keeper prices, auction budgets, traded picks, or non-snake formats.
 - Injury news freshness and depth-chart changes.
@@ -111,3 +114,14 @@ weights by feel:
 The live recommendation should eventually optimize expected final-roster value by
 comparing “draft now” with the distribution of players available at every future
 pick.
+
+## 7. Browser opportunity-ranking layer
+
+The production browser intentionally ranks NFL opportunity rather than projected
+fantasy points, so it does not claim VORP. It ports the supported live decision
+categories from the Python engine: starter/flex fit, expected same-position
+drop-off, ADP urgency, recent position runs, and construction penalties. It also
+enumerates the actual teams selecting before the user's next snake turn and adjusts
+availability and scarcity for their current positional needs. See
+[`DRAFT_INTELLIGENCE_2026.md`](DRAFT_INTELLIGENCE_2026.md) for the formulas,
+bounds, interface behavior, and calibration limit.

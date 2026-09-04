@@ -476,6 +476,47 @@ select {
   padding: 7px 16px;
   border-bottom: 1px solid var(--border);
 }
+.opponent-intelligence {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 7px 16px;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--border);
+  background: oklch(0.72 0.13 206 / 3%);
+  scrollbar-width: none;
+}
+.opponent-intelligence > div {
+  display: grid;
+  min-width: 158px;
+  margin-right: auto;
+}
+.opponent-intelligence > div strong {
+  font-size: 10px;
+}
+.opponent-intelligence > div span {
+  color: var(--muted-foreground);
+  font-size: 9px;
+}
+.demand-chip {
+  flex: none;
+  padding: 4px 7px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--muted-foreground);
+  font-family: var(--font-geist-mono);
+  font-size: 9px;
+}
+.demand-chip.is-elevated,
+.demand-chip.is-high {
+  color: oklch(0.84 0.12 78);
+  border-color: oklch(0.79 0.14 78 / 25%);
+  background: oklch(0.79 0.14 78 / 7%);
+}
+.demand-chip.is-light {
+  color: oklch(0.78 0.13 155);
+}
 .filter-chip,
 .position-tabs button {
   border: 0;
@@ -865,6 +906,14 @@ select {
 .draft-team-heading span {
   color: var(--muted-foreground);
   font-size: 10px;
+}
+.draft-team-heading small {
+  overflow: hidden;
+  margin-top: 2px;
+  color: oklch(0.74 0.06 158);
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .draft-team-heading.is-mine {
   background: oklch(0.23 0.035 155);

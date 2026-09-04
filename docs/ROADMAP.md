@@ -161,10 +161,18 @@ held-out historical drafts under predeclared metrics.
 
 - Fast local web UI with available players, roster grid, tiers, next-turn survival
   probability, and recommendation explanations.
-  - [x] Ship the available-player, roster, tier, and explanation workflow plus a
-    clearly provisional next-turn market-survival heuristic from observed ADP spread.
-    Keep the parent item open until survival is calibrated rather than presented as
-    a normal-curve approximation.
+  - [x] Ship the available-player, roster, tier, and explanation workflow plus an
+    evidence-bounded, sample-weighted next-turn market estimate from observed ADP
+    range and spread. Adjust it for the actual starter/flex needs of every opponent
+    selecting before the next turn and keep it labeled `est.` until pick-level
+    outcomes support empirical calibration.
+  - [x] Port supported Python decision categories into the opportunity-based browser
+    rank: lineup fit, positional drop-off, ADP urgency, live runs, and construction
+    penalties. Do not port fantasy-point VORP into a model that intentionally has no
+    point projections.
+  - [x] Expose opponent roster intelligence through league-board needs, before-turn
+    demand pressure, and per-player availability explanations without simulating the
+    remainder of the draft.
 - One-click draft event entry plus Yahoo refresh/reconciliation.
   - [x] Add a free, no-token, once-daily Sleeper injury/roster-status refresh with
     local caching, complete current skill-player reconciliation, visible source age,

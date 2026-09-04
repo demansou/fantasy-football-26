@@ -13,8 +13,12 @@ It currently supports:
 - 267 current draft rankings that use FFC ADP only for cross-position market timing,
   then adjust QB/RB/WR/TE with pinned opportunity, high-value usage, team environment,
   and role evidence while labeling K/DST as market-only;
-- next-snake-turn market survival estimates using each player's observed ADP spread,
-  labeled as an uncalibrated normal-curve heuristic and excluded from the football rank;
+- next-snake-turn market estimates bounded by each player's observed ADP range,
+  weighted by market sample size, and adjusted for the actual starter/flex needs of
+  every opponent selecting before the user's next turn;
+- browser-native lineup fit, same-position drop-off, ADP urgency, live run pressure,
+  and construction penalties, with visible score explanations and opponent needs on
+  the league board;
 - configurable teams, starters, flex eligibility, bench, and position limits;
 - full-PPR, half-PPR, or custom stat scoring;
 - raw-stat projections or a source-provided fantasy-points override;
@@ -54,6 +58,11 @@ Use **Refresh injuries** once on draft day to pull Sleeper's free, no-token play
 status feed. The browser caches it for 20 hours, matches it to the 217 modeled skill
 players, and adds visible injury/practice/roster warnings without changing their
 frozen ranks. Confirm any consequential alert against Yahoo before selecting a player.
+
+The `est.` beside each availability number is intentional. The free FFC feed does
+not include pick-level outcomes, so the range- and opponent-aware model is not yet
+an empirically calibrated probability. Its method and validation boundary are in
+[`docs/DRAFT_INTELLIGENCE_2026.md`](docs/DRAFT_INTELLIGENCE_2026.md).
 
 ```bash
 python3 scripts/build_web_rankings.py --as-of 2026-09-03
