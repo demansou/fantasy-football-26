@@ -48,6 +48,11 @@ or **Mark gone** for every other selection. Picks, league settings, and weights
 persist in the current browser. The deployed owner-only board is at
 <https://fantasy-football-26.vista-verde-6860.chatgpt.site>.
 
+Use **Refresh injuries** once on draft day to pull Sleeper's free, no-token player
+status feed. The browser caches it for 20 hours, matches it to the 216 modeled skill
+players, and adds visible injury/practice/roster warnings without changing their
+frozen ranks. Confirm any consequential alert against Yahoo before selecting a player.
+
 ```bash
 python3 scripts/build_web_rankings.py --as-of 2026-09-03
 python3 scripts/build_web_rankings.py --as-of 2026-09-03 --check

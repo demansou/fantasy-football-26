@@ -118,11 +118,13 @@ def main() -> None:
     scheduled_weeks: dict[str, set[str]] = defaultdict(set)
     status_by_id: dict[str, str] = {}
     active_by_id: dict[str, bool] = {}
+    gsis_by_id: dict[str, str] = {}
     for row in weekly:
         player_id = row["ffc_source_player_id"]
         resource_totals[player_id][row["resource"]] += float(row["expected_opportunities_this_week"])
         scheduled_weeks[player_id].add(row["week"])
         status_by_id[player_id] = row["current_status"]
+        gsis_by_id[player_id] = row["gsis_id"].strip()
 
     evidence_values: dict[str, list[float]] = defaultdict(list)
     for row in candidates:
@@ -221,6 +223,7 @@ def main() -> None:
             {
                 "id": f"{position.lower()}-{player_id}",
                 "sourceId": player_id,
+                "gsisId": gsis_by_id.get(player_id) or None,
                 "name": row["name"],
                 "position": position,
                 "team": team,

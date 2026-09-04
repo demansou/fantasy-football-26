@@ -8,7 +8,7 @@ export const RANKING_METADATA = {
   "freezeModel": "prospective-preseason-freeze-v0.4.0",
   "ffcWindow": "2026-08-26 to 2026-09-02",
   "ffcDrafts": 8007,
-  "ffcAgeDays": 1,
+  "ffcAgeDays": 2,
   "freshnessStatus": "fresh",
   "playerCount": 264,
   "modeledPlayerCount": 216,
@@ -19,6 +19,7 @@ export const PLAYERS = [
   {
     "id": "rb-5670",
     "sourceId": "5670",
+    "gsisId": "00-0038542",
     "name": "Bijan Robinson",
     "position": "RB",
     "team": "ATL",
@@ -52,6 +53,7 @@ export const PLAYERS = [
   {
     "id": "wr-5177",
     "sourceId": "5177",
+    "gsisId": "00-0036900",
     "name": "Ja'Marr Chase",
     "position": "WR",
     "team": "CIN",
@@ -85,6 +87,7 @@ export const PLAYERS = [
   {
     "id": "wr-5714",
     "sourceId": "5714",
+    "gsisId": "00-0039075",
     "name": "Puka Nacua",
     "position": "WR",
     "team": "LAR",
@@ -118,6 +121,7 @@ export const PLAYERS = [
   {
     "id": "rb-5672",
     "sourceId": "5672",
+    "gsisId": "00-0039139",
     "name": "Jahmyr Gibbs",
     "position": "RB",
     "team": "DET",
@@ -151,6 +155,7 @@ export const PLAYERS = [
   {
     "id": "rb-2434",
     "sourceId": "2434",
+    "gsisId": "00-0033280",
     "name": "Christian McCaffrey",
     "position": "RB",
     "team": "SF",
@@ -184,6 +189,7 @@ export const PLAYERS = [
   {
     "id": "wr-4869",
     "sourceId": "4869",
+    "gsisId": "00-0036358",
     "name": "CeeDee Lamb",
     "position": "WR",
     "team": "DAL",
@@ -217,6 +223,7 @@ export const PLAYERS = [
   {
     "id": "rb-5652",
     "sourceId": "5652",
+    "gsisId": "00-0037248",
     "name": "James Cook III",
     "position": "RB",
     "team": "BUF",
@@ -250,6 +257,7 @@ export const PLAYERS = [
   {
     "id": "wr-5182",
     "sourceId": "5182",
+    "gsisId": "00-0036963",
     "name": "Amon-Ra St. Brown",
     "position": "WR",
     "team": "DET",
@@ -283,6 +291,7 @@ export const PLAYERS = [
   {
     "id": "rb-4864",
     "sourceId": "4864",
+    "gsisId": "00-0036223",
     "name": "Jonathan Taylor",
     "position": "RB",
     "team": "IND",
@@ -316,6 +325,7 @@ export const PLAYERS = [
   {
     "id": "wr-5671",
     "sourceId": "5671",
+    "gsisId": "00-0038543",
     "name": "Jaxon Smith-Njigba",
     "position": "WR",
     "team": "SEA",
@@ -349,6 +359,7 @@ export const PLAYERS = [
   {
     "id": "wr-4876",
     "sourceId": "4876",
+    "gsisId": "00-0036322",
     "name": "Justin Jefferson",
     "position": "WR",
     "team": "MIN",
@@ -382,6 +393,7 @@ export const PLAYERS = [
   {
     "id": "rb-5683",
     "sourceId": "5683",
+    "gsisId": "00-0039040",
     "name": "De'Von Achane",
     "position": "RB",
     "team": "MIA",
@@ -415,6 +427,7 @@ export const PLAYERS = [
   {
     "id": "wr-5576",
     "sourceId": "5576",
+    "gsisId": "00-0037247",
     "name": "George Pickens",
     "position": "WR",
     "team": "DAL",
@@ -448,6 +461,7 @@ export const PLAYERS = [
   {
     "id": "wr-5544",
     "sourceId": "5544",
+    "gsisId": "00-0037239",
     "name": "Chris Olave",
     "position": "WR",
     "team": "NO",
@@ -481,6 +495,7 @@ export const PLAYERS = [
   {
     "id": "wr-5574",
     "sourceId": "5574",
+    "gsisId": "00-0037238",
     "name": "Drake London",
     "position": "WR",
     "team": "ATL",
@@ -514,6 +529,7 @@ export const PLAYERS = [
   {
     "id": "wr-5207",
     "sourceId": "5207",
+    "gsisId": "00-0036554",
     "name": "Nico Collins",
     "position": "WR",
     "team": "HOU",
@@ -547,6 +563,7 @@ export const PLAYERS = [
   {
     "id": "rb-6500",
     "sourceId": "6500",
+    "gsisId": "00-0040122",
     "name": "Ashton Jeanty",
     "position": "RB",
     "team": "LV",
@@ -580,6 +597,7 @@ export const PLAYERS = [
   {
     "id": "rb-5706",
     "sourceId": "5706",
+    "gsisId": "00-0038597",
     "name": "Chase Brown",
     "position": "RB",
     "team": "CIN",
@@ -613,6 +631,7 @@ export const PLAYERS = [
   {
     "id": "rb-2350",
     "sourceId": "2350",
+    "gsisId": "00-0032764",
     "name": "Derrick Henry",
     "position": "RB",
     "team": "BAL",
@@ -646,6 +665,7 @@ export const PLAYERS = [
   {
     "id": "rb-2860",
     "sourceId": "2860",
+    "gsisId": "00-0034844",
     "name": "Saquon Barkley",
     "position": "RB",
     "team": "PHI",
@@ -679,6 +699,7 @@ export const PLAYERS = [
   {
     "id": "wr-3247",
     "sourceId": "3247",
+    "gsisId": "00-0035676",
     "name": "A.J. Brown",
     "position": "WR",
     "team": "NE",
@@ -712,6 +733,7 @@ export const PLAYERS = [
   {
     "id": "rb-6538",
     "sourceId": "6538",
+    "gsisId": "00-0040666",
     "name": "Omarion Hampton",
     "position": "RB",
     "team": "LAC",
@@ -745,6 +767,7 @@ export const PLAYERS = [
   {
     "id": "wr-5696",
     "sourceId": "5696",
+    "gsisId": "00-0039067",
     "name": "Rashee Rice",
     "position": "WR",
     "team": "KC",
@@ -778,6 +801,7 @@ export const PLAYERS = [
   {
     "id": "rb-5503",
     "sourceId": "5503",
+    "gsisId": "00-0038120",
     "name": "Breece Hall",
     "position": "RB",
     "team": "NYJ",
@@ -811,6 +835,7 @@ export const PLAYERS = [
   {
     "id": "te-5656",
     "sourceId": "5656",
+    "gsisId": "00-0037744",
     "name": "Trey McBride",
     "position": "TE",
     "team": "ARI",
@@ -844,6 +869,7 @@ export const PLAYERS = [
   {
     "id": "rb-5625",
     "sourceId": "5625",
+    "gsisId": "00-0038134",
     "name": "Kenneth Walker",
     "position": "RB",
     "team": "KC",
@@ -877,6 +903,7 @@ export const PLAYERS = [
   {
     "id": "wr-5675",
     "sourceId": "5675",
+    "gsisId": "00-0039064",
     "name": "Zay Flowers",
     "position": "WR",
     "team": "BAL",
@@ -910,6 +937,7 @@ export const PLAYERS = [
   {
     "id": "wr-6183",
     "sourceId": "6183",
+    "gsisId": "00-0039337",
     "name": "Malik Nabers",
     "position": "WR",
     "team": "NYG",
@@ -943,6 +971,7 @@ export const PLAYERS = [
   {
     "id": "wr-6561",
     "sourceId": "6561",
+    "gsisId": "00-0040124",
     "name": "Tetairoa McMillan",
     "position": "WR",
     "team": "CAR",
@@ -976,6 +1005,7 @@ export const PLAYERS = [
   {
     "id": "wr-4883",
     "sourceId": "4883",
+    "gsisId": "00-0036912",
     "name": "DeVonta Smith",
     "position": "WR",
     "team": "PHI",
@@ -1009,6 +1039,7 @@ export const PLAYERS = [
   {
     "id": "rb-5623",
     "sourceId": "5623",
+    "gsisId": "00-0037840",
     "name": "Kyren Williams",
     "position": "RB",
     "team": "LAR",
@@ -1042,6 +1073,7 @@ export const PLAYERS = [
   {
     "id": "wr-5548",
     "sourceId": "5548",
+    "gsisId": "00-0037740",
     "name": "Garrett Wilson",
     "position": "WR",
     "team": "NYJ",
@@ -1075,6 +1107,7 @@ export const PLAYERS = [
   {
     "id": "wr-6576",
     "sourceId": "6576",
+    "gsisId": "00-0040129",
     "name": "Emeka Egbuka",
     "position": "WR",
     "team": "TB",
@@ -1108,6 +1141,7 @@ export const PLAYERS = [
   {
     "id": "rb-6769",
     "sourceId": "6769",
+    "gsisId": "00-0041027",
     "name": "Jeremiyah Love",
     "position": "RB",
     "team": "ARI",
@@ -1141,6 +1175,7 @@ export const PLAYERS = [
   {
     "id": "wr-4870",
     "sourceId": "4870",
+    "gsisId": "00-0036410",
     "name": "Tee Higgins",
     "position": "WR",
     "team": "CIN",
@@ -1174,6 +1209,7 @@ export const PLAYERS = [
   {
     "id": "rb-5185",
     "sourceId": "5185",
+    "gsisId": "00-0036997",
     "name": "Javonte Williams",
     "position": "RB",
     "team": "DAL",
@@ -1207,6 +1243,7 @@ export const PLAYERS = [
   {
     "id": "wr-6281",
     "sourceId": "6281",
+    "gsisId": "00-0039915",
     "name": "Ladd McConkey",
     "position": "WR",
     "team": "LAC",
@@ -1240,6 +1277,7 @@ export const PLAYERS = [
   {
     "id": "te-6178",
     "sourceId": "6178",
+    "gsisId": "00-0039338",
     "name": "Brock Bowers",
     "position": "TE",
     "team": "LV",
@@ -1273,6 +1311,7 @@ export const PLAYERS = [
   {
     "id": "qb-2885",
     "sourceId": "2885",
+    "gsisId": "00-0034857",
     "name": "Josh Allen",
     "position": "QB",
     "team": "BUF",
@@ -1306,6 +1345,7 @@ export const PLAYERS = [
   {
     "id": "rb-4862",
     "sourceId": "4862",
+    "gsisId": "00-0036275",
     "name": "D'Andre Swift",
     "position": "RB",
     "team": "CHI",
@@ -1339,6 +1379,7 @@ export const PLAYERS = [
   {
     "id": "wr-2125",
     "sourceId": "2125",
+    "gsisId": "00-0031381",
     "name": "Davante Adams",
     "position": "WR",
     "team": "LAR",
@@ -1372,6 +1413,7 @@ export const PLAYERS = [
   {
     "id": "rb-6190",
     "sourceId": "6190",
+    "gsisId": "00-0039361",
     "name": "Bucky Irving",
     "position": "RB",
     "team": "TB",
@@ -1405,6 +1447,7 @@ export const PLAYERS = [
   {
     "id": "rb-6509",
     "sourceId": "6509",
+    "gsisId": "00-0040715",
     "name": "Cam Skattebo",
     "position": "RB",
     "team": "NYG",
@@ -1438,6 +1481,7 @@ export const PLAYERS = [
   {
     "id": "rb-4863",
     "sourceId": "4863",
+    "gsisId": "00-0036973",
     "name": "Travis Etienne Jr.",
     "position": "RB",
     "team": "NO",
@@ -1471,6 +1515,7 @@ export const PLAYERS = [
   {
     "id": "wr-6194",
     "sourceId": "6194",
+    "gsisId": "00-0039919",
     "name": "Rome Odunze",
     "position": "WR",
     "team": "CHI",
@@ -1504,6 +1549,7 @@ export const PLAYERS = [
   {
     "id": "rb-6531",
     "sourceId": "6531",
+    "gsisId": "00-0040784",
     "name": "Quinshon Judkins",
     "position": "RB",
     "team": "CLE",
@@ -1537,6 +1583,7 @@ export const PLAYERS = [
   {
     "id": "wr-5178",
     "sourceId": "5178",
+    "gsisId": "00-0036613",
     "name": "Jaylen Waddle",
     "position": "WR",
     "team": "DEN",
@@ -1570,6 +1617,7 @@ export const PLAYERS = [
   {
     "id": "wr-3449",
     "sourceId": "3449",
+    "gsisId": "00-0035659",
     "name": "Terry McLaurin",
     "position": "WR",
     "team": "WAS",
@@ -1603,6 +1651,7 @@ export const PLAYERS = [
   {
     "id": "wr-5643",
     "sourceId": "5643",
+    "gsisId": "00-0037240",
     "name": "Jameson Williams",
     "position": "WR",
     "team": "DET",
@@ -1636,6 +1685,7 @@ export const PLAYERS = [
   {
     "id": "rb-6513",
     "sourceId": "6513",
+    "gsisId": "00-0040719",
     "name": "Bhayshul Tuten",
     "position": "RB",
     "team": "JAX",
@@ -1669,6 +1719,7 @@ export const PLAYERS = [
   {
     "id": "rb-3238",
     "sourceId": "3238",
+    "gsisId": "00-0035685",
     "name": "David Montgomery",
     "position": "RB",
     "team": "HOU",
@@ -1702,6 +1753,7 @@ export const PLAYERS = [
   {
     "id": "wr-2876",
     "sourceId": "2876",
+    "gsisId": "00-0034827",
     "name": "DJ Moore",
     "position": "WR",
     "team": "BUF",
@@ -1735,6 +1787,7 @@ export const PLAYERS = [
   {
     "id": "qb-6187",
     "sourceId": "6187",
+    "gsisId": "00-0039851",
     "name": "Drake Maye",
     "position": "QB",
     "team": "NE",
@@ -1768,6 +1821,7 @@ export const PLAYERS = [
   {
     "id": "qb-4882",
     "sourceId": "4882",
+    "gsisId": "00-0036442",
     "name": "Joe Burrow",
     "position": "QB",
     "team": "CIN",
@@ -1801,6 +1855,7 @@ export const PLAYERS = [
   {
     "id": "wr-6193",
     "sourceId": "6193",
+    "gsisId": "00-0039849",
     "name": "Marvin Harrison Jr.",
     "position": "WR",
     "team": "ARI",
@@ -1834,6 +1889,7 @@ export const PLAYERS = [
   {
     "id": "wr-2862",
     "sourceId": "2862",
+    "gsisId": "00-0034348",
     "name": "Courtland Sutton",
     "position": "WR",
     "team": "DEN",
@@ -1867,6 +1923,7 @@ export const PLAYERS = [
   {
     "id": "rb-5443",
     "sourceId": "5443",
+    "gsisId": "00-0037228",
     "name": "Jaylen Warren",
     "position": "RB",
     "team": "PIT",
@@ -1900,6 +1957,7 @@ export const PLAYERS = [
   {
     "id": "wr-3239",
     "sourceId": "3239",
+    "gsisId": "00-0035640",
     "name": "DK Metcalf",
     "position": "WR",
     "team": "PIT",
@@ -1933,6 +1991,7 @@ export const PLAYERS = [
   {
     "id": "wr-5360",
     "sourceId": "5360",
+    "gsisId": "00-0038124",
     "name": "Christian Watson",
     "position": "WR",
     "team": "GB",
@@ -1966,6 +2025,7 @@ export const PLAYERS = [
   {
     "id": "rb-5210",
     "sourceId": "5210",
+    "gsisId": "00-0036875",
     "name": "Rhamondre Stevenson",
     "position": "RB",
     "team": "NE",
@@ -1999,6 +2059,7 @@ export const PLAYERS = [
   {
     "id": "wr-6175",
     "sourceId": "6175",
+    "gsisId": "00-0039893",
     "name": "Brian Thomas Jr.",
     "position": "WR",
     "team": "JAX",
@@ -2032,6 +2093,7 @@ export const PLAYERS = [
   {
     "id": "qb-2377",
     "sourceId": "2377",
+    "gsisId": "00-0033077",
     "name": "Dak Prescott",
     "position": "QB",
     "team": "DAL",
@@ -2065,6 +2127,7 @@ export const PLAYERS = [
   {
     "id": "wr-6559",
     "sourceId": "6559",
+    "gsisId": "00-0040735",
     "name": "Luther Burden III",
     "position": "WR",
     "team": "CHI",
@@ -2098,6 +2161,7 @@ export const PLAYERS = [
   {
     "id": "rb-3255",
     "sourceId": "3255",
+    "gsisId": "00-0035700",
     "name": "Josh Jacobs",
     "position": "RB",
     "team": "GB",
@@ -2131,6 +2195,7 @@ export const PLAYERS = [
   {
     "id": "te-6501",
     "sourceId": "6501",
+    "gsisId": "00-0040126",
     "name": "Colston Loveland",
     "position": "TE",
     "team": "CHI",
@@ -2164,6 +2229,7 @@ export const PLAYERS = [
   {
     "id": "wr-5705",
     "sourceId": "5705",
+    "gsisId": "00-0038606",
     "name": "Parker Washington",
     "position": "WR",
     "team": "JAX",
@@ -2197,6 +2263,7 @@ export const PLAYERS = [
   {
     "id": "wr-5641",
     "sourceId": "5641",
+    "gsisId": "00-0037664",
     "name": "Alec Pierce",
     "position": "WR",
     "team": "IND",
@@ -2230,6 +2297,7 @@ export const PLAYERS = [
   {
     "id": "te-6502",
     "sourceId": "6502",
+    "gsisId": "00-0040663",
     "name": "Harold Fannin Jr.",
     "position": "TE",
     "team": "CLE",
@@ -2263,6 +2331,7 @@ export const PLAYERS = [
   {
     "id": "wr-2111",
     "sourceId": "2111",
+    "gsisId": "00-0031408",
     "name": "Mike Evans",
     "position": "WR",
     "team": "SF",
@@ -2296,6 +2365,7 @@ export const PLAYERS = [
   {
     "id": "qb-2888",
     "sourceId": "2888",
+    "gsisId": "00-0034796",
     "name": "Lamar Jackson",
     "position": "QB",
     "team": "BAL",
@@ -2329,6 +2399,7 @@ export const PLAYERS = [
   {
     "id": "te-6504",
     "sourceId": "6504",
+    "gsisId": "00-0040128",
     "name": "Tyler Warren",
     "position": "TE",
     "team": "IND",
@@ -2362,6 +2433,7 @@ export const PLAYERS = [
   {
     "id": "wr-6768",
     "sourceId": "6768",
+    "gsisId": "00-0041438",
     "name": "Carnell Tate",
     "position": "WR",
     "team": "TEN",
@@ -2395,6 +2467,7 @@ export const PLAYERS = [
   {
     "id": "wr-5721",
     "sourceId": "5721",
+    "gsisId": "00-0038559",
     "name": "Michael Wilson",
     "position": "WR",
     "team": "ARI",
@@ -2428,6 +2501,7 @@ export const PLAYERS = [
   {
     "id": "rb-3435",
     "sourceId": "3435",
+    "gsisId": "00-0035261",
     "name": "Tony Pollard",
     "position": "RB",
     "team": "TEN",
@@ -2461,6 +2535,7 @@ export const PLAYERS = [
   {
     "id": "rb-6490",
     "sourceId": "6490",
+    "gsisId": "00-0040734",
     "name": "TreVeyon Henderson",
     "position": "RB",
     "team": "NE",
@@ -2494,6 +2569,7 @@ export const PLAYERS = [
   {
     "id": "qb-5854",
     "sourceId": "5854",
+    "gsisId": "00-0039910",
     "name": "Jayden Daniels",
     "position": "QB",
     "team": "WAS",
@@ -2527,6 +2603,7 @@ export const PLAYERS = [
   {
     "id": "rb-6776",
     "sourceId": "6776",
+    "gsisId": "00-0041512",
     "name": "Jadarian Price",
     "position": "RB",
     "team": "SEA",
@@ -2560,6 +2637,7 @@ export const PLAYERS = [
   {
     "id": "te-5181",
     "sourceId": "5181",
+    "gsisId": "00-0036970",
     "name": "Kyle Pitts Sr.",
     "position": "TE",
     "team": "ATL",
@@ -2593,6 +2671,7 @@ export const PLAYERS = [
   {
     "id": "rb-4873",
     "sourceId": "4873",
+    "gsisId": "00-0036555",
     "name": "Chuba Hubbard",
     "position": "RB",
     "team": "CAR",
@@ -2626,6 +2705,7 @@ export const PLAYERS = [
   {
     "id": "wr-4880",
     "sourceId": "4880",
+    "gsisId": "00-0036252",
     "name": "Michael Pittman Jr.",
     "position": "WR",
     "team": "PIT",
@@ -2659,6 +2739,7 @@ export const PLAYERS = [
   {
     "id": "qb-5025",
     "sourceId": "5025",
+    "gsisId": "00-0036389",
     "name": "Jalen Hurts",
     "position": "QB",
     "team": "PHI",
@@ -2692,6 +2773,7 @@ export const PLAYERS = [
   {
     "id": "rb-5095",
     "sourceId": "5095",
+    "gsisId": "00-0036139",
     "name": "Rico Dowdle",
     "position": "RB",
     "team": "PIT",
@@ -2725,6 +2807,7 @@ export const PLAYERS = [
   {
     "id": "wr-5588",
     "sourceId": "5588",
+    "gsisId": "00-0038117",
     "name": "Wan'Dale Robinson",
     "position": "WR",
     "team": "TEN",
@@ -2758,6 +2841,7 @@ export const PLAYERS = [
   {
     "id": "wr-3496",
     "sourceId": "3496",
+    "gsisId": "00-0034960",
     "name": "Jakobi Meyers",
     "position": "WR",
     "team": "JAX",
@@ -2791,6 +2875,7 @@ export const PLAYERS = [
   {
     "id": "qb-5186",
     "sourceId": "5186",
+    "gsisId": "00-0036971",
     "name": "Trevor Lawrence",
     "position": "QB",
     "team": "JAX",
@@ -2824,6 +2909,7 @@ export const PLAYERS = [
   {
     "id": "qb-1664",
     "sourceId": "1664",
+    "gsisId": "00-0026498",
     "name": "Matthew Stafford",
     "position": "QB",
     "team": "LAR",
@@ -2857,6 +2943,7 @@ export const PLAYERS = [
   {
     "id": "dst-1327",
     "sourceId": "1327",
+    "gsisId": null,
     "name": "Seattle Defense",
     "position": "DST",
     "team": "SEA",
@@ -2890,6 +2977,7 @@ export const PLAYERS = [
   {
     "id": "rb-4888",
     "sourceId": "4888",
+    "gsisId": "00-0036158",
     "name": "J.K. Dobbins",
     "position": "RB",
     "team": "DEN",
@@ -2923,6 +3011,7 @@ export const PLAYERS = [
   {
     "id": "wr-2465",
     "sourceId": "2465",
+    "gsisId": "00-0033921",
     "name": "Chris Godwin Jr.",
     "position": "WR",
     "team": "TB",
@@ -2956,6 +3045,7 @@ export const PLAYERS = [
   {
     "id": "te-1989",
     "sourceId": "1989",
+    "gsisId": "00-0030506",
     "name": "Travis Kelce",
     "position": "TE",
     "team": "KC",
@@ -2989,6 +3079,7 @@ export const PLAYERS = [
   {
     "id": "wr-5680",
     "sourceId": "5680",
+    "gsisId": "00-0038997",
     "name": "Josh Downs",
     "position": "WR",
     "team": "IND",
@@ -3022,6 +3113,7 @@ export const PLAYERS = [
   {
     "id": "rb-5196",
     "sourceId": "5196",
+    "gsisId": "00-0036919",
     "name": "Kenny Gainwell",
     "position": "RB",
     "team": "TB",
@@ -3055,6 +3147,7 @@ export const PLAYERS = [
   {
     "id": "dst-1309",
     "sourceId": "1309",
+    "gsisId": null,
     "name": "Denver Defense",
     "position": "DST",
     "team": "DEN",
@@ -3088,6 +3181,7 @@ export const PLAYERS = [
   {
     "id": "qb-6173",
     "sourceId": "6173",
+    "gsisId": "00-0039918",
     "name": "Caleb Williams",
     "position": "QB",
     "team": "CHI",
@@ -3121,6 +3215,7 @@ export const PLAYERS = [
   {
     "id": "wr-5673",
     "sourceId": "5673",
+    "gsisId": "00-0038994",
     "name": "Jordan Addison",
     "position": "WR",
     "team": "MIN",
@@ -3154,6 +3249,7 @@ export const PLAYERS = [
   {
     "id": "te-5564",
     "sourceId": "5564",
+    "gsisId": "00-0039065",
     "name": "Sam LaPorta",
     "position": "TE",
     "team": "DET",
@@ -3187,6 +3283,7 @@ export const PLAYERS = [
   {
     "id": "qb-2462",
     "sourceId": "2462",
+    "gsisId": "00-0033873",
     "name": "Patrick Mahomes",
     "position": "QB",
     "team": "KC",
@@ -3220,6 +3317,7 @@ export const PLAYERS = [
   {
     "id": "qb-2351",
     "sourceId": "2351",
+    "gsisId": "00-0033106",
     "name": "Jared Goff",
     "position": "QB",
     "team": "DET",
@@ -3253,6 +3351,7 @@ export const PLAYERS = [
   {
     "id": "qb-5648",
     "sourceId": "5648",
+    "gsisId": "00-0037834",
     "name": "Brock Purdy",
     "position": "QB",
     "team": "SF",
@@ -3286,6 +3385,7 @@ export const PLAYERS = [
   {
     "id": "wr-5674",
     "sourceId": "5674",
+    "gsisId": "00-0038544",
     "name": "Quentin Johnston",
     "position": "WR",
     "team": "LAC",
@@ -3319,6 +3419,7 @@ export const PLAYERS = [
   {
     "id": "wr-6172",
     "sourceId": "6172",
+    "gsisId": "00-0039894",
     "name": "Xavier Worthy",
     "position": "WR",
     "team": "KC",
@@ -3352,6 +3453,7 @@ export const PLAYERS = [
   {
     "id": "rb-6530",
     "sourceId": "6530",
+    "gsisId": "00-0040730",
     "name": "RJ Harvey",
     "position": "RB",
     "team": "DEN",
@@ -3385,6 +3487,7 @@ export const PLAYERS = [
   {
     "id": "wr-5707",
     "sourceId": "5707",
+    "gsisId": "00-0039146",
     "name": "Jayden Reed",
     "position": "WR",
     "team": "GB",
@@ -3418,6 +3521,7 @@ export const PLAYERS = [
   {
     "id": "wr-2316",
     "sourceId": "2316",
+    "gsisId": "00-0031588",
     "name": "Stefon Diggs",
     "position": "WR",
     "team": "WAS",
@@ -3451,6 +3555,7 @@ export const PLAYERS = [
   {
     "id": "te-2499",
     "sourceId": "2499",
+    "gsisId": "00-0033288",
     "name": "George Kittle",
     "position": "TE",
     "team": "SF",
@@ -3484,6 +3589,7 @@ export const PLAYERS = [
   {
     "id": "dst-1312",
     "sourceId": "1312",
+    "gsisId": null,
     "name": "Houston Defense",
     "position": "DST",
     "team": "HOU",
@@ -3517,6 +3623,7 @@ export const PLAYERS = [
   {
     "id": "rb-6179",
     "sourceId": "6179",
+    "gsisId": "00-0039344",
     "name": "Jonathon Brooks",
     "position": "RB",
     "team": "CAR",
@@ -3550,6 +3657,7 @@ export const PLAYERS = [
   {
     "id": "qb-6253",
     "sourceId": "6253",
+    "gsisId": "00-0039732",
     "name": "Bo Nix",
     "position": "QB",
     "team": "DEN",
@@ -3583,6 +3691,7 @@ export const PLAYERS = [
   {
     "id": "rb-2507",
     "sourceId": "2507",
+    "gsisId": "00-0033293",
     "name": "Aaron Jones Sr.",
     "position": "RB",
     "team": "MIN",
@@ -3616,6 +3725,7 @@ export const PLAYERS = [
   {
     "id": "dst-1328",
     "sourceId": "1328",
+    "gsisId": null,
     "name": "LA Rams Defense",
     "position": "DST",
     "team": "LAR",
@@ -3649,6 +3759,7 @@ export const PLAYERS = [
   {
     "id": "rb-6534",
     "sourceId": "6534",
+    "gsisId": "00-0040236",
     "name": "Kyle Monangai",
     "position": "RB",
     "team": "CHI",
@@ -3682,6 +3793,7 @@ export const PLAYERS = [
   {
     "id": "qb-4887",
     "sourceId": "4887",
+    "gsisId": "00-0036355",
     "name": "Justin Herbert",
     "position": "QB",
     "team": "LAC",
@@ -3715,6 +3827,7 @@ export const PLAYERS = [
   {
     "id": "wr-5586",
     "sourceId": "5586",
+    "gsisId": "00-0037816",
     "name": "Romeo Doubs",
     "position": "WR",
     "team": "NE",
@@ -3748,6 +3861,7 @@ export const PLAYERS = [
   {
     "id": "wr-5636",
     "sourceId": "5636",
+    "gsisId": "00-0037261",
     "name": "Khalil Shakir",
     "position": "WR",
     "team": "BUF",
@@ -3781,6 +3895,7 @@ export const PLAYERS = [
   {
     "id": "dst-1317",
     "sourceId": "1317",
+    "gsisId": null,
     "name": "Minnesota Defense",
     "position": "DST",
     "team": "MIN",
@@ -3814,6 +3929,7 @@ export const PLAYERS = [
   {
     "id": "qb-6568",
     "sourceId": "6568",
+    "gsisId": "00-0040691",
     "name": "Jaxson Dart",
     "position": "QB",
     "team": "NYG",
@@ -3847,6 +3963,7 @@ export const PLAYERS = [
   {
     "id": "wr-6523",
     "sourceId": "6523",
+    "gsisId": "00-0040667",
     "name": "Matthew Golden",
     "position": "WR",
     "team": "GB",
@@ -3880,6 +3997,7 @@ export const PLAYERS = [
   {
     "id": "rb-6595",
     "sourceId": "6595",
+    "gsisId": "00-0040242",
     "name": "Jacory Croskey-Merritt",
     "position": "RB",
     "team": "WAS",
@@ -3913,6 +4031,7 @@ export const PLAYERS = [
   {
     "id": "te-2896",
     "sourceId": "2896",
+    "gsisId": "00-0034351",
     "name": "Dallas Goedert",
     "position": "TE",
     "team": "PHI",
@@ -3946,6 +4065,7 @@ export const PLAYERS = [
   {
     "id": "te-5561",
     "sourceId": "5561",
+    "gsisId": "00-0038041",
     "name": "Jake Ferguson",
     "position": "TE",
     "team": "DAL",
@@ -3979,6 +4099,7 @@ export const PLAYERS = [
   {
     "id": "te-5718",
     "sourceId": "5718",
+    "gsisId": "00-0038996",
     "name": "Tucker Kraft",
     "position": "TE",
     "team": "GB",
@@ -4012,6 +4133,7 @@ export const PLAYERS = [
   {
     "id": "wr-3246",
     "sourceId": "3246",
+    "gsisId": "00-0035719",
     "name": "Deebo Samuel Sr.",
     "position": "WR",
     "team": "SF",
@@ -4045,6 +4167,7 @@ export const PLAYERS = [
   {
     "id": "qb-5602",
     "sourceId": "5602",
+    "gsisId": "00-0040743",
     "name": "Tyler Shough",
     "position": "QB",
     "team": "NO",
@@ -4078,6 +4201,7 @@ export const PLAYERS = [
   {
     "id": "wr-5977",
     "sourceId": "5977",
+    "gsisId": "00-0038563",
     "name": "Tre Tucker",
     "position": "WR",
     "team": "LV",
@@ -4111,6 +4235,7 @@ export const PLAYERS = [
   {
     "id": "te-2872",
     "sourceId": "2872",
+    "gsisId": "00-0034753",
     "name": "Mark Andrews",
     "position": "TE",
     "team": "BAL",
@@ -4144,6 +4269,7 @@ export const PLAYERS = [
   {
     "id": "rb-5622",
     "sourceId": "5622",
+    "gsisId": "00-0039811",
     "name": "MarShawn Lloyd",
     "position": "RB",
     "team": "GB",
@@ -4177,6 +4303,7 @@ export const PLAYERS = [
   {
     "id": "rb-5330",
     "sourceId": "5330",
+    "gsisId": "00-0037525",
     "name": "Jordan Mason",
     "position": "RB",
     "team": "MIN",
@@ -4210,6 +4337,7 @@ export const PLAYERS = [
   {
     "id": "rb-5626",
     "sourceId": "5626",
+    "gsisId": "00-0037256",
     "name": "Rachaad White",
     "position": "RB",
     "team": "WAS",
@@ -4243,6 +4371,7 @@ export const PLAYERS = [
   {
     "id": "rb-5965",
     "sourceId": "5965",
+    "gsisId": "00-0039738",
     "name": "Blake Corum",
     "position": "RB",
     "team": "LAR",
@@ -4276,6 +4405,7 @@ export const PLAYERS = [
   {
     "id": "k-6162",
     "sourceId": "6162",
+    "gsisId": null,
     "name": "Brandon Aubrey",
     "position": "K",
     "team": "DAL",
@@ -4309,6 +4439,7 @@ export const PLAYERS = [
   {
     "id": "dst-1310",
     "sourceId": "1310",
+    "gsisId": null,
     "name": "Detroit Defense",
     "position": "DST",
     "team": "DET",
@@ -4342,6 +4473,7 @@ export const PLAYERS = [
   {
     "id": "wr-4861",
     "sourceId": "4861",
+    "gsisId": "00-0036407",
     "name": "Jerry Jeudy",
     "position": "WR",
     "team": "CLE",
@@ -4375,6 +4507,7 @@ export const PLAYERS = [
   {
     "id": "wr-6302",
     "sourceId": "6302",
+    "gsisId": "00-0039491",
     "name": "Jalen Coker",
     "position": "WR",
     "team": "CAR",
@@ -4408,6 +4541,7 @@ export const PLAYERS = [
   {
     "id": "dst-1318",
     "sourceId": "1318",
+    "gsisId": null,
     "name": "New England Defense",
     "position": "DST",
     "team": "NE",
@@ -4441,6 +4575,7 @@ export const PLAYERS = [
   {
     "id": "wr-1992",
     "sourceId": "1992",
+    "gsisId": "00-0030279",
     "name": "Keenan Allen",
     "position": "WR",
     "team": "IND",
@@ -4474,6 +4609,7 @@ export const PLAYERS = [
   {
     "id": "wr-6772",
     "sourceId": "6772",
+    "gsisId": "00-0040867",
     "name": "Makai Lemon",
     "position": "WR",
     "team": "PHI",
@@ -4507,6 +4643,7 @@ export const PLAYERS = [
   {
     "id": "dst-1323",
     "sourceId": "1323",
+    "gsisId": null,
     "name": "Philadelphia Defense",
     "position": "DST",
     "team": "PHI",
@@ -4540,6 +4677,7 @@ export const PLAYERS = [
   {
     "id": "wr-6774",
     "sourceId": "6774",
+    "gsisId": "00-0041547",
     "name": "KC Concepcion",
     "position": "WR",
     "team": "CLE",
@@ -4573,6 +4711,7 @@ export const PLAYERS = [
   {
     "id": "k-2531",
     "sourceId": "2531",
+    "gsisId": null,
     "name": "Ka'imi Fairbairn",
     "position": "K",
     "team": "HOU",
@@ -4606,6 +4745,7 @@ export const PLAYERS = [
   {
     "id": "wr-5896",
     "sourceId": "5896",
+    "gsisId": "00-0037545",
     "name": "Rashid Shaheed",
     "position": "WR",
     "team": "SEA",
@@ -4639,6 +4779,7 @@ export const PLAYERS = [
   {
     "id": "k-2424",
     "sourceId": "2424",
+    "gsisId": null,
     "name": "Jason Myers",
     "position": "K",
     "team": "SEA",
@@ -4672,6 +4813,7 @@ export const PLAYERS = [
   {
     "id": "qb-3299",
     "sourceId": "3299",
+    "gsisId": "00-0035228",
     "name": "Kyler Murray",
     "position": "QB",
     "team": "MIN",
@@ -4705,6 +4847,7 @@ export const PLAYERS = [
   {
     "id": "rb-6529",
     "sourceId": "6529",
+    "gsisId": "00-0040583",
     "name": "Woody Marks",
     "position": "RB",
     "team": "HOU",
@@ -4738,6 +4881,7 @@ export const PLAYERS = [
   {
     "id": "dst-1324",
     "sourceId": "1324",
+    "gsisId": null,
     "name": "Pittsburgh Defense",
     "position": "DST",
     "team": "PIT",
@@ -4771,6 +4915,7 @@ export const PLAYERS = [
   {
     "id": "rb-5692",
     "sourceId": "5692",
+    "gsisId": "00-0039032",
     "name": "Tyjae Spears",
     "position": "RB",
     "team": "TEN",
@@ -4804,6 +4949,7 @@ export const PLAYERS = [
   {
     "id": "qb-2886",
     "sourceId": "2886",
+    "gsisId": "00-0034855",
     "name": "Baker Mayfield",
     "position": "QB",
     "team": "TB",
@@ -4837,6 +4983,7 @@ export const PLAYERS = [
   {
     "id": "rb-2441",
     "sourceId": "2441",
+    "gsisId": "00-0033526",
     "name": "Samaje Perine",
     "position": "RB",
     "team": "CIN",
@@ -4870,6 +5017,7 @@ export const PLAYERS = [
   {
     "id": "wr-6777",
     "sourceId": "6777",
+    "gsisId": "00-0041035",
     "name": "De'Zhaun Stribling",
     "position": "WR",
     "team": "SF",
@@ -4903,6 +5051,7 @@ export const PLAYERS = [
   {
     "id": "dst-1325",
     "sourceId": "1325",
+    "gsisId": null,
     "name": "LA Chargers Defense",
     "position": "DST",
     "team": "LAC",
@@ -4936,6 +5085,7 @@ export const PLAYERS = [
   {
     "id": "wr-5020",
     "sourceId": "5020",
+    "gsisId": "00-0036259",
     "name": "Jauan Jennings",
     "position": "WR",
     "team": "MIN",
@@ -4969,6 +5119,7 @@ export const PLAYERS = [
   {
     "id": "k-5538",
     "sourceId": "5538",
+    "gsisId": null,
     "name": "Cameron Dicker",
     "position": "K",
     "team": "LAC",
@@ -5002,6 +5153,7 @@ export const PLAYERS = [
   {
     "id": "wr-6553",
     "sourceId": "6553",
+    "gsisId": "00-0040705",
     "name": "Chimere Dike",
     "position": "WR",
     "team": "TEN",
@@ -5035,6 +5187,7 @@ export const PLAYERS = [
   {
     "id": "wr-6282",
     "sourceId": "6282",
+    "gsisId": "00-0039855",
     "name": "Jalen McMillan",
     "position": "WR",
     "team": "TB",
@@ -5068,6 +5221,7 @@ export const PLAYERS = [
   {
     "id": "rb-5677",
     "sourceId": "5677",
+    "gsisId": "00-0039165",
     "name": "Zach Charbonnet",
     "position": "RB",
     "team": "SEA",
@@ -5101,6 +5255,7 @@ export const PLAYERS = [
   {
     "id": "wr-6287",
     "sourceId": "6287",
+    "gsisId": "00-0039880",
     "name": "Malik Washington",
     "position": "WR",
     "team": "MIA",
@@ -5134,6 +5289,7 @@ export const PLAYERS = [
   {
     "id": "te-5661",
     "sourceId": "5661",
+    "gsisId": "00-0037838",
     "name": "Isaiah Likely",
     "position": "TE",
     "team": "NYG",
@@ -5167,6 +5323,7 @@ export const PLAYERS = [
   {
     "id": "wr-2866",
     "sourceId": "2866",
+    "gsisId": "00-0034837",
     "name": "Calvin Ridley",
     "position": "WR",
     "team": "TEN",
@@ -5200,6 +5357,7 @@ export const PLAYERS = [
   {
     "id": "dst-1321",
     "sourceId": "1321",
+    "gsisId": null,
     "name": "NY Jets Defense",
     "position": "DST",
     "team": "NYJ",
@@ -5233,6 +5391,7 @@ export const PLAYERS = [
   {
     "id": "te-2977",
     "sourceId": "2977",
+    "gsisId": "00-0034383",
     "name": "Dalton Schultz",
     "position": "TE",
     "team": "HOU",
@@ -5266,6 +5425,7 @@ export const PLAYERS = [
   {
     "id": "k-6299",
     "sourceId": "6299",
+    "gsisId": null,
     "name": "Harrison Mevis",
     "position": "K",
     "team": "LAR",
@@ -5299,6 +5459,7 @@ export const PLAYERS = [
   {
     "id": "k-6055",
     "sourceId": "6055",
+    "gsisId": null,
     "name": "Jake Bates",
     "position": "K",
     "team": "DET",
@@ -5332,6 +5493,7 @@ export const PLAYERS = [
   {
     "id": "te-5688",
     "sourceId": "5688",
+    "gsisId": "00-0038933",
     "name": "Dalton Kincaid",
     "position": "TE",
     "team": "BUF",
@@ -5365,6 +5527,7 @@ export const PLAYERS = [
   {
     "id": "dst-1326",
     "sourceId": "1326",
+    "gsisId": null,
     "name": "San Francisco Defense",
     "position": "DST",
     "team": "SF",
@@ -5398,6 +5561,7 @@ export const PLAYERS = [
   {
     "id": "qb-4892",
     "sourceId": "4892",
+    "gsisId": "00-0036264",
     "name": "Jordan Love",
     "position": "QB",
     "team": "GB",
@@ -5431,6 +5595,7 @@ export const PLAYERS = [
   {
     "id": "k-2340",
     "sourceId": "2340",
+    "gsisId": null,
     "name": "Chris Boswell",
     "position": "K",
     "team": "PIT",
@@ -5464,6 +5629,7 @@ export const PLAYERS = [
   {
     "id": "te-5151",
     "sourceId": "5151",
+    "gsisId": "00-0036040",
     "name": "Juwan Johnson",
     "position": "TE",
     "team": "NO",
@@ -5497,6 +5663,7 @@ export const PLAYERS = [
   {
     "id": "rb-5605",
     "sourceId": "5605",
+    "gsisId": "00-0037746",
     "name": "Brian Robinson",
     "position": "RB",
     "team": "ATL",
@@ -5530,6 +5697,7 @@ export const PLAYERS = [
   {
     "id": "k-4865",
     "sourceId": "4865",
+    "gsisId": null,
     "name": "Chase McLaughlin",
     "position": "K",
     "team": "TB",
@@ -5563,6 +5731,7 @@ export const PLAYERS = [
   {
     "id": "wr-6778",
     "sourceId": "6778",
+    "gsisId": "00-0041037",
     "name": "Denzel Boston",
     "position": "WR",
     "team": "CLE",
@@ -5596,6 +5765,7 @@ export const PLAYERS = [
   {
     "id": "k-6188",
     "sourceId": "6188",
+    "gsisId": null,
     "name": "Cam Little",
     "position": "K",
     "team": "JAX",
@@ -5629,6 +5799,7 @@ export const PLAYERS = [
   {
     "id": "qb-5676",
     "sourceId": "5676",
+    "gsisId": "00-0039163",
     "name": "C.J. Stroud",
     "position": "QB",
     "team": "HOU",
@@ -5662,6 +5833,7 @@ export const PLAYERS = [
   {
     "id": "dst-1314",
     "sourceId": "1314",
+    "gsisId": null,
     "name": "Jacksonville Defense",
     "position": "DST",
     "team": "JAX",
@@ -5695,6 +5867,7 @@ export const PLAYERS = [
   {
     "id": "te-2354",
     "sourceId": "2354",
+    "gsisId": "00-0033090",
     "name": "Hunter Henry",
     "position": "TE",
     "team": "NE",
@@ -5728,6 +5901,7 @@ export const PLAYERS = [
   {
     "id": "qb-6457",
     "sourceId": "6457",
+    "gsisId": "00-0040676",
     "name": "Cam Ward",
     "position": "QB",
     "team": "TEN",
@@ -5761,6 +5935,7 @@ export const PLAYERS = [
   {
     "id": "k-6587",
     "sourceId": "6587",
+    "gsisId": null,
     "name": "Tyler Loop",
     "position": "K",
     "team": "BAL",
@@ -5794,6 +5969,7 @@ export const PLAYERS = [
   {
     "id": "qb-3264",
     "sourceId": "3264",
+    "gsisId": "00-0035710",
     "name": "Daniel Jones",
     "position": "QB",
     "team": "IND",
@@ -5827,6 +6003,7 @@ export const PLAYERS = [
   {
     "id": "qb-2884",
     "sourceId": "2884",
+    "gsisId": "00-0034869",
     "name": "Sam Darnold",
     "position": "QB",
     "team": "SEA",
@@ -5860,6 +6037,7 @@ export const PLAYERS = [
   {
     "id": "rb-6276",
     "sourceId": "6276",
+    "gsisId": "00-0039384",
     "name": "Tyrone Tracy Jr.",
     "position": "RB",
     "team": "NYG",
@@ -5893,6 +6071,7 @@ export const PLAYERS = [
   {
     "id": "dst-1311",
     "sourceId": "1311",
+    "gsisId": null,
     "name": "Green Bay Defense",
     "position": "DST",
     "team": "GB",
@@ -5926,6 +6105,7 @@ export const PLAYERS = [
   {
     "id": "rb-2439",
     "sourceId": "2439",
+    "gsisId": "00-0033906",
     "name": "Alvin Kamara",
     "position": "RB",
     "team": "NO",
@@ -5959,6 +6139,7 @@ export const PLAYERS = [
   {
     "id": "te-5193",
     "sourceId": "5193",
+    "gsisId": "00-0036894",
     "name": "Pat Freiermuth",
     "position": "TE",
     "team": "PIT",
@@ -5992,6 +6173,7 @@ export const PLAYERS = [
   {
     "id": "rb-5655",
     "sourceId": "5655",
+    "gsisId": "00-0037263",
     "name": "Tyler Allgeier",
     "position": "RB",
     "team": "ARI",
@@ -6025,6 +6207,7 @@ export const PLAYERS = [
   {
     "id": "dst-1334",
     "sourceId": "1334",
+    "gsisId": null,
     "name": "Atlanta Defense",
     "position": "DST",
     "team": "ATL",
@@ -6058,6 +6241,7 @@ export const PLAYERS = [
   {
     "id": "rb-6176",
     "sourceId": "6176",
+    "gsisId": "00-0039794",
     "name": "Braelon Allen",
     "position": "RB",
     "team": "NYJ",
@@ -6091,6 +6275,7 @@ export const PLAYERS = [
   {
     "id": "rb-6798",
     "sourceId": "6798",
+    "gsisId": "00-0041052",
     "name": "Kaelon Black",
     "position": "RB",
     "team": "SF",
@@ -6124,6 +6309,7 @@ export const PLAYERS = [
   {
     "id": "qb-2365",
     "sourceId": "2365",
+    "gsisId": "00-0033119",
     "name": "Jacoby Brissett",
     "position": "QB",
     "team": "ARI",
@@ -6157,6 +6343,7 @@ export const PLAYERS = [
   {
     "id": "k-2522",
     "sourceId": "2522",
+    "gsisId": null,
     "name": "Wil Lutz",
     "position": "K",
     "team": "DEN",
@@ -6190,6 +6377,7 @@ export const PLAYERS = [
   {
     "id": "rb-5717",
     "sourceId": "5717",
+    "gsisId": "00-0038611",
     "name": "Chris Rodriguez Jr.",
     "position": "RB",
     "team": "JAX",
@@ -6223,6 +6411,7 @@ export const PLAYERS = [
   {
     "id": "wr-6315",
     "sourceId": "6315",
+    "gsisId": "00-0039424",
     "name": "Devaughn Vele",
     "position": "WR",
     "team": "NO",
@@ -6256,6 +6445,7 @@ export const PLAYERS = [
   {
     "id": "dst-1307",
     "sourceId": "1307",
+    "gsisId": null,
     "name": "Cleveland Defense",
     "position": "DST",
     "team": "CLE",
@@ -6289,6 +6479,7 @@ export const PLAYERS = [
   {
     "id": "rb-6517",
     "sourceId": "6517",
+    "gsisId": "00-0040177",
     "name": "Jordan James",
     "position": "RB",
     "team": "SF",
@@ -6322,6 +6513,7 @@ export const PLAYERS = [
   {
     "id": "dst-1308",
     "sourceId": "1308",
+    "gsisId": null,
     "name": "Dallas Defense",
     "position": "DST",
     "team": "DAL",
@@ -6355,6 +6547,7 @@ export const PLAYERS = [
   {
     "id": "dst-1303",
     "sourceId": "1303",
+    "gsisId": null,
     "name": "Buffalo Defense",
     "position": "DST",
     "team": "BUF",
@@ -6388,6 +6581,7 @@ export const PLAYERS = [
   {
     "id": "k-2514",
     "sourceId": "2514",
+    "gsisId": null,
     "name": "Harrison Butker",
     "position": "K",
     "team": "KC",
@@ -6421,6 +6615,7 @@ export const PLAYERS = [
   {
     "id": "rb-6511",
     "sourceId": "6511",
+    "gsisId": "00-0040162",
     "name": "Dylan Sampson",
     "position": "RB",
     "team": "CLE",
@@ -6454,6 +6649,7 @@ export const PLAYERS = [
   {
     "id": "k-6296",
     "sourceId": "6296",
+    "gsisId": null,
     "name": "Will Reichard",
     "position": "K",
     "team": "MIN",
@@ -6487,6 +6683,7 @@ export const PLAYERS = [
   {
     "id": "k-6585",
     "sourceId": "6585",
+    "gsisId": null,
     "name": "Andy Borregales",
     "position": "K",
     "team": "NE",
@@ -6520,6 +6717,7 @@ export const PLAYERS = [
   {
     "id": "dst-1332",
     "sourceId": "1332",
+    "gsisId": null,
     "name": "Baltimore Defense",
     "position": "DST",
     "team": "BAL",
@@ -6553,6 +6751,7 @@ export const PLAYERS = [
   {
     "id": "k-6835",
     "sourceId": "6835",
+    "gsisId": null,
     "name": "Trey Smack",
     "position": "K",
     "team": "GB",
@@ -6586,6 +6785,7 @@ export const PLAYERS = [
   {
     "id": "wr-5180",
     "sourceId": "5180",
+    "gsisId": "00-0036550",
     "name": "Rashod Bateman",
     "position": "WR",
     "team": "BAL",
@@ -6619,6 +6819,7 @@ export const PLAYERS = [
   {
     "id": "wr-2449",
     "sourceId": "2449",
+    "gsisId": "00-0033908",
     "name": "Cooper Kupp",
     "position": "WR",
     "team": "SEA",
@@ -6652,6 +6853,7 @@ export const PLAYERS = [
   {
     "id": "k-6046",
     "sourceId": "6046",
+    "gsisId": null,
     "name": "Blake Grupe",
     "position": "K",
     "team": "NYJ",
@@ -6685,6 +6887,7 @@ export const PLAYERS = [
   {
     "id": "te-3307",
     "sourceId": "3307",
+    "gsisId": "00-0035229",
     "name": "T.J. Hockenson",
     "position": "TE",
     "team": "MIN",
@@ -6718,6 +6921,7 @@ export const PLAYERS = [
   {
     "id": "rb-6811",
     "sourceId": "6811",
+    "gsisId": "00-0041013",
     "name": "Emmett Johnson",
     "position": "RB",
     "team": "KC",
@@ -6751,6 +6955,7 @@ export const PLAYERS = [
   {
     "id": "wr-5334",
     "sourceId": "5334",
+    "gsisId": "00-0037291",
     "name": "Jalen Nailor",
     "position": "WR",
     "team": "LV",
@@ -6784,6 +6989,7 @@ export const PLAYERS = [
   {
     "id": "rb-6799",
     "sourceId": "6799",
+    "gsisId": "00-0041496",
     "name": "Jonah Coleman",
     "position": "RB",
     "team": "DEN",
@@ -6817,6 +7023,7 @@ export const PLAYERS = [
   {
     "id": "wr-6828",
     "sourceId": "6828",
+    "gsisId": "00-0040890",
     "name": "Cyrus Allen",
     "position": "WR",
     "team": "KC",
@@ -6850,6 +7057,7 @@ export const PLAYERS = [
   {
     "id": "rb-6803",
     "sourceId": "6803",
+    "gsisId": "00-0040878",
     "name": "Mike Washington Jr.",
     "position": "RB",
     "team": "LV",
@@ -6883,6 +7091,7 @@ export const PLAYERS = [
   {
     "id": "rb-6197",
     "sourceId": "6197",
+    "gsisId": "00-0039875",
     "name": "Ray Davis",
     "position": "RB",
     "team": "BUF",
@@ -6916,6 +7125,7 @@ export const PLAYERS = [
   {
     "id": "k-5669",
     "sourceId": "5669",
+    "gsisId": null,
     "name": "Evan McPherson",
     "position": "K",
     "team": "CIN",
@@ -6949,6 +7159,7 @@ export const PLAYERS = [
   {
     "id": "qb-6767",
     "sourceId": "6767",
+    "gsisId": "00-0041562",
     "name": "Fernando Mendoza",
     "position": "QB",
     "team": "LV",
@@ -6982,6 +7193,7 @@ export const PLAYERS = [
   {
     "id": "k-5036",
     "sourceId": "5036",
+    "gsisId": null,
     "name": "Tyler Bass",
     "position": "K",
     "team": "BUF",
@@ -7015,6 +7227,7 @@ export const PLAYERS = [
   {
     "id": "rb-4872",
     "sourceId": "4872",
+    "gsisId": "00-0036893",
     "name": "Najee Harris",
     "position": "RB",
     "team": "NYG",
@@ -7048,6 +7261,7 @@ export const PLAYERS = [
   {
     "id": "dst-1320",
     "sourceId": "1320",
+    "gsisId": null,
     "name": "NY Giants Defense",
     "position": "DST",
     "team": "NYG",
@@ -7081,6 +7295,7 @@ export const PLAYERS = [
   {
     "id": "rb-5982",
     "sourceId": "5982",
+    "gsisId": "00-0038454",
     "name": "Keaton Mitchell",
     "position": "RB",
     "team": "LAC",
@@ -7114,6 +7329,7 @@ export const PLAYERS = [
   {
     "id": "k-3097",
     "sourceId": "3097",
+    "gsisId": null,
     "name": "Eddy Pi\u00f1eiro",
     "position": "K",
     "team": "SF",
@@ -7147,6 +7363,7 @@ export const PLAYERS = [
   {
     "id": "rb-5691",
     "sourceId": "5691",
+    "gsisId": "00-0038555",
     "name": "Tank Bigsby",
     "position": "RB",
     "team": "PHI",
@@ -7180,6 +7397,7 @@ export const PLAYERS = [
   {
     "id": "wr-5725",
     "sourceId": "5725",
+    "gsisId": "00-0038393",
     "name": "Dontayvion Wicks",
     "position": "WR",
     "team": "PHI",
@@ -7213,6 +7431,7 @@ export const PLAYERS = [
   {
     "id": "wr-6784",
     "sourceId": "6784",
+    "gsisId": "00-0041042",
     "name": "Malachi Fields",
     "position": "WR",
     "team": "NYG",
@@ -7246,6 +7465,7 @@ export const PLAYERS = [
   {
     "id": "rb-3266",
     "sourceId": "3266",
+    "gsisId": "00-0034975",
     "name": "Justice Hill",
     "position": "RB",
     "team": "BAL",
@@ -7279,6 +7499,7 @@ export const PLAYERS = [
   {
     "id": "rb-6263",
     "sourceId": "6263",
+    "gsisId": "00-0039391",
     "name": "Kimani Vidal",
     "position": "RB",
     "team": "LAC",
@@ -7312,6 +7533,7 @@ export const PLAYERS = [
   {
     "id": "wr-6184",
     "sourceId": "6184",
+    "gsisId": "00-0039890",
     "name": "Adonai Mitchell",
     "position": "WR",
     "team": "NYJ",
@@ -7345,6 +7567,7 @@ export const PLAYERS = [
   {
     "id": "k-2335",
     "sourceId": "2335",
+    "gsisId": null,
     "name": "Cairo Santos",
     "position": "K",
     "team": "CHI",
@@ -7378,6 +7601,7 @@ export const PLAYERS = [
   {
     "id": "k-2529",
     "sourceId": "2529",
+    "gsisId": null,
     "name": "Jake Elliott",
     "position": "K",
     "team": "PHI",
@@ -7411,6 +7635,7 @@ export const PLAYERS = [
   {
     "id": "wr-5694",
     "sourceId": "5694",
+    "gsisId": "00-0038608",
     "name": "Kayshon Boutte",
     "position": "WR",
     "team": "HOU",
@@ -7444,6 +7669,7 @@ export const PLAYERS = [
   {
     "id": "te-5453",
     "sourceId": "5453",
+    "gsisId": "00-0037809",
     "name": "Chig Okonkwo",
     "position": "TE",
     "team": "WAS",
@@ -7477,6 +7703,7 @@ export const PLAYERS = [
   {
     "id": "dst-1305",
     "sourceId": "1305",
+    "gsisId": null,
     "name": "Chicago Defense",
     "position": "DST",
     "team": "CHI",
@@ -7510,6 +7737,7 @@ export const PLAYERS = [
   {
     "id": "qb-5545",
     "sourceId": "5545",
+    "gsisId": "00-0038128",
     "name": "Malik Willis",
     "position": "QB",
     "team": "MIA",
@@ -7543,6 +7771,7 @@ export const PLAYERS = [
   {
     "id": "qb-1004",
     "sourceId": "1004",
+    "gsisId": "00-0023459",
     "name": "Aaron Rodgers",
     "position": "QB",
     "team": "PIT",
@@ -7576,6 +7805,7 @@ export const PLAYERS = [
   {
     "id": "qb-5678",
     "sourceId": "5678",
+    "gsisId": "00-0039150",
     "name": "Bryce Young",
     "position": "QB",
     "team": "CAR",
@@ -7609,6 +7839,7 @@ export const PLAYERS = [
   {
     "id": "wr-6771",
     "sourceId": "6771",
+    "gsisId": "00-0041029",
     "name": "Jordyn Tyson",
     "position": "WR",
     "team": "NO",
@@ -7642,6 +7873,7 @@ export const PLAYERS = [
   {
     "id": "wr-6304",
     "sourceId": "6304",
+    "gsisId": "00-0039410",
     "name": "Ryan Flournoy",
     "position": "WR",
     "team": "DAL",
@@ -7675,6 +7907,7 @@ export const PLAYERS = [
   {
     "id": "rb-5337",
     "sourceId": "5337",
+    "gsisId": "00-0037197",
     "name": "Isiah Pacheco",
     "position": "RB",
     "team": "DET",
@@ -7708,6 +7941,7 @@ export const PLAYERS = [
   {
     "id": "wr-6790",
     "sourceId": "6790",
+    "gsisId": "00-0041523",
     "name": "Caleb Douglas",
     "position": "WR",
     "team": "MIA",
@@ -7741,6 +7975,7 @@ export const PLAYERS = [
   {
     "id": "wr-6775",
     "sourceId": "6775",
+    "gsisId": "00-0041511",
     "name": "Omar Cooper Jr.",
     "position": "WR",
     "team": "NYJ",
@@ -7774,6 +8009,7 @@ export const PLAYERS = [
   {
     "id": "rb-3453",
     "sourceId": "3453",
+    "gsisId": "00-0035537",
     "name": "Ty Johnson",
     "position": "RB",
     "team": "BUF",
@@ -7807,6 +8043,7 @@ export const PLAYERS = [
   {
     "id": "wr-6787",
     "sourceId": "6787",
+    "gsisId": "00-0040870",
     "name": "Ja'Kobi Lane",
     "position": "WR",
     "team": "BAL",
@@ -7840,6 +8077,7 @@ export const PLAYERS = [
   {
     "id": "dst-1306",
     "sourceId": "1306",
+    "gsisId": null,
     "name": "Cincinnati Defense",
     "position": "DST",
     "team": "CIN",
@@ -7873,6 +8111,7 @@ export const PLAYERS = [
   {
     "id": "wr-3437",
     "sourceId": "3437",
+    "gsisId": "00-0035535",
     "name": "Darius Slayton",
     "position": "WR",
     "team": "NYG",
@@ -7906,6 +8145,7 @@ export const PLAYERS = [
   {
     "id": "rb-2470",
     "sourceId": "2470",
+    "gsisId": "00-0033553",
     "name": "James Conner",
     "position": "RB",
     "team": "ARI",
@@ -7939,6 +8179,7 @@ export const PLAYERS = [
   {
     "id": "qb-1980",
     "sourceId": "1980",
+    "gsisId": "00-0030565",
     "name": "Geno Smith",
     "position": "QB",
     "team": "NYJ",
@@ -7972,6 +8213,7 @@ export const PLAYERS = [
   {
     "id": "wr-5711",
     "sourceId": "5711",
+    "gsisId": "00-0038977",
     "name": "Tank Dell",
     "position": "WR",
     "team": "HOU",
@@ -8005,6 +8247,7 @@ export const PLAYERS = [
   {
     "id": "te-5985",
     "sourceId": "5985",
+    "gsisId": "00-0038935",
     "name": "Brenton Strange",
     "position": "TE",
     "team": "JAX",
@@ -8038,6 +8281,7 @@ export const PLAYERS = [
   {
     "id": "rb-6815",
     "sourceId": "6815",
+    "gsisId": "00-0040886",
     "name": "Nicholas Singleton",
     "position": "RB",
     "team": "TEN",
@@ -8071,6 +8315,7 @@ export const PLAYERS = [
   {
     "id": "te-5277",
     "sourceId": "5277",
+    "gsisId": "00-0037252",
     "name": "Greg Dulcich",
     "position": "TE",
     "team": "MIA",
@@ -8104,6 +8349,7 @@ export const PLAYERS = [
   {
     "id": "dst-1329",
     "sourceId": "1329",
+    "gsisId": null,
     "name": "Tampa Bay Defense",
     "position": "DST",
     "team": "TB",
@@ -8137,6 +8383,7 @@ export const PLAYERS = [
   {
     "id": "dst-1330",
     "sourceId": "1330",
+    "gsisId": null,
     "name": "Tennessee Defense",
     "position": "DST",
     "team": "TEN",
@@ -8170,6 +8417,7 @@ export const PLAYERS = [
   {
     "id": "wr-6563",
     "sourceId": "6563",
+    "gsisId": "00-0040718",
     "name": "Travis Hunter",
     "position": "WR",
     "team": "JAX",
@@ -8203,6 +8451,7 @@ export const PLAYERS = [
   {
     "id": "wr-6213",
     "sourceId": "6213",
+    "gsisId": "00-0039342",
     "name": "Xavier Legette",
     "position": "WR",
     "team": "CAR",
@@ -8236,6 +8485,7 @@ export const PLAYERS = [
   {
     "id": "dst-1315",
     "sourceId": "1315",
+    "gsisId": null,
     "name": "Kansas City Defense",
     "position": "DST",
     "team": "KC",
@@ -8269,6 +8519,7 @@ export const PLAYERS = [
   {
     "id": "te-6773",
     "sourceId": "6773",
+    "gsisId": "00-0041032",
     "name": "Kenyon Sadiq",
     "position": "TE",
     "team": "NYJ",
@@ -8302,6 +8553,7 @@ export const PLAYERS = [
   {
     "id": "wr-6189",
     "sourceId": "6189",
+    "gsisId": "00-0039901",
     "name": "Keon Coleman",
     "position": "WR",
     "team": "BUF",
@@ -8335,6 +8587,7 @@ export const PLAYERS = [
   {
     "id": "qb-2444",
     "sourceId": "2444",
+    "gsisId": "00-0033537",
     "name": "Deshaun Watson",
     "position": "QB",
     "team": "CLE",
@@ -8368,6 +8621,7 @@ export const PLAYERS = [
   {
     "id": "te-6545",
     "sourceId": "6545",
+    "gsisId": "00-0040737",
     "name": "Terrance Ferguson",
     "position": "TE",
     "team": "LAR",
@@ -8401,6 +8655,7 @@ export const PLAYERS = [
   {
     "id": "wr-6522",
     "sourceId": "6522",
+    "gsisId": "00-0040138",
     "name": "Jaylin Noel",
     "position": "WR",
     "team": "HOU",
@@ -8434,6 +8689,7 @@ export const PLAYERS = [
   {
     "id": "dst-1319",
     "sourceId": "1319",
+    "gsisId": null,
     "name": "New Orleans Defense",
     "position": "DST",
     "team": "NO",
@@ -8467,6 +8723,7 @@ export const PLAYERS = [
   {
     "id": "wr-6794",
     "sourceId": "6794",
+    "gsisId": "00-0041525",
     "name": "Chris Bell",
     "position": "WR",
     "team": "MIA",
@@ -8500,6 +8757,7 @@ export const PLAYERS = [
   {
     "id": "rb-6557",
     "sourceId": "6557",
+    "gsisId": "00-0040586",
     "name": "Jaydon Blue",
     "position": "RB",
     "team": "PHI",
@@ -8533,6 +8791,7 @@ export const PLAYERS = [
   {
     "id": "te-6290",
     "sourceId": "6290",
+    "gsisId": "00-0039793",
     "name": "AJ Barner",
     "position": "TE",
     "team": "SEA",
@@ -8566,6 +8825,7 @@ export const PLAYERS = [
   {
     "id": "wr-6525",
     "sourceId": "6525",
+    "gsisId": "00-0040727",
     "name": "Tre' Harris",
     "position": "WR",
     "team": "LAC",
@@ -8599,6 +8859,7 @@ export const PLAYERS = [
   {
     "id": "rb-5928",
     "sourceId": "5928",
+    "gsisId": "00-0037563",
     "name": "Malik Davis",
     "position": "RB",
     "team": "DAL",
@@ -8632,6 +8893,7 @@ export const PLAYERS = [
   {
     "id": "wr-6192",
     "sourceId": "6192",
+    "gsisId": "00-0039868",
     "name": "Troy Franklin",
     "position": "WR",
     "team": "DEN",
@@ -8665,6 +8927,7 @@ export const PLAYERS = [
   {
     "id": "wr-5708",
     "sourceId": "5708",
+    "gsisId": "00-0038618",
     "name": "Xavier Hutchinson",
     "position": "WR",
     "team": "HOU",
@@ -8698,6 +8961,7 @@ export const PLAYERS = [
   {
     "id": "dst-1331",
     "sourceId": "1331",
+    "gsisId": null,
     "name": "Washington Defense",
     "position": "DST",
     "team": "WAS",

@@ -166,6 +166,9 @@ held-out historical drafts under predeclared metrics.
     Keep the parent item open until survival is calibrated rather than presented as
     a normal-curve approximation.
 - One-click draft event entry plus Yahoo refresh/reconciliation.
+  - [x] Add a free, no-token, once-daily Sleeper injury/roster-status refresh with
+    local caching, complete current skill-player reconciliation, visible source age,
+    and no automatic rank mutation. Yahoo draft-result reconciliation remains open.
 - Draft-day health panel for data age, API state, and local fallback readiness.
 - Precompute expensive simulations so a new recommendation arrives within seconds.
 

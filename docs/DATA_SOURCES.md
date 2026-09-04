@@ -1,8 +1,8 @@
 # Data source and adapter plan
 
 Status: selected architecture for the 2026 Yahoo PPR draft assistant. The browser
-preview still uses synthetic players; this document defines the path to attributable,
-refreshable production data.
+uses the pinned production player snapshot plus a separately labeled live status
+overlay; this document defines their provenance and update boundaries.
 
 ## Decision
 
@@ -14,6 +14,7 @@ context this optimizer needs. The production dataset will join these source role
 | League and draft state | [Yahoo Fantasy Sports API](https://sports.yahoo.com/developer/docs/) | League settings, teams, eligible players, draft results, and Yahoo draft analysis | OAuth 2.0 and [application review](https://sports.yahoo.com/developer/access/) are required |
 | Primary market price | Yahoo draft analysis when access is approved | Platform-specific average pick, average round, and percent drafted | Live-draft refresh latency must be measured before relying on it |
 | Immediate and fallback market price | [Fantasy Football Calculator](https://help.fantasyfootballcalculator.com/article/42-adp-rest-api) | Daily human-mock ADP, pick range, dispersion, and sample size | Not Yahoo-specific and not a projection; attribution is requested |
+| Live injury/status overlay | [Sleeper read-only API](https://docs.sleeper.com/#players) | Injury status/body part/notes, practice participation, roster status, and per-player news-update time | Free for non-commercial use and no token required; full player map must be cached and requested at most once daily; verify consequential changes in Yahoo |
 | Measured NFL environment | [nflverse](https://github.com/nflverse/nflverse-data) and FTN charting | Play-by-play, formation/concept tendencies, target allocation, current rosters/depth, schedules, and IDs | FTN charting begins in 2022; live injuries and participation are not dependable here |
 | 2026 staff and scheme evidence | Official team staff pages and press conferences, then reputable reporting | HC/OC/play caller, every offensive position coach, continuity, stated system changes, and camp evidence | Living pages need access dates; team optimism is not evidence of effectiveness |
 | Historical audit | [Pro Football Reference](https://www.pro-football-reference.com/) | Team seasons, head coaches, listed coordinators, rosters, conventional totals, and gap checks | Coordinator labels do not prove actual play-calling authority; use as an audit, not the granular feature store |
@@ -28,6 +29,23 @@ can provide ECR/ADP fields and Yahoo IDs through DynastyProcess, subject to upst
 terms; those fields remain market/benchmark data rather than NFL-environment truth.
 
 ## Why each adapter exists
+
+### `SleeperLiveStatusOverlay` — implemented
+
+The owner-only browser can fetch Sleeper's full NFL player map on demand. Sleeper's
+official documentation says the read-only API is free for non-commercial use,
+requires no token, and exposes `injury_status`, `injury_start_date`, and
+`practice_participation`; it also directs clients to cache the roughly 5 MB player
+map and call it no more than once daily. The live endpoint was verified to permit
+browser access and additionally returns injury body part, notes, roster status, and
+`news_updated`.
+
+The browser caches one successful refresh locally for 20 hours, fails closed when
+fewer than 190 ranked skill players match, and currently matches all 216 by trimmed
+GSIS ID with normalized name/team/position fallback. The overlay displays warnings
+but never edits the frozen opportunity score or rank. Sleeper is a timely discovery
+source, not an individualized medical forecast or the final authority; verify any
+decision-changing alert in Yahoo during the draft.
 
 ### `YahooLeagueAdapter`
 

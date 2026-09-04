@@ -11,6 +11,7 @@ import {
   Check,
   Database,
   DraftingCompass,
+  RefreshCw,
   RotateCcw,
   Search,
   Settings2,
@@ -47,6 +48,7 @@ type SortMode = 'draft' | 'opportunity' | 'adp';
 type Player = {
   id: string;
   sourceId: string;
+  gsisId: string | null;
   name: string;
   position: Position;
   team: string;
@@ -75,6 +77,33 @@ type Player = {
 type Pick = { playerId: string; overall: number; teamIndex: number };
 type Weights = Record<ModeledPosition, Record<Metric, number>>;
 type RosterSlot = Position | 'FLEX' | 'BN';
+type InjuryAlert = {
+  status: string | null;
+  injuryStatus: string | null;
+  bodyPart: string | null;
+  notes: string | null;
+  practiceParticipation: string | null;
+  newsUpdated: number | null;
+};
+type InjuryCache = {
+  fetchedAt: number;
+  alerts: Record<string, InjuryAlert>;
+  matchedPlayers: number;
+};
+type SleeperPlayer = {
+  gsis_id?: string | null;
+  full_name?: string | null;
+  first_name?: string | null;
+  last_name?: string | null;
+  team?: string | null;
+  position?: string | null;
+  status?: string | null;
+  injury_status?: string | null;
+  injury_body_part?: string | null;
+  injury_notes?: string | null;
+  practice_participation?: string | null;
+  news_updated?: number | null;
+};
 
 const players = PLAYERS as unknown as Player[];
 const TEAM_LABELS = [
@@ -92,6 +121,8 @@ const TEAM_LABELS = [
   'Clock Managers',
 ];
 const STORAGE_KEY = 'fantasy-football-26:draft-room:v2';
+const INJURY_CACHE_KEY = 'fantasy-football-26:sleeper-injuries:v1';
+const INJURY_REFRESH_MS = 20 * 60 * 60 * 1000;
 const DEFAULT_BENCH_COUNT = 6;
 const STARTER_SLOTS: RosterSlot[] = [
   'QB',
@@ -162,20 +193,92 @@ function normalCdf(value: number) {
   const erf =
     sign *
     (1 -
-      (((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t -
-        0.284496736) *
+      ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) *
         t +
         0.254829592) *
-        t) *
+        t *
         Math.exp(-x * x));
   return 0.5 * (1 + erf);
 }
 
 function chanceLasts(player: Player, targetPick: number) {
   const deviation = Math.max(1, player.adpStdev);
-  const survival =
-    1 - normalCdf((targetPick - 0.5 - player.adp) / deviation);
+  const survival = 1 - normalCdf((targetPick - 0.5 - player.adp) / deviation);
   return Math.round(Math.max(0.01, Math.min(0.99, survival)) * 100);
+}
+
+function normalizePlayerName(value: string) {
+  return value
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/\b(jr|sr|ii|iii|iv)\b/g, '')
+    .replace(/[^a-z0-9]/g, '');
+}
+
+function normalizeTeam(value: string | null | undefined) {
+  if (value === 'JAC') return 'JAX';
+  if (value === 'LA') return 'LAR';
+  return value ?? '';
+}
+
+function sleeperIdentity(player: SleeperPlayer) {
+  const fullName =
+    player.full_name ??
+    `${player.first_name ?? ''} ${player.last_name ?? ''}`.trim();
+  return `${normalizePlayerName(fullName)}|${normalizeTeam(player.team)}|${player.position ?? ''}`;
+}
+
+function buildInjuryCache(payload: Record<string, SleeperPlayer>): InjuryCache {
+  const sleeperPlayers = Object.values(payload);
+  const byGsis = new Map(
+    sleeperPlayers
+      .filter((player) => player.gsis_id?.trim())
+      .map((player) => [player.gsis_id!.trim(), player]),
+  );
+  const byIdentity = new Map<string, SleeperPlayer[]>();
+  sleeperPlayers.forEach((player) => {
+    const key = sleeperIdentity(player);
+    byIdentity.set(key, [...(byIdentity.get(key) ?? []), player]);
+  });
+
+  const alerts: Record<string, InjuryAlert> = {};
+  let matchedPlayers = 0;
+  players.forEach((player) => {
+    if (player.position === 'K' || player.position === 'DST') return;
+    const identity = `${normalizePlayerName(player.name)}|${player.team}|${player.position}`;
+    const identityMatches = byIdentity.get(identity) ?? [];
+    const match =
+      (player.gsisId ? byGsis.get(player.gsisId) : undefined) ??
+      (identityMatches.length === 1 ? identityMatches[0] : undefined);
+    if (!match) return;
+    matchedPlayers += 1;
+    const hasAlert =
+      Boolean(match.injury_status) ||
+      Boolean(match.practice_participation) ||
+      (match.status != null && match.status !== 'Active');
+    if (!hasAlert) return;
+    alerts[player.id] = {
+      status: match.status ?? null,
+      injuryStatus: match.injury_status ?? null,
+      bodyPart: match.injury_body_part ?? null,
+      notes: match.injury_notes ?? null,
+      practiceParticipation: match.practice_participation ?? null,
+      newsUpdated: match.news_updated ?? null,
+    };
+  });
+  return { fetchedAt: Date.now(), alerts, matchedPlayers };
+}
+
+function injurySummary(alert: InjuryAlert) {
+  return [
+    alert.injuryStatus,
+    alert.bodyPart,
+    alert.practiceParticipation,
+    alert.notes,
+  ]
+    .filter(Boolean)
+    .join(' · ');
 }
 
 function scorePlayer(
@@ -335,6 +438,10 @@ export default function Home() {
   const [pendingBenchCount, setPendingBenchCount] =
     useState(DEFAULT_BENCH_COUNT);
   const [hydrated, setHydrated] = useState(false);
+  const [injuryCache, setInjuryCache] = useState<InjuryCache | null>(null);
+  const [injuryCacheIsFresh, setInjuryCacheIsFresh] = useState(false);
+  const [injuryLoading, setInjuryLoading] = useState(false);
+  const [injuryError, setInjuryError] = useState<string | null>(null);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -391,6 +498,55 @@ export default function Home() {
       /* Usable without storage. */
     }
   }, [benchCount, draftSlot, hydrated, picks, teamCount, weights]);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      try {
+        const saved = window.localStorage.getItem(INJURY_CACHE_KEY);
+        if (saved) {
+          const cache = JSON.parse(saved) as InjuryCache;
+          setInjuryCache(cache);
+          setInjuryCacheIsFresh(
+            Date.now() - cache.fetchedAt < INJURY_REFRESH_MS,
+          );
+        }
+      } catch {
+        window.localStorage.removeItem(INJURY_CACHE_KEY);
+      }
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  const refreshInjuries = async () => {
+    if (injuryCache && Date.now() - injuryCache.fetchedAt < INJURY_REFRESH_MS) {
+      setInjuryError(
+        'Sleeper permits this full feed once daily; using today’s cached refresh.',
+      );
+      return;
+    }
+    setInjuryLoading(true);
+    setInjuryError(null);
+    try {
+      const response = await fetch('https://api.sleeper.app/v1/players/nfl');
+      if (!response.ok)
+        throw new Error(`Sleeper returned HTTP ${response.status}`);
+      const payload = (await response.json()) as Record<string, SleeperPlayer>;
+      const cache = buildInjuryCache(payload);
+      if (cache.matchedPlayers < 190)
+        throw new Error(
+          `Only ${cache.matchedPlayers} ranked players matched; keeping prior data`,
+        );
+      window.localStorage.setItem(INJURY_CACHE_KEY, JSON.stringify(cache));
+      setInjuryCache(cache);
+      setInjuryCacheIsFresh(true);
+    } catch (error) {
+      setInjuryError(
+        error instanceof Error ? error.message : 'Injury refresh failed',
+      );
+    } finally {
+      setInjuryLoading(false);
+    }
+  };
 
   const myTeamIndex = draftSlot - 1;
   const teamNames = useMemo(
@@ -538,7 +694,9 @@ export default function Home() {
           myPlayers.length,
       )
     : '—';
-
+  const injuryAlertCount = injuryCache
+    ? Object.keys(injuryCache.alerts).length
+    : 0;
   return (
     <main className="draft-shell">
       <header className="app-header">
@@ -566,6 +724,30 @@ export default function Home() {
           </div>
         </div>
         <div className="header-actions">
+          <Button
+            variant="outline"
+            size="sm"
+            className={
+              injuryAlertCount ? 'injury-refresh has-alerts' : 'injury-refresh'
+            }
+            onClick={refreshInjuries}
+            disabled={injuryLoading || injuryCacheIsFresh}
+            title={
+              injuryError ??
+              (injuryCache
+                ? `${injuryCache.matchedPlayers} ranked skill players matched · refreshed ${new Date(injuryCache.fetchedAt).toLocaleString()}`
+                : 'Pull today’s free Sleeper injury and roster-status feed')
+            }
+          >
+            <RefreshCw className={injuryLoading ? 'is-spinning' : ''} />
+            <span>
+              {injuryLoading
+                ? 'Refreshing'
+                : injuryCacheIsFresh
+                  ? `${injuryAlertCount} injury flags`
+                  : 'Refresh injuries'}
+            </span>
+          </Button>
           <Dialog>
             <DialogTrigger
               render={
@@ -614,6 +796,16 @@ export default function Home() {
                     Cut off {RANKING_METADATA.freezeCutoff}. Fingerprint{' '}
                     {RANKING_METADATA.freezeFingerprint.slice(0, 12)}… verifies
                     the underlying artifact bytes.
+                  </span>
+                </div>
+                <div>
+                  <Badge variant="secondary">Live</Badge>
+                  <strong>Sleeper player feed</strong>
+                  <span>
+                    Free, no-token, browser-readable injury, body-part,
+                    practice, roster-status, and news-update fields. Refreshed
+                    at most once daily and used only as a warning overlay;
+                    verify consequential changes in Yahoo.
                   </span>
                 </div>
               </div>
@@ -885,12 +1077,15 @@ export default function Home() {
             ))}
             <span className="rank-note">
               Next pick {nextMyPick} · top {available[0]?.player.name ?? '—'} ·{' '}
-              {available[0]
-                ? chanceLasts(available[0].player, nextMyPick)
-                : 0}
-              % lasts
+              {available[0] ? chanceLasts(available[0].player, nextMyPick) : 0}%
+              lasts
             </span>
           </div>
+          {injuryError && (
+            <div className="injury-notice" role="alert">
+              {injuryError}
+            </div>
+          )}
           <div className="player-table-header">
             <span>Rank / player</span>
             <span>Opp.</span>
@@ -900,70 +1095,87 @@ export default function Home() {
           </div>
           <ScrollArea className="player-scroll">
             <div className="player-list">
-              {available.map(({ player, score }, index) => (
-                <article
-                  className={
-                    !player.currentActive
-                      ? 'player-row is-inactive'
-                      : 'player-row'
-                  }
-                  key={player.id}
-                >
-                  <div className="player-identity">
-                    <span className="rank-number">{index + 1}</span>
-                    <span
-                      className={`position-pill ${positionClass[player.position]}`}
-                    >
-                      {player.position}
-                    </span>
-                    <div>
-                      <strong>{player.name}</strong>
+              {available.map(({ player, score }, index) => {
+                const liveAlert = injuryCache?.alerts[player.id];
+                return (
+                  <article
+                    className={
+                      liveAlert
+                        ? 'player-row has-live-injury'
+                        : !player.currentActive
+                          ? 'player-row is-inactive'
+                          : 'player-row'
+                    }
+                    key={player.id}
+                  >
+                    <div className="player-identity">
+                      <span className="rank-number">{index + 1}</span>
+                      <span
+                        className={`position-pill ${positionClass[player.position]}`}
+                      >
+                        {player.position}
+                      </span>
+                      <div>
+                        <strong>{player.name}</strong>
+                        <small>
+                          {player.team} · Bye {player.bye} · {player.position}
+                          {player.positionRank} · Tier {player.tier}
+                        </small>
+                        {liveAlert && (
+                          <span
+                            className="injury-pill"
+                            title={
+                              liveAlert.newsUpdated
+                                ? `Sleeper news updated ${new Date(liveAlert.newsUpdated).toLocaleString()}`
+                                : 'Sleeper live status'
+                            }
+                          >
+                            {injurySummary(liveAlert)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="stat-cell">
+                      <strong>
+                        {player.coverage === 'modeled'
+                          ? player.metrics.opportunity.toFixed(0)
+                          : '—'}
+                      </strong>
                       <small>
-                        {player.team} · Bye {player.bye} · {player.position}
-                        {player.positionRank} · Tier {player.tier}
+                        {player.coverage === 'modeled' ? 'index' : 'market'}
                       </small>
                     </div>
-                  </div>
-                  <div className="stat-cell">
-                    <strong>
-                      {player.coverage === 'modeled'
-                        ? player.metrics.opportunity.toFixed(0)
-                        : '—'}
-                    </strong>
-                    <small>
-                      {player.coverage === 'modeled' ? 'index' : 'market'}
-                    </small>
-                  </div>
-                  <div className="stat-cell">
-                    <strong>{player.adp.toFixed(1)}</strong>
-                    <small
-                      title={`Observed pick range ${player.marketHighPick}-${player.marketLowPick} across ${player.timesDrafted} drafts`}
+                    <div className="stat-cell">
+                      <strong>{player.adp.toFixed(1)}</strong>
+                      <small
+                        title={`Observed pick range ${player.marketHighPick}-${player.marketLowPick} across ${player.timesDrafted} drafts`}
+                      >
+                        {chanceLasts(player, nextMyPick)}% lasts ·{' '}
+                        {player.rankDelta > 0
+                          ? `↑${player.rankDelta}`
+                          : player.rankDelta < 0
+                            ? `↓${Math.abs(player.rankDelta)}`
+                            : 'even'}
+                      </small>
+                    </div>
+                    <div className="model-cell">
+                      <strong>{score.toFixed(1)}</strong>
+                      <span title={player.context}>
+                        {!player.currentActive
+                          ? `${player.status} · ${player.context}`
+                          : player.context}
+                      </span>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant={currentOwnerIsMine ? 'default' : 'outline'}
+                      onClick={() => draft(player.id)}
                     >
-                      {chanceLasts(player, nextMyPick)}% lasts ·{' '}
-                      {player.rankDelta > 0
-                        ? `↑${player.rankDelta}`
-                        : player.rankDelta < 0
-                          ? `↓${Math.abs(player.rankDelta)}`
-                          : 'even'}
-                    </small>
-                  </div>
-                  <div className="model-cell">
-                    <strong>{score.toFixed(1)}</strong>
-                    <span title={player.context}>
-                      {!player.currentActive
-                        ? `${player.status} · ${player.context}`
-                        : player.context}
-                    </span>
-                  </div>
-                  <Button
-                    size="sm"
-                    variant={currentOwnerIsMine ? 'default' : 'outline'}
-                    onClick={() => draft(player.id)}
-                  >
-                    {currentOwnerIsMine ? 'Draft' : 'Mark gone'}
-                  </Button>
-                </article>
-              ))}
+                      {currentOwnerIsMine ? 'Draft' : 'Mark gone'}
+                    </Button>
+                  </article>
+                );
+              })}
             </div>
           </ScrollArea>
         </section>
