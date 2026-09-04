@@ -1,0 +1,296 @@
+{
+  "schema_version": "1.0.0",
+  "as_of": "2026-09-02",
+  "methodology": {
+    "scope": "Current-season broad scheme identity and continuity evidence for every team whose primary caller changed after 2025.",
+    "scheme_identity_score": "Rubric strength for identifying the broad 2026 system family from direct statements, prior primary-caller tape, and clearly stated lineage.",
+    "destination_scheme_continuity": "Rubric estimate of how much of the destination team's 2025 offensive system should remain; it is not a success forecast.",
+    "signal_cap": "A structured metric direction may move the preliminary mean by no more than half of that metric's predeclared tolerance.",
+    "warning": "Scores are transparent research judgments, not calibrated probabilities."
+  },
+  "teams": [
+    {
+      "team": "ARI",
+      "play_caller": "Mike LaFleur",
+      "scheme_family": "McVay-Shanahan West Coast",
+      "scheme_identity_score": 0.9,
+      "destination_scheme_continuity": 0.45,
+      "rationale": "LaFleur explicitly said he would call plays after two prior full-time Jets seasons; Arizona's official reporting says the build will draw from both the McVay and Shanahan systems. The caller and much of the staff are new, so exact continuity with 2025 Arizona is only partial.",
+      "source_urls": [
+        "https://www.azcardinals.com/news/mike-lafleur-felt-right-in-taking-cardinals-coaching-job-2026"
+      ],
+      "metric_signals": {
+        "motion_rate": 0.4,
+        "play_action_rate": 0.3
+      }
+    },
+    {
+      "team": "ATL",
+      "play_caller": "Tommy Rees",
+      "scheme_family": "Stefanski-Kubiak wide-zone and play-action blend",
+      "scheme_identity_score": 0.95,
+      "destination_scheme_continuity": 0.35,
+      "rationale": "Rees and Stefanski directly identified under-center play action as a core belief and said Atlanta would retain its wide-zone foundation while adding gap concepts. Rees has only nine NFL games as a caller, so sequencing and exact rates remain uncertain.",
+      "source_urls": [
+        "https://www.atlantafalcons.com/news/coordinators-tommy-rees-jeff-ulbrich-craig-aukerman",
+        "https://www.atlantafalcons.com/news/kevin-stefanski-tommy-rees-run-game-bijan-robinson"
+      ],
+      "metric_signals": {
+        "under_center_rate": 1.0,
+        "play_action_rate": 0.8,
+        "shotgun_rate": -0.6,
+        "pistol_rate": -0.5,
+        "pass_rate": -0.3,
+        "multi_back_rate": 0.3
+      }
+    },
+    {
+      "team": "BAL",
+      "play_caller": "Declan Doyle",
+      "scheme_family": "new multiple offense with Payton and Ben Johnson influences",
+      "scheme_identity_score": 0.55,
+      "destination_scheme_continuity": 0.35,
+      "rationale": "Doyle is a first-time caller and official team research describes him as an enigma, with Sean Payton and Ben Johnson experience offering only directional clues. His stated physical and explosive principles do not identify exact formations or rates.",
+      "source_urls": [
+        "https://www.baltimoreravens.com/news/declan-doyle-wrinkles-ravens-offense-super-bowl-window-lamar-jackson-todd-monken-browns-john-harbaugh",
+        "https://www.baltimoreravens.com/news/declan-doyle-ravens-offense-vision-lamar-jackson-play-caller"
+      ],
+      "metric_signals": {
+        "motion_rate": 0.4
+      }
+    },
+    {
+      "team": "CAR",
+      "play_caller": "Brad Idzik",
+      "scheme_family": "Dave Canales-Brad Idzik offense",
+      "scheme_identity_score": 0.95,
+      "destination_scheme_continuity": 0.95,
+      "rationale": "Idzik is a first-time regular-season caller, but he has coordinated Carolina's offense with Canales for two years and their seven-year working relationship continues. Players and Canales describe the handoff as seamless with the same concepts plus wrinkles.",
+      "source_urls": [
+        "https://www.panthers.com/news/dave-canales-and-brad-idzik-fully-step-into-their-new-roles-for-the-panthers-training-camp",
+        "https://www.panthers.com/news/dave-canales-offensive-coordinator-brad-idzik-to-call-plays-in-2026"
+      ],
+      "metric_signals": {}
+    },
+    {
+      "team": "CLE",
+      "play_caller": "Todd Monken",
+      "scheme_family": "Todd Monken multiple spread and vertical offense",
+      "scheme_identity_score": 0.95,
+      "destination_scheme_continuity": 0.25,
+      "rationale": "Monken brings three immediately preceding full Baltimore calling seasons, but Cleveland built a new playbook and replaced the head coach, coordinator, and most offensive responsibilities. His own recent caller fingerprint is more informative than Cleveland's 2025 rates.",
+      "source_urls": [
+        "https://www.clevelandbrowns.com/news/wideouts-part-one-the-route-ahead",
+        "https://www.espn.com/nfl/story/_/id/46137832/nfl-playcallers-32-teams-mike-mcdaniel-sean-mcvay-brian-schottenheimer"
+      ],
+      "metric_signals": {}
+    },
+    {
+      "team": "DEN",
+      "play_caller": "Davis Webb",
+      "scheme_family": "Sean Payton West Coast offense with Webb adjustments",
+      "scheme_identity_score": 0.95,
+      "destination_scheme_continuity": 0.9,
+      "rationale": "Webb is a first-time regular-season caller promoted from the same staff. He and Payton explicitly describe it as the same Payton offense for the most part, with small adjustments and continuing Payton involvement.",
+      "source_urls": [
+        "https://www.denverbroncos.com/news/davis-webb-blessed-and-thankful-to-have-hc-sean-payton-as-resource-entering-first-season-as-broncos-oc",
+        "https://www.denverbroncos.com/news/i-wouldn-t-do-it-if-i-didn-t-think-it-was-going-to-help-our-team-win-hc-sean-payton-announces-oc-davis-webb-to-call-plays-for-broncos-offense"
+      ],
+      "metric_signals": {}
+    },
+    {
+      "team": "DET",
+      "play_caller": "Drew Petzing",
+      "scheme_family": "Petzing wide-zone and play-action concepts blended with Detroit staples",
+      "scheme_identity_score": 0.9,
+      "destination_scheme_continuity": 0.65,
+      "rationale": "Petzing brings three Arizona calling seasons, while he and Jared Goff say the installation intentionally mixes Petzing's concepts with successful Detroit staples rather than replacing the language wholesale.",
+      "source_urls": [
+        "https://www.detroitlions.com/news/5-takeaways-from-petzing-s-media-session-goff-sewell-stbrown-williams",
+        "https://www.detroitlions.com/news/goff-on-working-with-new-oc-petzing-it-s-been-awesome"
+      ],
+      "metric_signals": {}
+    },
+    {
+      "team": "LAC",
+      "play_caller": "Mike McDaniel",
+      "scheme_family": "McDaniel-Shanahan motion and wide-zone offense",
+      "scheme_identity_score": 0.95,
+      "destination_scheme_continuity": 0.25,
+      "rationale": "McDaniel has four recent Miami calling seasons and is installing his timing and space principles around Justin Herbert. The change from Greg Roman is substantial, while Jim Harbaugh and incumbent personnel constrain exact replication of Miami rates.",
+      "source_urls": [
+        "https://www.chargers.com/news/justin-herbert-footwork-mike-mcdaniel",
+        "https://www.chargers.com/video/how-mike-mcdaniel-will-build-justin-herberts-offense"
+      ],
+      "metric_signals": {
+        "motion_rate": 0.7,
+        "play_action_rate": 0.4
+      }
+    },
+    {
+      "team": "LV",
+      "play_caller": "Klint Kubiak",
+      "scheme_family": "Kubiak-Shanahan wide-zone and play-action offense",
+      "scheme_identity_score": 0.98,
+      "destination_scheme_continuity": 0.15,
+      "rationale": "Kubiak is the head coach and verified caller after recent calling seasons with Minnesota, New Orleans, and Seattle. Raiders reporting explicitly identifies the new run system as wide zone; almost the entire 2025 offensive staff changed.",
+      "source_urls": [
+        "https://www.raiders.com/news/takeaways-from-brandon-hunt-and-brandon-yeargan-s-day-3-post-draft-press-conference",
+        "https://www.raiders.com/news/dj-glaze-looks-to-level-up-in-klint-kubiak-new-offense-2026-otas"
+      ],
+      "metric_signals": {
+        "under_center_rate": 0.6,
+        "play_action_rate": 0.6,
+        "motion_rate": 0.5,
+        "multi_back_rate": 0.3
+      }
+    },
+    {
+      "team": "MIA",
+      "play_caller": "Bobby Slowik",
+      "scheme_family": "Slowik-Shanahan offense retaining Miami motion concepts",
+      "scheme_identity_score": 0.9,
+      "destination_scheme_continuity": 0.75,
+      "rationale": "Slowik called Houston's offense in 2023-24, joined Miami's staff in 2025, and explicitly says Miami will retain useful motion concepts while emphasizing balance and fitting the scheme to current personnel.",
+      "source_urls": [
+        "https://www.miamidolphins.com/news/transcript-oc-bobby-slowik-press-conference-may-12",
+        "https://www.miamidolphins.com/news/transcript-oc-bobby-slowik-press-conference-august-4"
+      ],
+      "metric_signals": {
+        "motion_rate": 0.7,
+        "pass_rate": -0.3,
+        "neutral_early_down_pass_rate": -0.3
+      }
+    },
+    {
+      "team": "NYG",
+      "play_caller": "Matt Nagy",
+      "scheme_family": "Chiefs West Coast passing blend with Greg Roman run influence",
+      "scheme_identity_score": 0.75,
+      "destination_scheme_continuity": 0.2,
+      "rationale": "The Giants describe an intentionally blended system: Nagy's Andy Reid background in the passing game, Greg Roman's run concepts, and Brian Callahan's input. The blend and lack of a clean recent Nagy full-season anchor widen exact-rate uncertainty.",
+      "source_urls": [
+        "https://www.giants.com/news/2026-nfl-season-jaxson-dart-matt-nagy-brian-callahan-greg-roman-cam-skattebo-john-harbaugh",
+        "https://www.giants.com/news/cover-3-what-we-re-learning-about-john-harbaugh-and-his-staff"
+      ],
+      "metric_signals": {
+        "pass_rate": -0.5,
+        "neutral_early_down_pass_rate": -0.4,
+        "multi_back_rate": 0.6,
+        "play_action_rate": 0.3
+      }
+    },
+    {
+      "team": "NYJ",
+      "play_caller": "Frank Reich",
+      "scheme_family": "Reich traditional West Coast and play-action offense",
+      "scheme_identity_score": 0.85,
+      "destination_scheme_continuity": 0.25,
+      "rationale": "Reich is a veteran caller with a clean 2021 Indianapolis anchor and older history. Jets reporting expects traditional West Coast concepts, a committed run game, and substantial tight-end usage, but this is a new staff and roster context.",
+      "source_urls": [
+        "https://www.newyorkjets.com/news/what-do-you-like-most-about-the-jets-new-coordinator-hires-02-06-2026",
+        "https://www.newyorkjets.com/news/frank-reich-sees-talent-across-jets-offense-08-07-2026"
+      ],
+      "metric_signals": {
+        "pass_rate": -0.3,
+        "play_action_rate": 0.3,
+        "te_target_share": 0.3
+      }
+    },
+    {
+      "team": "PHI",
+      "play_caller": "Sean Mannion",
+      "scheme_family": "LaFleur-Shanahan West Coast blended with Eagles run and RPO concepts",
+      "scheme_identity_score": 0.8,
+      "destination_scheme_continuity": 0.55,
+      "rationale": "Mannion is a first-time caller arriving from Green Bay. The Eagles explicitly describe more motion, possible outside zone and play action, while retaining successful Sirianni-era concepts and fitting the offense to Jalen Hurts.",
+      "source_urls": [
+        "https://www.philadelphiaeagles.com/news/eagles-2026-offense-sean-mannion-jalen-hurts-dave-spadaro",
+        "https://www.philadelphiaeagles.com/news/eagles-players-embrace-sean-mannion-and-the-new-look-offense"
+      ],
+      "metric_signals": {
+        "motion_rate": 1.0,
+        "play_action_rate": 0.6,
+        "under_center_rate": 0.3
+      }
+    },
+    {
+      "team": "PIT",
+      "play_caller": "Mike McCarthy",
+      "scheme_family": "McCarthy West Coast offense adapted to quarterback and run game",
+      "scheme_identity_score": 0.95,
+      "destination_scheme_continuity": 0.15,
+      "rationale": "McCarthy directly identifies the West Coast tradition, quarterback timing, a run foundation, and action passes while emphasizing personnel adaptation. Pittsburgh replaced its head coach, caller, and most offensive staff responsibilities.",
+      "source_urls": [
+        "https://www.steelers.com/news/mccarthy-outlines-vision-for-offense-defense-in-pittsburgh",
+        "https://www.steelers.com/news/combine-notebook-mccarthy-s-brings-experience"
+      ],
+      "metric_signals": {
+        "play_action_rate": 0.4,
+        "pass_rate": -0.2
+      }
+    },
+    {
+      "team": "SEA",
+      "play_caller": "Brian Fleury",
+      "scheme_family": "retained Kubiak-Shanahan foundation with Fleury additions",
+      "scheme_identity_score": 0.9,
+      "destination_scheme_continuity": 0.9,
+      "rationale": "Fleury is a first-time NFL caller, but he and Mike Macdonald explicitly plan to preserve as much of Kubiak's 2025 foundation as possible. Fleury and Kubiak share Shanahan lineage, while Fleury also says he will add his own elements.",
+      "source_urls": [
+        "https://www.seahawks.com/news/seahawks-offensive-coordinator-brian-fleury-not-looking-for-huge-changes-but-to-maintain-what-made-seattle-s-offense-successful"
+      ],
+      "metric_signals": {}
+    },
+    {
+      "team": "TB",
+      "play_caller": "Zac Robinson",
+      "scheme_family": "McVay-derived motion and wide-zone offense",
+      "scheme_identity_score": 0.95,
+      "destination_scheme_continuity": 0.45,
+      "rationale": "Robinson brings two full Atlanta calling seasons and a McVay background. Tampa Bay reports new terminology, more wide zone, motion and condensed formations, with some retained gap and duo concepts from the incumbent roster's prior success.",
+      "source_urls": [
+        "https://www.buccaneers.com/news/zac-robinson-redesigned-offense-wide-zone-concepts-emeka-egbuka--td-bucs-blitz",
+        "https://www.buccaneers.com/news/buccaneers-offensive-preview-training-camp-2026"
+      ],
+      "metric_signals": {
+        "motion_rate": 0.7,
+        "play_action_rate": 0.4,
+        "under_center_rate": 0.3
+      }
+    },
+    {
+      "team": "TEN",
+      "play_caller": "Brian Daboll",
+      "scheme_family": "Daboll multiple spread offense adapted to Cam Ward",
+      "scheme_identity_score": 0.85,
+      "destination_scheme_continuity": 0.25,
+      "rationale": "Daboll has a clean 2021 Buffalo and 2024 Giants calling anchor plus extensive earlier experience. He explicitly says the Tennessee offense will be built collaboratively around Cam Ward's comfort, so the broad designer is known but the exact blend is new.",
+      "source_urls": [
+        "https://www.tennesseetitans.com/news/new-titans-oc-brian-daboll-excited-about-opportunity-with-the-right-people-in-tennessee-including-qb-cam-ward"
+      ],
+      "metric_signals": {}
+    },
+    {
+      "team": "WAS",
+      "play_caller": "David Blough",
+      "scheme_family": "O'Connell and Ben Johnson blend with retained Air Raid elements",
+      "scheme_identity_score": 0.8,
+      "destination_scheme_continuity": 0.35,
+      "rationale": "Blough is a first-time caller promoted from the quarterbacks room. Washington explicitly reports a major shift toward huddles, under-center snaps, play action and a more balanced run game, while retaining selected Air Raid elements and quarterback relationship continuity.",
+      "source_urls": [
+        "https://www.commanders.com/news/david-blough-builds-commanders-playbook",
+        "https://www.commanders.com/news/commanders-players-love-flexibility-in-new-offense"
+      ],
+      "metric_signals": {
+        "under_center_rate": 1.0,
+        "shotgun_rate": -0.8,
+        "no_huddle_rate": -1.0,
+        "play_action_rate": 0.8,
+        "pass_rate": -0.3,
+        "neutral_early_down_pass_rate": -0.3,
+        "motion_rate": 0.4
+      }
+    }
+  ]
+}

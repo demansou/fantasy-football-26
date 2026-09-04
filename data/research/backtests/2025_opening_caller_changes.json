@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0.0",
+  "as_of": "2026-09-03",
+  "target_season": 2025,
+  "max_supported_week_end": 8,
+  "methodology": {
+    "purpose": "Prevent Weeks 1-6 and Weeks 1-8 team styles from being attributed to an opening caller after an in-window handoff.",
+    "scope": "Complete through Week 8 for the 2025 target season. The unresolved Giants preseason assignment is handled separately as an all-window identity exclusion.",
+    "audit_protocol": "Start from the June 25 all-team preseason census; search every team and named caller for a handoff, firing, or reassignment through Week 8; verify positive hits with official-club reporting; use later all-team midseason reporting as a completeness cross-check.",
+    "rule": "Exclude the entire team-window when the replacement first called plays on or before the window end.",
+    "known_later_changes": "Cleveland's handoff to Tommy Rees began in Week 10 and Detroit's Dan Campbell takeover began after Week 8, so neither contaminates the requested windows."
+  },
+  "audit_sources": [
+    {
+      "purpose": "In-window Tennessee handoff",
+      "url": "https://www.tennesseetitans.com/news/titans-hc-brian-callahan-hands-off-play-calling-duties-to-qbs-coach-bo-hardegree"
+    },
+    {
+      "purpose": "Cleveland change began in Week 10, outside the supported windows",
+      "url": "https://www.clevelandbrowns.com/news/offensive-coordinator-tommy-rees-to-call-plays-for-the-browns-team-coverage"
+    },
+    {
+      "purpose": "Detroit change occurred after the supported windows",
+      "url": "https://www.detroitlions.com/news/notebook-campbell-calls-plays-in-lions-win-over-commanders"
+    },
+    {
+      "purpose": "All-team midseason completeness cross-check",
+      "url": "https://www.espn.com/nfl/story/_/id/46970963/nfl-offensive-coordinators-playcallers-josh-mcdaniels-dan-campbell"
+    }
+  ],
+  "changes": [
+    {
+      "team": "TEN",
+      "opening_caller": "Brian Callahan",
+      "replacement_caller": "Bo Hardegree",
+      "first_replacement_week": 4,
+      "reason": "The Titans officially transferred play-calling from Brian Callahan to Bo Hardegree after Week 3, with Hardegree first calling plays in Week 4. Neither Weeks 1-6 nor Weeks 1-8 is a clean opening-caller target.",
+      "source_url": "https://www.tennesseetitans.com/news/titans-hc-brian-callahan-hands-off-play-calling-duties-to-qbs-coach-bo-hardegree"
+    }
+  ]
+}

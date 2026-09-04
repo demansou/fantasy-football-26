@@ -15,3 +15,7 @@ secrets/
 # User-specific exports. Keep schemas and synthetic examples in Git instead.
 data/private/
 exports/
+
+# Reproducible source snapshots are generated locally and can accumulate quickly.
+data/raw/
+data/derived/

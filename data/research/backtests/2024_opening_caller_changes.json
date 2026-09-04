@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0.0",
+  "as_of": "2026-09-02",
+  "target_season": 2024,
+  "max_supported_week_end": 8,
+  "methodology": {
+    "purpose": "Prevent Weeks 1-6 and Weeks 1-8 team styles from being attributed to an opening caller after an in-window handoff.",
+    "scope": "Complete through Week 8 for the 2024 target season. This registry does not claim to enumerate changes after Week 8.",
+    "rule": "Exclude the entire team-window when the replacement first called plays on or before the window end."
+  },
+  "changes": [
+    {
+      "team": "NYJ",
+      "opening_caller": "Nathaniel Hackett",
+      "replacement_caller": "Todd Downing",
+      "first_replacement_week": 6,
+      "reason": "The Jets officially transferred play-calling from Nathaniel Hackett to Todd Downing before the Week 6 game, so neither Weeks 1-6 nor Weeks 1-8 is a clean opening-caller target.",
+      "source_url": "https://www.newyorkjets.com/news/todd-downing-takes-over-jets-play-calling-duties"
+    },
+    {
+      "team": "CLE",
+      "opening_caller": "Kevin Stefanski",
+      "replacement_caller": "Ken Dorsey",
+      "first_replacement_week": 8,
+      "reason": "The Browns officially transferred play-calling from Kevin Stefanski to Ken Dorsey for Week 8, so Weeks 1-8 is not a clean opening-caller target; Weeks 1-6 remains eligible.",
+      "source_url": "https://www.clevelandbrowns.com/news/ken-dorsey-discusses-calling-plays-for-the-browns"
+    }
+  ]
+}

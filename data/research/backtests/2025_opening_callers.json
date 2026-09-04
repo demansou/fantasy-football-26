@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0.0",
+  "season": 2025,
+  "as_of": "2026-09-03",
+  "temporal_use": "preseason_identity_evidence",
+  "forecast_evidence_cutoff": "2025-08-31",
+  "methodology": {
+    "purpose": "Supply only information published before the declared preseason cutoff for a time-correct 2025 caller-transition backtest.",
+    "source_scope": "The article explicitly says it covers all 32 offensive play callers heading into the 2025 season. Its rankings and opinions are not model inputs; only the caller identities in its headings are transcribed.",
+    "ambiguity_rule": "The Giants heading and text leave Brian Daboll versus Mike Kafka unresolved. Preserve both candidates and exclude the team from all scored windows instead of selecting the eventual caller with hindsight.",
+    "time_rule": "Every source used for caller identity must be published on or before August 31, 2025."
+  },
+  "sources": [
+    {
+      "id": "pfsn_playcaller_rankings_2025",
+      "title": "2025 NFL Offensive Play-Caller Rankings: Kyle Shanahan and Sean McVay Are Still the Standard",
+      "publisher": "Pro Football and Sports Network",
+      "source_type": "credentialed_national",
+      "url": "https://www.profootballnetwork.com/2025-nfl-offensive-play-caller-rankings/",
+      "published_at": "2025-06-25",
+      "accessed_at": "2026-09-03",
+      "locator": "All 32 ranked h2 headings; Giants heading explicitly lists Brian Daboll/Mike Kafka",
+      "content_sha256": "36aeab6584bf44ce0c3aafdf2fc30cec88d95c8b4e1f695de453d375729a0803",
+      "content_hash_scope": "UTF-8 SHA-256 of the 32 numbered h2 heading texts in page order, whitespace collapsed, joined by newline, and newline terminated; observed in the in-app browser on 2026-09-03"
+    }
+  ],
+  "teams": [
+    {"team": "ARI", "identity_status": "confirmed", "play_caller": "Drew Petzing", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Drew Petzing for Arizona."},
+    {"team": "ATL", "identity_status": "confirmed", "play_caller": "Zac Robinson", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Zac Robinson for Atlanta."},
+    {"team": "BAL", "identity_status": "confirmed", "play_caller": "Todd Monken", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Todd Monken for Baltimore."},
+    {"team": "BUF", "identity_status": "confirmed", "play_caller": "Joe Brady", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Joe Brady for Buffalo."},
+    {"team": "CAR", "identity_status": "confirmed", "play_caller": "Dave Canales", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Dave Canales for Carolina."},
+    {"team": "CHI", "identity_status": "confirmed", "play_caller": "Ben Johnson", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Ben Johnson for Chicago."},
+    {"team": "CIN", "identity_status": "confirmed", "play_caller": "Zac Taylor", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Zac Taylor for Cincinnati."},
+    {"team": "CLE", "identity_status": "confirmed", "play_caller": "Kevin Stefanski", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Kevin Stefanski for Cleveland."},
+    {"team": "DAL", "identity_status": "confirmed", "play_caller": "Brian Schottenheimer", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Brian Schottenheimer for Dallas."},
+    {"team": "DEN", "identity_status": "confirmed", "play_caller": "Sean Payton", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Sean Payton for Denver."},
+    {"team": "DET", "identity_status": "confirmed", "play_caller": "John Morton", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names John Morton for Detroit."},
+    {"team": "GB", "identity_status": "confirmed", "play_caller": "Matt LaFleur", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Matt LaFleur for Green Bay."},
+    {"team": "HOU", "identity_status": "confirmed", "play_caller": "Nick Caley", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Nick Caley for Houston."},
+    {"team": "IND", "identity_status": "confirmed", "play_caller": "Shane Steichen", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Shane Steichen for Indianapolis."},
+    {"team": "JAX", "identity_status": "confirmed", "play_caller": "Liam Coen", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Liam Coen for Jacksonville."},
+    {"team": "KC", "identity_status": "confirmed", "play_caller": "Andy Reid", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Andy Reid for Kansas City."},
+    {"team": "LAC", "identity_status": "confirmed", "play_caller": "Greg Roman", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Greg Roman for the Chargers."},
+    {"team": "LAR", "identity_status": "confirmed", "play_caller": "Sean McVay", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Sean McVay for the Rams."},
+    {"team": "LV", "identity_status": "confirmed", "play_caller": "Chip Kelly", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Chip Kelly for Las Vegas."},
+    {"team": "MIA", "identity_status": "confirmed", "play_caller": "Mike McDaniel", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Mike McDaniel for Miami."},
+    {"team": "MIN", "identity_status": "confirmed", "play_caller": "Kevin O'Connell", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Kevin O'Connell for Minnesota."},
+    {"team": "NE", "identity_status": "confirmed", "play_caller": "Josh McDaniels", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Josh McDaniels for New England."},
+    {"team": "NO", "identity_status": "confirmed", "play_caller": "Kellen Moore", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Kellen Moore for New Orleans."},
+    {"team": "NYG", "identity_status": "ambiguous", "candidate_callers": ["Brian Daboll", "Mike Kafka"], "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason heading lists Brian Daboll/Mike Kafka and the text says the assignment was not yet clear, so no caller is selected."},
+    {"team": "NYJ", "identity_status": "confirmed", "play_caller": "Tanner Engstrand", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Tanner Engstrand for the Jets."},
+    {"team": "PHI", "identity_status": "confirmed", "play_caller": "Kevin Patullo", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Kevin Patullo for Philadelphia."},
+    {"team": "PIT", "identity_status": "confirmed", "play_caller": "Arthur Smith", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Arthur Smith for Pittsburgh."},
+    {"team": "SEA", "identity_status": "confirmed", "play_caller": "Klint Kubiak", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Klint Kubiak for Seattle."},
+    {"team": "SF", "identity_status": "confirmed", "play_caller": "Kyle Shanahan", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Kyle Shanahan for San Francisco."},
+    {"team": "TB", "identity_status": "confirmed", "play_caller": "Josh Grizzard", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Josh Grizzard for Tampa Bay."},
+    {"team": "TEN", "identity_status": "confirmed", "play_caller": "Brian Callahan", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Brian Callahan for Tennessee."},
+    {"team": "WAS", "identity_status": "confirmed", "play_caller": "Kliff Kingsbury", "source_ids": ["pfsn_playcaller_rankings_2025"], "evidence_summary": "The preseason all-team article names Kliff Kingsbury for Washington."}
+  ]
+}

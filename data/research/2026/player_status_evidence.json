@@ -1,0 +1,211 @@
+{
+  "schema_version": "1.0.2",
+  "season": 2026,
+  "as_of": "2026-09-03",
+  "purpose": "Reviewed first-party resolutions for market-relevant non-active or affiliation exceptions emitted by the automated player-role pipeline.",
+  "model_use": "Structured identity and current-status evidence. A reviewed rule source may impose a hard minimum absence; unknown return timing uses only an explicitly labeled historical status-cohort scenario and never a manually invented player probability or role share.",
+  "rule_sources": [
+    {
+      "rule_id": "2026_reserve_pup_four_game_minimum",
+      "claim": "The approved 2026 change allows a Reserve/PUP practice window after the club's second game but does not permit activation before four games have elapsed.",
+      "urls": [
+        "https://nfl-ops-prod-umbraco-author.azurewebsites.net/news-updates/the-game/approved-2026-playing-rules-bylaws-and-resolutions/",
+        "https://operations.nfl.com/media/dxfj3uak/2026-playing-rules-bylaw-and-resolution-proposals.pdf"
+      ]
+    },
+    {
+      "rule_id": "reserve_return_four_game_minimum",
+      "claim": "A player eligible to return from Reserve/Injured or Reserve/NFI must remain on the applicable reserve list for at least four games.",
+      "urls": [
+        "https://www.nfl.com/news/players-now-eligible-to-return-from-injured-reserve-after-four-games"
+      ]
+    },
+    {
+      "rule_id": "pre_final_reduction_ir_season_ineligible",
+      "claim": "A player placed on Reserve/Injured before the final roster-reduction return-designation window is not eligible to return during the season. The 2026 final roster-reduction deadline was August 30; the limited return-designation exception applies to players placed on reserve during the business day of that final reduction.",
+      "urls": [
+        "https://www.nfl.com/news/nfl-training-camp-roster-faqs-defining-injured-reserve-pup-list-nfi-and-more",
+        "https://operations.nfl.com/calendar-events/nfl-important-dates"
+      ]
+    }
+  ],
+  "records": [
+    {
+      "gsis_id": "00-0035700",
+      "player": "Josh Jacobs",
+      "team": "GB",
+      "position": "RB",
+      "evidence_type": "availability_status",
+      "current_status": "commissioners_exempt",
+      "current_active": false,
+      "can_practice_or_play_while_status_holds": false,
+      "return_timing": "unknown",
+      "claim": "Green Bay lists Jacobs on the commissioner's exempt list. Club leadership expressed hope that he could return sometime during the season but supplied no timetable.",
+      "sources": [
+        {
+          "publisher": "Green Bay Packers",
+          "published_at": "2026-08-30",
+          "url": "https://www.packers.com/news/packers-keep-six-receivers-seven-defensive-linemen-here-s-the-initial-2026-roster"
+        },
+        {
+          "publisher": "NFL.com / Associated Press",
+          "published_at": "2026-09-01",
+          "url": "https://www.nfl.com/news/packers-express-hope-rb-josh-jacobs-currently-on-exempt-list-can-play-sometime-this-season"
+        }
+      ]
+    },
+    {
+      "gsis_id": "00-0039165",
+      "player": "Zach Charbonnet",
+      "team": "SEA",
+      "position": "RB",
+      "evidence_type": "availability_and_current_role",
+      "current_status": "reserve_pup",
+      "current_active": false,
+      "minimum_games_missed": 4,
+      "constraint_rule_id": "2026_reserve_pup_four_game_minimum",
+      "return_timing": "no_timetable",
+      "claim": "Charbonnet opens the season on PUP while recovering from a torn ACL. Seattle says Jadarian Price and George Holani figure to split the early workload, with Charbonnet expected back only at an unspecified point later in the season.",
+      "sources": [
+        {
+          "publisher": "Seattle Seahawks",
+          "published_at": "2026-07-22",
+          "url": "https://www.seahawks.com/news/seahawks-rb-zach-charbonnet-placed-on-pup-list"
+        },
+        {
+          "publisher": "Seattle Seahawks",
+          "published_at": "2026-08-30",
+          "url": "https://www.seahawks.com/news/a-position-by-position-look-at-the-seahawks-initial-2026-53-man-roster"
+        }
+      ]
+    },
+    {
+      "gsis_id": "00-0041029",
+      "player": "Jordyn Tyson",
+      "team": "NO",
+      "position": "WR",
+      "evidence_type": "availability_status",
+      "current_status": "reserve_injured_designated_for_return",
+      "current_active": false,
+      "minimum_games_missed": 4,
+      "constraint_rule_id": "reserve_return_four_game_minimum",
+      "return_timing": "unknown",
+      "claim": "New Orleans lists Tyson on reserve/injured with a designation to return.",
+      "sources": [
+        {
+          "publisher": "New Orleans Saints",
+          "retrieved_at": "2026-09-02",
+          "url": "https://www.neworleanssaints.com/team/rosters"
+        }
+      ]
+    },
+    {
+      "gsis_id": "00-0037197",
+      "player": "Isiah Pacheco",
+      "team": "DET",
+      "position": "RB",
+      "evidence_type": "availability_status",
+      "current_status": "reserve_injured",
+      "current_active": false,
+      "minimum_games_missed": 4,
+      "constraint_rule_id": "reserve_return_four_game_minimum",
+      "return_timing": "unknown",
+      "claim": "Detroit placed Pacheco on reserve/injured on September 1. The club roster lists him in the Reserve/Injured section.",
+      "sources": [
+        {
+          "publisher": "Detroit Lions",
+          "published_at": "2026-09-01",
+          "url": "https://www.detroitlions.com/team/transactions/"
+        },
+        {
+          "publisher": "Detroit Lions",
+          "retrieved_at": "2026-09-02",
+          "url": "https://www.detroitlions.com/team/players-roster/"
+        }
+      ]
+    },
+    {
+      "gsis_id": "00-0033553",
+      "player": "James Conner",
+      "team": "ARI",
+      "position": "RB",
+      "evidence_type": "availability_status",
+      "current_status": "reserve_injured_designated_for_return",
+      "current_active": false,
+      "minimum_games_missed": 4,
+      "constraint_rule_id": "reserve_return_four_game_minimum",
+      "return_timing": "unknown",
+      "claim": "Arizona lists Conner on reserve/injured with a designation to return.",
+      "sources": [
+        {
+          "publisher": "Arizona Cardinals",
+          "retrieved_at": "2026-09-02",
+          "url": "https://www.azcardinals.com/team/players-roster/"
+        }
+      ]
+    },
+    {
+      "gsis_id": "00-0038977",
+      "player": "Tank Dell",
+      "team": "HOU",
+      "position": "WR",
+      "evidence_type": "availability_status",
+      "current_status": "reserve_pup",
+      "current_active": false,
+      "minimum_games_missed": 4,
+      "constraint_rule_id": "2026_reserve_pup_four_game_minimum",
+      "return_timing": "unknown",
+      "claim": "Houston lists Dell on reserve/physically unable to perform.",
+      "sources": [
+        {
+          "publisher": "Houston Texans",
+          "retrieved_at": "2026-09-02",
+          "url": "https://www.houstontexans.com/team/players-roster/"
+        }
+      ]
+    },
+    {
+      "gsis_id": "00-0036984",
+      "player": "Trey Sermon",
+      "team": "ATL",
+      "position": "RB",
+      "evidence_type": "availability_status",
+      "current_status": "reserve_injured_season_ineligible",
+      "current_active": false,
+      "minimum_games_missed": 18,
+      "constraint_rule_id": "pre_final_reduction_ir_season_ineligible",
+      "return_timing": "season_ineligible",
+      "claim": "Atlanta placed Sermon on Reserve/Injured on August 19, eleven days before the August 30 final roster-reduction deadline. Under the roster-timing rule, he is not eligible to return during the 2026 season; this is a transaction-rule constraint, not an injury-recovery forecast.",
+      "sources": [
+        {
+          "publisher": "Atlanta Falcons",
+          "published_at": "2026-08-19",
+          "url": "https://www.atlantafalcons.com/news/rb-trey-sermon-injured-reserve"
+        },
+        {
+          "publisher": "Atlanta Falcons",
+          "published_at": "2026-08-30",
+          "url": "https://www.atlantafalcons.com/news/atlanta-falcons-2026-roster"
+        }
+      ]
+    },
+    {
+      "gsis_id": "00-0040586",
+      "player": "Jaydon Blue",
+      "team": "PHI",
+      "position": "RB",
+      "evidence_type": "current_affiliation",
+      "current_status": "practice_squad",
+      "current_active": false,
+      "return_timing": "not_applicable",
+      "claim": "Philadelphia signed Blue to its practice squad after Dallas waived him at final roster cuts. This resolves the automated roster-team mismatch without promoting him into the active allocation.",
+      "sources": [
+        {
+          "publisher": "Philadelphia Eagles",
+          "published_at": "2026-09-01",
+          "url": "https://www.philadelphiaeagles.com/news/eagles-sign-t-kiran-amegadjie-rb-jaydon-blue-wr-danny-gray-and-cb-robert-longerbeam-to-practice-squad"
+        }
+      ]
+    }
+  ]
+}

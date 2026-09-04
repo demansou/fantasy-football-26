@@ -1,0 +1,614 @@
+{
+  "schema_version": "1.0.0",
+  "season": 2026,
+  "as_of": "2026-09-02",
+  "methodology": {
+    "scope": "Current head coach, primary offensive coordinator, and regular-season offensive play caller identity only.",
+    "title_rule": "Head-coach and coordinator titles come from the dated official-club snapshot; an OC title is never treated as proof of play-calling responsibility.",
+    "evidence_rule": "Each caller requires an explicit or contextual source separate from the staff-title row. Preseason delegation is interpreted only when the source also makes the regular caller clear.",
+    "not_yet_in_scope": [
+      "coach career-history audit",
+      "2025-to-2026 staff continuity",
+      "scheme-family and historical-style anchors",
+      "style-certainty forecast"
+    ]
+  },
+  "sources": [
+    {
+      "id": "ari_lafleur_caller_2026",
+      "title": "Mike LaFleur Felt Right in Taking Cardinals Coaching Job",
+      "publisher": "Arizona Cardinals",
+      "source_type": "official_team",
+      "url": "https://www.azcardinals.com/news/mike-lafleur-felt-right-in-taking-cardinals-coaching-job-2026",
+      "published_at": "2026-02-03",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "atl_rees_caller_2026",
+      "title": "Tommy Rees to be Falcons offensive play caller",
+      "publisher": "Atlanta Falcons",
+      "source_type": "official_team",
+      "url": "https://www.atlantafalcons.com/news/tommy-rees-offensive-play-caller-kevin-stefanski",
+      "published_at": "2026-01-28",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "bal_doyle_caller_2026",
+      "title": "Declan Doyle Will Call Plays From Booth",
+      "publisher": "Baltimore Ravens",
+      "source_type": "official_team",
+      "url": "https://www.baltimoreravens.com/news/declan-doyle-will-call-plays-from-booth-anthony-weaver-jesse-minter-sharing-sideline-duties",
+      "published_at": "2026-08-25",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "buf_brady_caller_2026",
+      "title": "What we learned from Joe Brady's first day as Bills head coach",
+      "publisher": "Buffalo Bills",
+      "source_type": "official_team",
+      "url": "https://www.buffalobills.com/news/what-we-learned-from-joe-brady-s-first-day-as-the-buffalo-bills-head-coach-josh-allen-interview",
+      "published_at": null,
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "car_idzik_caller_2026",
+      "title": "Dave Canales: Offensive coordinator Brad Idzik to call plays in 2026",
+      "publisher": "Carolina Panthers",
+      "source_type": "official_team",
+      "url": "https://www.panthers.com/news/dave-canales-offensive-coordinator-brad-idzik-to-call-plays-in-2026",
+      "published_at": "2026-02-24",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "chi_johnson_caller_2026",
+      "title": "Bears seeking intense competitors in NFL Draft",
+      "publisher": "Chicago Bears",
+      "source_type": "official_team",
+      "url": "https://www.chicagobears.com/news/bears-seeking-intense-competitors-in-nfl-draft-2026",
+      "published_at": "2026-04-21",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "cin_taylor_caller_2026",
+      "title": "Dan Pitcher seeks to push offensive envelope",
+      "publisher": "Cincinnati Bengals",
+      "source_type": "official_team",
+      "url": "https://www.bengals.com/news/al-golden-looks-for-bengals-defense-to-bring-more-heat-dan-pitcher-seeks-to-push-offensive-envelope",
+      "published_at": null,
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "cle_monken_caller_2026",
+      "title": "Head Coach Todd Monken (8.17.26)",
+      "publisher": "Cleveland Browns",
+      "source_type": "official_team",
+      "url": "https://browns.1rmg.com/transcripts/head-coach-todd-monken-8-17-26/",
+      "published_at": "2026-08-17",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "dal_schottenheimer_caller_2026",
+      "title": "2026 Cowboys offseason points: DC outlook and more",
+      "publisher": "Dallas Cowboys",
+      "source_type": "official_team",
+      "url": "https://www.dallascowboys.com/news/2026-cowboys-offseason-points-dc-outlook-and-more",
+      "published_at": "2026-01-07",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "den_webb_caller_2026",
+      "title": "Sean Payton announces OC Davis Webb to call plays for Broncos offense",
+      "publisher": "Denver Broncos",
+      "source_type": "official_team",
+      "url": "https://www.denverbroncos.com/news/i-wouldn-t-do-it-if-i-didn-t-think-it-was-going-to-help-our-team-win-hc-sean-payton-announces-oc-davis-webb-to-call-plays-for-broncos-offense",
+      "published_at": "2026-02-24",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "det_petzing_caller_2026",
+      "title": "Goff talks new offense under Petzing",
+      "publisher": "Detroit Lions",
+      "source_type": "official_team",
+      "url": "https://www.detroitlions.com/news/goff-talks-new-offense-under-petzing-williams-development-more",
+      "published_at": "2026-08-11",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "gb_lafleur_caller_2026",
+      "title": "5 things learned from Matt LaFleur at the 2026 NFL Annual Meeting",
+      "publisher": "Green Bay Packers",
+      "source_type": "official_team",
+      "url": "https://www.packers.com/news/5-things-learned-from-matt-lafleur-at-the-2026-nfl-annual-meeting-march-30",
+      "published_at": "2026-03-30",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "hou_caley_caller_2026",
+      "title": "Houston Texans OC Nick Caley focused on improvement for 2026",
+      "publisher": "Houston Chronicle",
+      "source_type": "credentialed_local",
+      "url": "https://www.houstonchronicle.com/sports/texans/article/nick-caley-cj-stroud-schuplinski-22320553.php",
+      "published_at": "2026-06-25",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "ind_steichen_caller_2026",
+      "title": "Colts head coach Shane Steichen a top 3 playcaller in NFL, says Sauce Gardner",
+      "publisher": "Indianapolis Colts",
+      "source_type": "official_team",
+      "url": "https://www.colts.com/news/colts-head-coach-shane-steichen-a-top-3-playcaller-in-nfl-says-sauce-gardner",
+      "published_at": "2026-08-08",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "jax_coen_caller_2026",
+      "title": "Quick thoughts after Jaguars preseason finale win: On to the regular season",
+      "publisher": "Jacksonville Jaguars",
+      "source_type": "official_team",
+      "url": "https://www.jaguars.com/news/quick-thoughts-after-jaguars-preseason-finale-win-on-to-the-regular-season",
+      "published_at": "2026-08-29",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "kc_reid_caller_2026",
+      "title": "Chiefs OC Eric Bieniemy returns to practice",
+      "publisher": "NFL.com",
+      "source_type": "official_league",
+      "url": "https://www.nfl.com/news/chiefs-oc-eric-bieniemy-returns-to-practice-after-wife-s-shooting",
+      "published_at": "2026-08-10",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "lac_mcdaniel_caller_2026",
+      "title": "What Mike McDaniel hopes to see from Chargers offense in preseason opener",
+      "publisher": "Los Angeles Chargers",
+      "source_type": "official_team",
+      "url": "https://www.chargers.com/news/what-mike-mcdaniel-hopes-to-see-from-chargers-offense-in-preseason-opener",
+      "published_at": "2026-08-10",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "lar_mcvay_caller_2026",
+      "title": "Top takeaways from Sean McVay's post-2026 NFL Combine press conference",
+      "publisher": "Los Angeles Rams",
+      "source_type": "official_team",
+      "url": "https://www.therams.com/news/top-takeaways-from-sean-mcvay-s-post-2026-nfl-combine-press-conference-finalized-coaching-staff-pending-free-agents-and-more",
+      "published_at": "2026-03-03",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "lv_kubiak_caller_2026",
+      "title": "Andrew Janocko has history in mind as Raiders offensive coordinator",
+      "publisher": "Las Vegas Raiders",
+      "source_type": "official_team",
+      "url": "https://www.raiders.com/news/andrew-janocko-las-vegas-raiders-offensive-coordinator-history-in-mind-nfl-2026-season",
+      "published_at": null,
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "mia_slowik_caller_2026",
+      "title": "OC Bobby Slowik introductory press conference transcript",
+      "publisher": "Miami Dolphins",
+      "source_type": "official_team",
+      "url": "https://www.miamidolphins.com/news/transcript-oc-bobby-slowik-dc-sean-duggan-and-stc-chris-tabor-introductory-press-conference-feb-4",
+      "published_at": "2026-02-04",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "min_oconnell_caller_2026",
+      "title": "CBS ranks NFL's play callers",
+      "publisher": "Minnesota Vikings",
+      "source_type": "official_team",
+      "url": "https://www.vikings.com/news/lunchbreak-nfl-ranking-adrian-peterson-hall-of-fame",
+      "published_at": "2026-08-06",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "ne_mcdaniels_caller_2026",
+      "title": "New England Patriots postgame quotes 8/27",
+      "publisher": "New England Patriots",
+      "source_type": "official_team",
+      "url": "https://www.patriots.com/news/new-england-patriots-postgame-quotes-8-27",
+      "published_at": "2026-08-27",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "no_moore_caller_2026",
+      "title": "2026 preseason Week 3 postgame quotes",
+      "publisher": "New Orleans Saints",
+      "source_type": "official_team",
+      "url": "https://www.neworleanssaints.com/news/2026-nfl-preseason-week-3-dallas-cowboys-vs-new-orleans-saints-postgame-quotes",
+      "published_at": "2026-08-28",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "nyg_nagy_caller_2026",
+      "title": "Postgame quotes 8/28: Coach John Harbaugh",
+      "publisher": "New York Giants",
+      "source_type": "official_team",
+      "url": "https://www.giants.com/news/postgame-quotes-8-28-coach-john-harbaugh",
+      "published_at": "2026-08-28",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "nyj_reich_caller_2026",
+      "title": "Jets at Steelers preseason game preview",
+      "publisher": "New York Jets",
+      "source_type": "official_team",
+      "url": "https://www.newyorkjets.com/news/jets-at-steelers-preseason-game-preview-08-27-2026",
+      "published_at": "2026-08-27",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "phi_mannion_caller_2026",
+      "title": "Eagles coach Nick Sirianni not worried about putting inexperienced Sean Mannion in charge of offense",
+      "publisher": "NFL.com",
+      "source_type": "official_league",
+      "url": "https://www.nfl.com/news/eagles-coach-nick-sirianni-not-worried-about-putting-inexperienced-sean-mannion-in-charge-of-offense",
+      "published_at": "2026-07-21",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "pit_mccarthy_caller_2026",
+      "title": "McCarthy outlines vision for offense, defense in Pittsburgh",
+      "publisher": "Pittsburgh Steelers",
+      "source_type": "official_team",
+      "url": "https://www.steelers.com/news/mccarthy-outlines-vision-for-offense-defense-in-pittsburgh",
+      "published_at": "2026-01-27",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "sea_fleury_caller_2026",
+      "title": "Takeaways from Seahawks coordinators Brian Fleury, Aden Durde and Jay Harbaugh",
+      "publisher": "Seattle Seahawks",
+      "source_type": "official_team",
+      "url": "https://www.seahawks.com/news/takeaways-from-seahawks-coordinators-brian-fleury-aden-durde-jay-harbaugh",
+      "published_at": "2026-08-04",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "sf_shanahan_caller_2025",
+      "title": "John Lynch, Kyle Shanahan talk offseason coaching changes",
+      "publisher": "San Francisco 49ers",
+      "source_type": "official_team",
+      "url": "https://www.49ers.com/news/john-lynch-kyle-shanahan-talk-offseason-coaching-changes",
+      "published_at": "2025-01-09",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "sf_preseason_delegation_2026",
+      "title": "Report day takeaways ahead of training camp 2026",
+      "publisher": "San Francisco 49ers",
+      "source_type": "official_team",
+      "url": "https://www.49ers.com/news/report-day-takeaways-john-lynch-shares-team-updates-ahead-of-training-camp-2026",
+      "published_at": null,
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "tb_robinson_caller_2026",
+      "title": "Cade Otton expresses full confidence in 2026 offense",
+      "publisher": "Tampa Bay Buccaneers",
+      "source_type": "official_team",
+      "url": "https://www.buccaneers.com/news/cade-otton-expresses-full-confidence-2026-offense",
+      "published_at": "2026-03-13",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "ten_daboll_caller_2026",
+      "title": "Titans hire former Giants HC Brian Daboll as offensive coordinator",
+      "publisher": "NFL.com",
+      "source_type": "official_league",
+      "url": "https://www.nfl.com/news/titans-hire-brian-daboll-offensive-coordinator",
+      "published_at": "2026-01-27",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "was_blough_caller_2026",
+      "title": "Breaking down Washington's offseason and season outlook",
+      "publisher": "Dallas Cowboys",
+      "source_type": "official_team",
+      "url": "https://www.dallascowboys.com/news/2026-schedule-breaking-down-washington-s-offseason-season-outlook",
+      "published_at": "2026-05-29",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "was_blough_press_2026",
+      "title": "Commanders David Blough transcript",
+      "publisher": "Washington Commanders",
+      "source_type": "official_team",
+      "url": "https://www.commanders.com/news/commanders-david-blough-transcripts-feb-10",
+      "published_at": "2026-02-11",
+      "accessed_at": "2026-09-02"
+    }
+  ],
+  "teams": [
+    {
+      "team": "ARI",
+      "head_coach": "Mike LaFleur",
+      "offensive_coordinator": "Nathaniel Hackett",
+      "play_caller": "Mike LaFleur",
+      "confirmation": "official_explicit",
+      "source_ids": ["ari_lafleur_caller_2026"],
+      "evidence_summary": "LaFleur directly said he will call Arizona's offensive plays."
+    },
+    {
+      "team": "ATL",
+      "head_coach": "Kevin Stefanski",
+      "offensive_coordinator": "Tommy Rees",
+      "play_caller": "Tommy Rees",
+      "confirmation": "official_explicit",
+      "source_ids": ["atl_rees_caller_2026"],
+      "evidence_summary": "Stefanski announced that Rees will call Atlanta's offensive plays."
+    },
+    {
+      "team": "BAL",
+      "head_coach": "Jesse Minter",
+      "offensive_coordinator": "Declan Doyle",
+      "play_caller": "Declan Doyle",
+      "confirmation": "official_explicit",
+      "source_ids": ["bal_doyle_caller_2026"],
+      "evidence_summary": "Baltimore explicitly identified Doyle as the caller and said he will work from the booth."
+    },
+    {
+      "team": "BUF",
+      "head_coach": "Joe Brady",
+      "offensive_coordinator": "Pete Carmichael",
+      "play_caller": "Joe Brady",
+      "confirmation": "official_explicit",
+      "source_ids": ["buf_brady_caller_2026"],
+      "evidence_summary": "Brady said he will retain play-calling as head coach and move from the booth to the sideline."
+    },
+    {
+      "team": "CAR",
+      "head_coach": "Dave Canales",
+      "offensive_coordinator": "Brad Idzik",
+      "play_caller": "Brad Idzik",
+      "confirmation": "official_explicit",
+      "source_ids": ["car_idzik_caller_2026"],
+      "evidence_summary": "Canales formally delegated 2026 play-calling to Idzik."
+    },
+    {
+      "team": "CHI",
+      "head_coach": "Ben Johnson",
+      "offensive_coordinator": "Press Taylor",
+      "play_caller": "Ben Johnson",
+      "confirmation": "official_contextual",
+      "source_ids": ["chi_johnson_caller_2026"],
+      "evidence_summary": "Current Bears coverage identifies Johnson as the offensive play caller while Taylor coordinates the unit."
+    },
+    {
+      "team": "CIN",
+      "head_coach": "Zac Taylor",
+      "offensive_coordinator": "Dan Pitcher",
+      "play_caller": "Zac Taylor",
+      "confirmation": "official_explicit",
+      "source_ids": ["cin_taylor_caller_2026"],
+      "evidence_summary": "The Bengals explicitly state that Taylor remains the primary play caller with input from Pitcher and the staff."
+    },
+    {
+      "team": "CLE",
+      "head_coach": "Todd Monken",
+      "offensive_coordinator": "Travis Switzer",
+      "play_caller": "Todd Monken",
+      "confirmation": "official_contextual",
+      "source_ids": ["cle_monken_caller_2026"],
+      "evidence_summary": "A current Browns transcript addresses Monken in his role as play caller and his handling of player usage."
+    },
+    {
+      "team": "DAL",
+      "head_coach": "Brian Schottenheimer",
+      "offensive_coordinator": "Klayton Adams",
+      "play_caller": "Brian Schottenheimer",
+      "confirmation": "official_explicit",
+      "source_ids": ["dal_schottenheimer_caller_2026"],
+      "evidence_summary": "Dallas states that Schottenheimer will continue calling the offense in 2026."
+    },
+    {
+      "team": "DEN",
+      "head_coach": "Sean Payton",
+      "offensive_coordinator": "Davis Webb",
+      "play_caller": "Davis Webb",
+      "confirmation": "official_explicit",
+      "source_ids": ["den_webb_caller_2026"],
+      "evidence_summary": "Payton formally announced that Webb will call Denver's offensive plays, while retaining override authority."
+    },
+    {
+      "team": "DET",
+      "head_coach": "Dan Campbell",
+      "offensive_coordinator": "Drew Petzing",
+      "play_caller": "Drew Petzing",
+      "confirmation": "official_explicit",
+      "source_ids": ["det_petzing_caller_2026"],
+      "evidence_summary": "Current Lions coverage identifies Petzing as the 2026 offensive play caller."
+    },
+    {
+      "team": "GB",
+      "head_coach": "Matt LaFleur",
+      "offensive_coordinator": "Adam Stenavich",
+      "play_caller": "Matt LaFleur",
+      "confirmation": "official_explicit",
+      "source_ids": ["gb_lafleur_caller_2026"],
+      "evidence_summary": "LaFleur confirmed at the 2026 league meeting that he remains Green Bay's play caller."
+    },
+    {
+      "team": "HOU",
+      "head_coach": "DeMeco Ryans",
+      "offensive_coordinator": "Nick Caley",
+      "play_caller": "Nick Caley",
+      "confirmation": "credentialed_explicit",
+      "source_ids": ["hou_caley_caller_2026"],
+      "evidence_summary": "The Texans beat reporter documents Caley entering his second season calling Houston's offense."
+    },
+    {
+      "team": "IND",
+      "head_coach": "Shane Steichen",
+      "offensive_coordinator": "Jim Bob Cooter",
+      "play_caller": "Shane Steichen",
+      "confirmation": "official_contextual",
+      "source_ids": ["ind_steichen_caller_2026"],
+      "evidence_summary": "Current Colts coverage describes Steichen's 2026 camp work and decisions as the team's play caller."
+    },
+    {
+      "team": "JAX",
+      "head_coach": "Liam Coen",
+      "offensive_coordinator": "Grant Udinski",
+      "play_caller": "Liam Coen",
+      "confirmation": "official_contextual",
+      "source_ids": ["jax_coen_caller_2026"],
+      "evidence_summary": "Jacksonville notes Coen returned to the headset after delegating the first two preseason games to assistants."
+    },
+    {
+      "team": "KC",
+      "head_coach": "Andy Reid",
+      "offensive_coordinator": "Eric Bieniemy",
+      "play_caller": "Andy Reid",
+      "confirmation": "official_explicit",
+      "source_ids": ["kc_reid_caller_2026"],
+      "evidence_summary": "Current NFL.com coverage explicitly identifies Reid as Kansas City's primary play caller after Bieniemy's return."
+    },
+    {
+      "team": "LAC",
+      "head_coach": "Jim Harbaugh",
+      "offensive_coordinator": "Mike McDaniel",
+      "play_caller": "Mike McDaniel",
+      "confirmation": "official_explicit",
+      "source_ids": ["lac_mcdaniel_caller_2026"],
+      "evidence_summary": "The Chargers explicitly describe McDaniel making the offensive calls in 2026."
+    },
+    {
+      "team": "LAR",
+      "head_coach": "Sean McVay",
+      "offensive_coordinator": "Nate Scheelhaase",
+      "play_caller": "Sean McVay",
+      "confirmation": "official_explicit",
+      "source_ids": ["lar_mcvay_caller_2026"],
+      "evidence_summary": "McVay confirmed after the combine that he will continue calling the Rams offense."
+    },
+    {
+      "team": "LV",
+      "head_coach": "Klint Kubiak",
+      "offensive_coordinator": "Andrew Janocko",
+      "play_caller": "Klint Kubiak",
+      "confirmation": "official_contextual",
+      "source_ids": ["lv_kubiak_caller_2026"],
+      "evidence_summary": "Raiders coverage describes Janocko coordinating the offense around Kubiak's game-day play-calling role."
+    },
+    {
+      "team": "MIA",
+      "head_coach": "Jeff Hafley",
+      "offensive_coordinator": "Bobby Slowik",
+      "play_caller": "Bobby Slowik",
+      "confirmation": "official_explicit",
+      "source_ids": ["mia_slowik_caller_2026"],
+      "evidence_summary": "Slowik's introductory press conference addresses his decisions and process as Miami's play caller."
+    },
+    {
+      "team": "MIN",
+      "head_coach": "Kevin O'Connell",
+      "offensive_coordinator": "Wes Phillips",
+      "play_caller": "Kevin O'Connell",
+      "confirmation": "official_contextual",
+      "source_ids": ["min_oconnell_caller_2026"],
+      "evidence_summary": "Current Vikings coverage identifies O'Connell as Minnesota's offensive play caller entering 2026."
+    },
+    {
+      "team": "NE",
+      "head_coach": "Mike Vrabel",
+      "offensive_coordinator": "Josh McDaniels",
+      "play_caller": "Josh McDaniels",
+      "confirmation": "official_contextual",
+      "source_ids": ["ne_mcdaniels_caller_2026"],
+      "evidence_summary": "New England's preseason delegation account distinguishes McDaniels as the regular offensive caller."
+    },
+    {
+      "team": "NO",
+      "head_coach": "Kellen Moore",
+      "offensive_coordinator": "Doug Nussmeier",
+      "play_caller": "Kellen Moore",
+      "confirmation": "official_explicit",
+      "source_ids": ["no_moore_caller_2026"],
+      "evidence_summary": "Moore answered yes when asked whether he was calling plays after the preseason finale."
+    },
+    {
+      "team": "NYG",
+      "head_coach": "John Harbaugh",
+      "offensive_coordinator": "Matt Nagy",
+      "play_caller": "Matt Nagy",
+      "confirmation": "official_contextual",
+      "source_ids": ["nyg_nagy_caller_2026"],
+      "evidence_summary": "Harbaugh's explanation of preseason backup-caller work makes Nagy the regular offensive caller."
+    },
+    {
+      "team": "NYJ",
+      "head_coach": "Aaron Glenn",
+      "offensive_coordinator": "Frank Reich",
+      "play_caller": "Frank Reich",
+      "confirmation": "official_explicit",
+      "source_ids": ["nyj_reich_caller_2026"],
+      "evidence_summary": "The Jets explicitly identify Reich as the caller and say he will work from the booth."
+    },
+    {
+      "team": "PHI",
+      "head_coach": "Nick Sirianni",
+      "offensive_coordinator": "Sean Mannion",
+      "play_caller": "Sean Mannion",
+      "confirmation": "official_explicit",
+      "source_ids": ["phi_mannion_caller_2026"],
+      "evidence_summary": "NFL.com identifies Mannion as the first-time caller placed in charge of Philadelphia's offense."
+    },
+    {
+      "team": "PIT",
+      "head_coach": "Mike McCarthy",
+      "offensive_coordinator": "Brian Angelichio",
+      "play_caller": "Mike McCarthy",
+      "confirmation": "official_explicit",
+      "source_ids": ["pit_mccarthy_caller_2026"],
+      "evidence_summary": "McCarthy explicitly said he will call the Steelers offense."
+    },
+    {
+      "team": "SEA",
+      "head_coach": "Mike Macdonald",
+      "offensive_coordinator": "Brian Fleury",
+      "play_caller": "Brian Fleury",
+      "confirmation": "official_explicit",
+      "source_ids": ["sea_fleury_caller_2026"],
+      "evidence_summary": "Seattle explicitly identifies Fleury as its 2026 caller and notes this is his first NFL season calling plays."
+    },
+    {
+      "team": "SF",
+      "head_coach": "Kyle Shanahan",
+      "offensive_coordinator": "Klay Kubiak",
+      "play_caller": "Kyle Shanahan",
+      "confirmation": "official_contextual",
+      "source_ids": ["sf_shanahan_caller_2025", "sf_preseason_delegation_2026"],
+      "evidence_summary": "San Francisco previously confirmed Shanahan retained the role; current coverage limits Kubiak's delegated calls to camp and preseason."
+    },
+    {
+      "team": "TB",
+      "head_coach": "Todd Bowles",
+      "offensive_coordinator": "Zac Robinson",
+      "play_caller": "Zac Robinson",
+      "confirmation": "official_explicit",
+      "source_ids": ["tb_robinson_caller_2026"],
+      "evidence_summary": "Buccaneers coverage explicitly discusses Robinson as the new offensive play caller."
+    },
+    {
+      "team": "TEN",
+      "head_coach": "Robert Saleh",
+      "offensive_coordinator": "Brian Daboll",
+      "play_caller": "Brian Daboll",
+      "confirmation": "official_contextual",
+      "source_ids": ["ten_daboll_caller_2026"],
+      "evidence_summary": "NFL.com describes Tennessee's hire as adding an experienced independent offensive caller while Saleh calls the defense."
+    },
+    {
+      "team": "WAS",
+      "head_coach": "Dan Quinn",
+      "offensive_coordinator": "David Blough",
+      "play_caller": "David Blough",
+      "confirmation": "official_explicit",
+      "source_ids": ["was_blough_caller_2026", "was_blough_press_2026"],
+      "evidence_summary": "Official team coverage identifies Blough as Washington's new caller, supported by his discussion of relaying calls to the quarterback."
+    }
+  ]
+}

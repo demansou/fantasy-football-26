@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0.0",
+  "as_of": "2026-09-02",
+  "methodology": {
+    "rule": "Aliases are used only when two official sources make the identity discrepancy auditable; fuzzy matching is never accepted automatically.",
+    "scope": "Observed 2025 Record & Fact Book names mapped to canonical 2026 staff-page names."
+  },
+  "aliases": [
+    {
+      "season": 2025,
+      "team": "NE",
+      "observed_name": "Doug Marone",
+      "canonical_name": "Doug Marrone",
+      "reason": "The 2025 record-book staff entry drops one r; the current official Patriots profile uses Doug Marrone for the same offensive-line coach.",
+      "source_urls": [
+        "https://static.clubs.nfl.com/image/upload/patriots/fvc6qgwyqlztq1muztpi.pdf",
+        "https://www.patriots.com/team/coaches-roster/doug-marrone"
+      ]
+    },
+    {
+      "season": 2025,
+      "team": "NYJ",
+      "observed_name": "Nic Mckissic-Luke",
+      "canonical_name": "Nic McKissic",
+      "reason": "The 2026 Jets card shortens the display name, while its official profile URL retains nic-mckissic-luke and the 2025 record book uses the full surname.",
+      "source_urls": [
+        "https://static.clubs.nfl.com/image/upload/patriots/fvc6qgwyqlztq1muztpi.pdf",
+        "https://www.newyorkjets.com/team/coaches-roster/nic-mckissic-luke"
+      ]
+    }
+  ]
+}

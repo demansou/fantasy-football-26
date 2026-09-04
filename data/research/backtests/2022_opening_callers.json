@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0.0",
+  "season": 2022,
+  "as_of": "2026-09-03",
+  "temporal_use": "historical_identity_evidence_for_later_seasons_only",
+  "forecast_evidence_cutoff": null,
+  "methodology": {
+    "purpose": "Supply prior-season caller identities for a time-correct 2023 forecast backtest.",
+    "source_scope": "Only the factual Current Coaching Staffs table and its Offensive Playcaller column are used. No player, team, win, or fantasy projection from the surrounding guide is an input.",
+    "time_rule": "The source PDF embeds a September 8, 2022 creation timestamp and was available long before the August 23, 2023 target caller census. It is prior-history evidence, not a same-season 2022 forecast source.",
+    "identity_rule": "Transcribe the Offensive Playcaller column exactly enough to preserve identity; do not infer a caller from the offensive-coordinator title."
+  },
+  "sources": [
+    {
+      "id": "espn_clay_staff_table_2022",
+      "title": "Mike Clay's 2022 NFL Projection Guide - Current Coaching Staffs",
+      "publisher": "ESPN",
+      "source_type": "credentialed_national",
+      "url": "https://g.espncdn.com/s/ffldraftkit/22/NFLDK2022_CS_ClayProjections2022.pdf",
+      "published_at": "2022-09-08",
+      "accessed_at": "2026-09-03",
+      "locator": "PDF physical page 65, Current Coaching Staffs table, Offensive Playcaller column",
+      "content_sha256": "015e8b95598ea620323613a7e70312f07b08e96a92ec9a1980994e9046b17e1d",
+      "content_hash_scope": "Raw PDF bytes retrieved from the source URL on 2026-09-03"
+    }
+  ],
+  "teams": [
+    {"team": "ARI", "identity_status": "confirmed", "play_caller": "Kliff Kingsbury", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Kliff Kingsbury in Arizona's Offensive Playcaller column."},
+    {"team": "ATL", "identity_status": "confirmed", "play_caller": "Arthur Smith", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Arthur Smith in Atlanta's Offensive Playcaller column."},
+    {"team": "BAL", "identity_status": "confirmed", "play_caller": "Greg Roman", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Greg Roman in Baltimore's Offensive Playcaller column."},
+    {"team": "BUF", "identity_status": "confirmed", "play_caller": "Ken Dorsey", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Ken Dorsey in Buffalo's Offensive Playcaller column."},
+    {"team": "CAR", "identity_status": "confirmed", "play_caller": "Ben McAdoo", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Ben McAdoo in Carolina's Offensive Playcaller column."},
+    {"team": "CHI", "identity_status": "confirmed", "play_caller": "Luke Getsy", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Luke Getsy in Chicago's Offensive Playcaller column."},
+    {"team": "CIN", "identity_status": "confirmed", "play_caller": "Zac Taylor", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Zac Taylor in Cincinnati's Offensive Playcaller column."},
+    {"team": "CLE", "identity_status": "confirmed", "play_caller": "Kevin Stefanski", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Kevin Stefanski in Cleveland's Offensive Playcaller column."},
+    {"team": "DAL", "identity_status": "confirmed", "play_caller": "Kellen Moore", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Kellen Moore in Dallas's Offensive Playcaller column."},
+    {"team": "DEN", "identity_status": "confirmed", "play_caller": "Nathaniel Hackett", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Nathaniel Hackett in Denver's Offensive Playcaller column."},
+    {"team": "DET", "identity_status": "confirmed", "play_caller": "Dan Campbell", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Dan Campbell in Detroit's Offensive Playcaller column."},
+    {"team": "GB", "identity_status": "confirmed", "play_caller": "Matt LaFleur", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Matt LaFleur in Green Bay's Offensive Playcaller column."},
+    {"team": "HOU", "identity_status": "confirmed", "play_caller": "Pep Hamilton", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Pep Hamilton in Houston's Offensive Playcaller column."},
+    {"team": "IND", "identity_status": "confirmed", "play_caller": "Frank Reich", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Frank Reich in Indianapolis's Offensive Playcaller column."},
+    {"team": "JAX", "identity_status": "confirmed", "play_caller": "Doug Pederson", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Doug Pederson in Jacksonville's Offensive Playcaller column."},
+    {"team": "KC", "identity_status": "confirmed", "play_caller": "Andy Reid", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Andy Reid in Kansas City's Offensive Playcaller column."},
+    {"team": "LAC", "identity_status": "confirmed", "play_caller": "Joe Lombardi", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Joe Lombardi in the Chargers' Offensive Playcaller column."},
+    {"team": "LAR", "identity_status": "confirmed", "play_caller": "Sean McVay", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Sean McVay in the Rams' Offensive Playcaller column."},
+    {"team": "LV", "identity_status": "confirmed", "play_caller": "Josh McDaniels", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Josh McDaniels in Las Vegas's Offensive Playcaller column."},
+    {"team": "MIA", "identity_status": "confirmed", "play_caller": "Mike McDaniel", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Mike McDaniel in Miami's Offensive Playcaller column."},
+    {"team": "MIN", "identity_status": "confirmed", "play_caller": "Kevin O'Connell", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Kevin O'Connell in Minnesota's Offensive Playcaller column."},
+    {"team": "NE", "identity_status": "confirmed", "play_caller": "Matt Patricia", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Matt Patricia in New England's Offensive Playcaller column."},
+    {"team": "NO", "identity_status": "confirmed", "play_caller": "Pete Carmichael Jr.", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Pete Carmichael Jr. in New Orleans's Offensive Playcaller column."},
+    {"team": "NYG", "identity_status": "confirmed", "play_caller": "Mike Kafka", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Mike Kafka in the Giants' Offensive Playcaller column."},
+    {"team": "NYJ", "identity_status": "confirmed", "play_caller": "Mike LaFleur", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Mike LaFleur in the Jets' Offensive Playcaller column."},
+    {"team": "PHI", "identity_status": "confirmed", "play_caller": "Shane Steichen", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Shane Steichen in Philadelphia's Offensive Playcaller column."},
+    {"team": "PIT", "identity_status": "confirmed", "play_caller": "Matt Canada", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Matt Canada in Pittsburgh's Offensive Playcaller column."},
+    {"team": "SEA", "identity_status": "confirmed", "play_caller": "Shane Waldron", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Shane Waldron in Seattle's Offensive Playcaller column."},
+    {"team": "SF", "identity_status": "confirmed", "play_caller": "Kyle Shanahan", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Kyle Shanahan in San Francisco's Offensive Playcaller column."},
+    {"team": "TB", "identity_status": "confirmed", "play_caller": "Byron Leftwich", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Byron Leftwich in Tampa Bay's Offensive Playcaller column."},
+    {"team": "TEN", "identity_status": "confirmed", "play_caller": "Todd Downing", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Todd Downing in Tennessee's Offensive Playcaller column."},
+    {"team": "WAS", "identity_status": "confirmed", "play_caller": "Scott Turner", "source_ids": ["espn_clay_staff_table_2022"], "evidence_summary": "The table names Scott Turner in Washington's Offensive Playcaller column."}
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0.0",
+  "as_of": "2026-09-03",
+  "target_season": 2023,
+  "max_supported_week_end": 8,
+  "methodology": {
+    "purpose": "Prevent Weeks 1-6 and Weeks 1-8 team styles from being attributed to an opening caller after an in-window handoff.",
+    "scope": "Complete through Week 8 for the 2023 target season. This registry does not claim to enumerate changes after Week 8.",
+    "audit_protocol": "Start from the August 23 all-team opening census; search every team and opening caller for a handoff, firing, or reassignment through Week 8; verify positive hits with official-club or league reporting; record the first game week called by the replacement.",
+    "rule": "Exclude the entire team-window when the replacement first called plays on or before the window end.",
+    "known_later_changes": "Buffalo, Pittsburgh, Carolina's reversal, and Las Vegas changes after Week 8 do not contaminate either requested window."
+  },
+  "audit_sources": [
+    {
+      "purpose": "Only documented in-window handoff",
+      "url": "https://www.panthers.com/news/frank-reich-hands-off-play-calling-to-thomas-brown"
+    },
+    {
+      "purpose": "Confirms Brown's first game as caller was Week 8",
+      "url": "https://www.panthers.com/news/notebook-thomas-brown-focused-on-winning-his-first-game-as-play-caller"
+    }
+  ],
+  "changes": [
+    {
+      "team": "CAR",
+      "opening_caller": "Frank Reich",
+      "replacement_caller": "Thomas Brown",
+      "first_replacement_week": 8,
+      "reason": "The Panthers officially transferred play-calling from Frank Reich to Thomas Brown during their Week 7 bye, and Brown first called a regular-season game in Week 8. Weeks 1-8 is therefore not a clean opening-caller target; Weeks 1-6 remains eligible.",
+      "source_url": "https://www.panthers.com/news/notebook-thomas-brown-focused-on-winning-his-first-game-as-play-caller"
+    }
+  ]
+}

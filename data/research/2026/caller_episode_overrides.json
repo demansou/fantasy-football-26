@@ -1,0 +1,294 @@
+{
+  "schema_version": "1.0.0",
+  "as_of": "2026-09-02",
+  "methodology": {
+    "purpose": "Audit exceptions to the 2023-2025 opening-day caller censuses and add clean 2021-2022 primary-caller seasons for current 2026 callers.",
+    "full_season_rule": "Only a caller credited with the whole regular season may inherit a team-season style aggregate.",
+    "partial_season_rule": "Partial or shared seasons remain visible as career evidence but receive zero team-season style weight until week-level episode aggregation is implemented.",
+    "title_rule": "Coordinator or head-coach titles alone never create an episode."
+  },
+  "exclusions": [
+    {
+      "season": 2023,
+      "team": "CAR",
+      "caller": "Frank Reich",
+      "reason": "Carolina changed play-calling responsibility during the season and fired Reich after 11 games, so the full Panthers team-season cannot be attributed to him.",
+      "source_url": "https://www.nfl.com/news/panthers-firing-frank-reich-after-1-10-start-to-first-season-in-carolina"
+    },
+    {
+      "season": 2023,
+      "team": "LV",
+      "caller": "Josh McDaniels",
+      "reason": "Las Vegas fired McDaniels after eight games, so the full Raiders team-season cannot be attributed to him.",
+      "source_url": "https://www.raiders.com/news/the-las-vegas-raiders-relieve-josh-mcdaniels-and-david-ziegler-of-their-duties"
+    }
+  ],
+  "additions": [
+    {
+      "season": 2021,
+      "team": "NYJ",
+      "caller": "Mike LaFleur",
+      "coverage": "full_regular_season_primary_caller",
+      "full_team_season_anchor": true,
+      "style_weight": 1.0,
+      "source_url": "https://www.azcardinals.com/news/mike-lafleur-felt-right-in-taking-cardinals-coaching-job-2026",
+      "temporal_use": "historical_identity_evidence",
+      "evidence_summary": "Arizona's official account says LaFleur last called plays full-time as Jets offensive coordinator in 2021-22."
+    },
+    {
+      "season": 2022,
+      "team": "NYJ",
+      "caller": "Mike LaFleur",
+      "coverage": "full_regular_season_primary_caller",
+      "full_team_season_anchor": true,
+      "style_weight": 1.0,
+      "source_url": "https://www.azcardinals.com/news/mike-lafleur-felt-right-in-taking-cardinals-coaching-job-2026",
+      "temporal_use": "historical_identity_evidence",
+      "evidence_summary": "Arizona's official account says LaFleur last called plays full-time as Jets offensive coordinator in 2021-22."
+    },
+    {
+      "season": 2025,
+      "team": "CLE",
+      "caller": "Tommy Rees",
+      "coverage": "weeks_10_through_18_primary_caller",
+      "week_start": 10,
+      "week_end": 18,
+      "full_team_season_anchor": false,
+      "style_weight": 0.0,
+      "source_url": "https://www.atlantafalcons.com/news/tommy-rees-offensive-play-caller-kevin-stefanski",
+      "temporal_use": "historical_partial_season_identity_evidence",
+      "evidence_summary": "Atlanta's official account says Stefanski handed Rees the headset in Week 10 and that Rees called nine NFL games."
+    },
+    {
+      "season": 2022,
+      "team": "DET",
+      "caller": "Ben Johnson",
+      "coverage": "full_regular_season_primary_caller",
+      "full_team_season_anchor": true,
+      "style_weight": 1.0,
+      "source_url": "https://www.espn.com/nfl/story/_/id/38108724/key-intel-all-32-nfl-playcallers-including-mike-mccarthy",
+      "temporal_use": "historical_identity_evidence",
+      "evidence_summary": "The 2023 ESPN census states Johnson took over Detroit play-calling in 2022."
+    },
+    {
+      "season": 2021,
+      "team": "CIN",
+      "caller": "Zac Taylor",
+      "coverage": "full_regular_season_primary_caller",
+      "full_team_season_anchor": true,
+      "style_weight": 1.0,
+      "source_url": "https://www.espn.com/nfl/story/_/id/41018846/nfl-playcallers-32-teams-mike-mcdaniel-sean-mcvay-nathaniel-hackett",
+      "temporal_use": "historical_identity_evidence",
+      "evidence_summary": "The 2024 ESPN census states Taylor called plays in every Bengals season after his 2019 hiring."
+    },
+    {
+      "season": 2022,
+      "team": "CIN",
+      "caller": "Zac Taylor",
+      "coverage": "full_regular_season_primary_caller",
+      "full_team_season_anchor": true,
+      "style_weight": 1.0,
+      "source_url": "https://www.espn.com/nfl/story/_/id/41018846/nfl-playcallers-32-teams-mike-mcdaniel-sean-mcvay-nathaniel-hackett",
+      "temporal_use": "historical_identity_evidence",
+      "evidence_summary": "The 2024 ESPN census states Taylor called plays in every Bengals season after his 2019 hiring."
+    },
+    {
+      "season": 2021,
+      "team": "DAL",
+      "caller": "Kellen Moore",
+      "coverage": "full_regular_season_primary_caller",
+      "full_team_season_anchor": true,
+      "style_weight": 1.0,
+      "source_url": "https://www.espn.com/nfl/story/_/id/41018846/nfl-playcallers-32-teams-mike-mcdaniel-sean-mcvay-nathaniel-hackett",
+      "temporal_use": "historical_identity_evidence",
+      "evidence_summary": "The 2024 ESPN census identifies Moore as Dallas's caller from 2019 through 2022."
+    },
+    {
+      "season": 2022,
+      "team": "DAL",
+      "caller": "Kellen Moore",
+      "coverage": "full_regular_season_primary_caller",
+      "full_team_season_anchor": true,
+      "style_weight": 1.0,
+      "source_url": "https://www.espn.com/nfl/story/_/id/41018846/nfl-playcallers-32-teams-mike-mcdaniel-sean-mcvay-nathaniel-hackett",
+      "temporal_use": "historical_identity_evidence",
+      "evidence_summary": "The 2024 ESPN census identifies Moore as Dallas's caller from 2019 through 2022."
+    },
+    {
+      "season": 2021,
+      "team": "GB",
+      "caller": "Matt LaFleur",
+      "coverage": "full_regular_season_primary_caller",
+      "full_team_season_anchor": true,
+      "style_weight": 1.0,
+      "source_url": "https://www.espn.com/nfl/story/_/id/41018846/nfl-playcallers-32-teams-mike-mcdaniel-sean-mcvay-nathaniel-hackett",
+      "temporal_use": "historical_identity_evidence",
+      "evidence_summary": "The 2024 ESPN census states LaFleur called plays throughout his Packers tenure."
+    },
+    {
+      "season": 2022,
+      "team": "GB",
+      "caller": "Matt LaFleur",
+      "coverage": "full_regular_season_primary_caller",
+      "full_team_season_anchor": true,
+      "style_weight": 1.0,
+      "source_url": "https://www.espn.com/nfl/story/_/id/41018846/nfl-playcallers-32-teams-mike-mcdaniel-sean-mcvay-nathaniel-hackett",
+      "temporal_use": "historical_identity_evidence",
+      "evidence_summary": "The 2024 ESPN census states LaFleur called plays throughout his Packers tenure."
+    },
+    {
+      "season": 2022,
+      "team": "PHI",
+      "caller": "Shane Steichen",
+      "coverage": "full_regular_season_primary_caller",
+      "full_team_season_anchor": true,
+      "style_weight": 1.0,
+      "source_url": "https://www.espn.com/nfl/story/_/id/38108724/key-intel-all-32-nfl-playcallers-including-mike-mccarthy",
+      "temporal_use": "historical_identity_evidence",
+      "evidence_summary": "The 2023 ESPN census credits Steichen with running Philadelphia's offense before Indianapolis hired him."
+    },
+    {
+      "season": 2021,
+      "team": "KC",
+      "caller": "Andy Reid",
+      "coverage": "full_regular_season_primary_caller",
+      "full_team_season_anchor": true,
+      "style_weight": 1.0,
+      "source_url": "https://www.espn.com/nfl/story/_/id/38108724/key-intel-all-32-nfl-playcallers-including-mike-mccarthy",
+      "temporal_use": "historical_identity_evidence",
+      "evidence_summary": "The 2023 ESPN census identifies Reid as the long-running Chiefs primary caller."
+    },
+    {
+      "season": 2022,
+      "team": "KC",
+      "caller": "Andy Reid",
+      "coverage": "full_regular_season_primary_caller",
+      "full_team_season_anchor": true,
+      "style_weight": 1.0,
+      "source_url": "https://www.espn.com/nfl/story/_/id/38108724/key-intel-all-32-nfl-playcallers-including-mike-mccarthy",
+      "temporal_use": "historical_identity_evidence",
+      "evidence_summary": "The 2023 ESPN census identifies Reid as the long-running Chiefs primary caller."
+    },
+    {
+      "season": 2021,
+      "team": "LAR",
+      "caller": "Sean McVay",
+      "coverage": "full_regular_season_primary_caller",
+      "full_team_season_anchor": true,
+      "style_weight": 1.0,
+      "source_url": "https://www.espn.com/nfl/story/_/id/38108724/key-intel-all-32-nfl-playcallers-including-mike-mccarthy",
+      "temporal_use": "historical_identity_evidence",
+      "evidence_summary": "The 2023 ESPN census states McVay has called Rams plays since his 2017 hiring."
+    },
+    {
+      "season": 2022,
+      "team": "LAR",
+      "caller": "Sean McVay",
+      "coverage": "full_regular_season_primary_caller",
+      "full_team_season_anchor": true,
+      "style_weight": 1.0,
+      "source_url": "https://www.espn.com/nfl/story/_/id/38108724/key-intel-all-32-nfl-playcallers-including-mike-mccarthy",
+      "temporal_use": "historical_identity_evidence",
+      "evidence_summary": "The 2023 ESPN census states McVay has called Rams plays since his 2017 hiring."
+    },
+    {
+      "season": 2022,
+      "team": "MIA",
+      "caller": "Mike McDaniel",
+      "coverage": "full_regular_season_primary_caller",
+      "full_team_season_anchor": true,
+      "style_weight": 1.0,
+      "source_url": "https://www.espn.com/nfl/story/_/id/38108724/key-intel-all-32-nfl-playcallers-including-mike-mccarthy",
+      "temporal_use": "historical_identity_evidence",
+      "evidence_summary": "The 2023 ESPN census calls 2022 McDaniel's first season as Miami's primary caller."
+    },
+    {
+      "season": 2022,
+      "team": "MIN",
+      "caller": "Kevin O'Connell",
+      "coverage": "full_regular_season_primary_caller",
+      "full_team_season_anchor": true,
+      "style_weight": 1.0,
+      "source_url": "https://www.espn.com/nfl/story/_/id/38108724/key-intel-all-32-nfl-playcallers-including-mike-mccarthy",
+      "temporal_use": "historical_identity_evidence",
+      "evidence_summary": "The 2023 ESPN census identifies 2022 as O'Connell's first full calling season in Minnesota."
+    },
+    {
+      "season": 2021,
+      "team": "MIN",
+      "caller": "Klint Kubiak",
+      "coverage": "full_regular_season_primary_caller",
+      "full_team_season_anchor": true,
+      "style_weight": 1.0,
+      "source_url": "https://www.espn.com/nfl/story/_/id/41018846/nfl-playcallers-32-teams-mike-mcdaniel-sean-mcvay-nathaniel-hackett",
+      "temporal_use": "historical_identity_evidence",
+      "evidence_summary": "The 2024 ESPN census identifies Kubiak as Minnesota's 2021 offensive coordinator and caller."
+    },
+    {
+      "season": 2021,
+      "team": "NE",
+      "caller": "Josh McDaniels",
+      "coverage": "full_regular_season_primary_caller",
+      "full_team_season_anchor": true,
+      "style_weight": 1.0,
+      "source_url": "https://www.espn.com/nfl/story/_/id/38108724/key-intel-all-32-nfl-playcallers-including-mike-mccarthy",
+      "temporal_use": "historical_identity_evidence",
+      "evidence_summary": "The 2023 ESPN census describes McDaniels's long Patriots play-calling tenure through 2021."
+    },
+    {
+      "season": 2022,
+      "team": "LV",
+      "caller": "Josh McDaniels",
+      "coverage": "full_regular_season_primary_caller",
+      "full_team_season_anchor": true,
+      "style_weight": 1.0,
+      "source_url": "https://www.espn.com/nfl/story/_/id/38108724/key-intel-all-32-nfl-playcallers-including-mike-mccarthy",
+      "temporal_use": "historical_identity_evidence",
+      "evidence_summary": "The 2023 ESPN census identifies McDaniels as Las Vegas's head coach and play caller in 2022."
+    },
+    {
+      "season": 2021,
+      "team": "IND",
+      "caller": "Frank Reich",
+      "coverage": "full_regular_season_primary_caller",
+      "full_team_season_anchor": true,
+      "style_weight": 1.0,
+      "source_url": "https://www.espn.com/nfl/story/_/id/38108724/key-intel-all-32-nfl-playcallers-including-mike-mccarthy",
+      "temporal_use": "historical_identity_evidence",
+      "evidence_summary": "The 2023 ESPN census credits Reich with calling Indianapolis's offense during his head-coaching tenure."
+    },
+    {
+      "season": 2021,
+      "team": "SF",
+      "caller": "Kyle Shanahan",
+      "coverage": "full_regular_season_primary_caller",
+      "full_team_season_anchor": true,
+      "style_weight": 1.0,
+      "source_url": "https://www.espn.com/nfl/story/_/id/38108724/key-intel-all-32-nfl-playcallers-including-mike-mccarthy",
+      "temporal_use": "historical_identity_evidence",
+      "evidence_summary": "The 2023 ESPN census states Shanahan has called San Francisco's offense since 2017."
+    },
+    {
+      "season": 2022,
+      "team": "SF",
+      "caller": "Kyle Shanahan",
+      "coverage": "full_regular_season_primary_caller",
+      "full_team_season_anchor": true,
+      "style_weight": 1.0,
+      "source_url": "https://www.espn.com/nfl/story/_/id/38108724/key-intel-all-32-nfl-playcallers-including-mike-mccarthy",
+      "temporal_use": "historical_identity_evidence",
+      "evidence_summary": "The 2023 ESPN census states Shanahan has called San Francisco's offense since 2017."
+    },
+    {
+      "season": 2021,
+      "team": "BUF",
+      "caller": "Brian Daboll",
+      "coverage": "full_regular_season_primary_caller",
+      "full_team_season_anchor": true,
+      "style_weight": 1.0,
+      "source_url": "https://www.espn.com/nfl/story/_/id/41018846/nfl-playcallers-32-teams-mike-mcdaniel-sean-mcvay-nathaniel-hackett",
+      "temporal_use": "historical_identity_evidence",
+      "evidence_summary": "The 2024 ESPN census identifies Daboll as Buffalo's offensive coordinator and caller from 2018 through 2021."
+    }
+  ]
+}

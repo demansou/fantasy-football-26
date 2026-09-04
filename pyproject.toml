@@ -13,5 +13,5 @@ dependencies = []
 [project.scripts]
 ff-draft = "fantasy_draft.cli:main"
 
-[tool.setuptools]
-packages = ["fantasy_draft"]
+[tool.setuptools.packages.find]
+include = ["fantasy_draft*"]

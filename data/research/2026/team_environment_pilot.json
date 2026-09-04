@@ -1,0 +1,698 @@
+{
+  "schema_version": "1.0.0",
+  "season": 2026,
+  "as_of": "2026-09-02",
+  "sources": [
+    {
+      "id": "kc_staff_2026",
+      "title": "Chiefs Coaches Roster",
+      "publisher": "Kansas City Chiefs",
+      "source_type": "official_team",
+      "url": "https://www.chiefs.com/team/coaches-roster/",
+      "published_at": null,
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "kc_bieniemy_hire_2026",
+      "title": "Chiefs Name Eric Bieniemy as Offensive Coordinator",
+      "publisher": "Kansas City Chiefs",
+      "source_type": "official_team",
+      "url": "https://www.chiefs.com/news/chiefs-name-eric-bieniemy-as-offensive-coordinator",
+      "published_at": "2026-01-23",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "kc_staff_additions_2026",
+      "title": "Chiefs Announce Coaching Staff Additions",
+      "publisher": "Kansas City Chiefs",
+      "source_type": "official_team",
+      "url": "https://www.chiefs.com/news/chiefs-announce-coaching-staff-additions",
+      "published_at": "2026-02-14",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "kc_bieniemy_vision_2026",
+      "title": "Eric Bieniemy Outlines His Vision as Offensive Coordinator",
+      "publisher": "Kansas City Chiefs",
+      "source_type": "official_team",
+      "url": "https://www.chiefs.com/news/eric-bieniemy-outlines-his-vision-as-offensive-coordinator",
+      "published_at": "2026-01-28",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "kc_playcaller_report_2026",
+      "title": "Eric Bieniemy rehired, Andy Reid remains Chiefs play-caller",
+      "publisher": "The Kansas City Star",
+      "source_type": "credentialed_local",
+      "url": "https://www.kansascity.com/sports/nfl/kansas-city-chiefs/article314461095.html",
+      "published_at": "2026-01-26",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "sea_staff_2026",
+      "title": "Seahawks Finalize 2026 Coaching Staff",
+      "publisher": "Seattle Seahawks",
+      "source_type": "official_team",
+      "url": "https://www.seahawks.com/news/seattle-seahawks-finalize-2026-coaching-staff",
+      "published_at": "2026-03-12",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "sea_fleury_hire_2026",
+      "title": "Seahawks Hire Offensive Coordinator Brian Fleury",
+      "publisher": "Seattle Seahawks",
+      "source_type": "official_team",
+      "url": "https://www.seahawks.com/news/seahawks-hire-offensive-coordinator-brian-fleury",
+      "published_at": "2026-02-19",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "sea_continuity_camp_2026",
+      "title": "Offensive Coordinator Brian Fleury Brings Familiarity, Fresh Ideas To Seahawks Offense",
+      "publisher": "Seattle Seahawks",
+      "source_type": "official_team",
+      "url": "https://www.seahawks.com/news/offensive-coordinator-brian-fleury-brings-familiarity-fresh-ideas-to-seahawks-offense",
+      "published_at": "2026-07-30",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "sea_playcaller_camp_2026",
+      "title": "Takeaways From Seahawks Coordinators Brian Fleury, Aden Durde and Jay Harbaugh",
+      "publisher": "Seattle Seahawks",
+      "source_type": "official_team",
+      "url": "https://www.seahawks.com/news/takeaways-from-seahawks-coordinators-brian-fleury-aden-durde-jay-harbaugh",
+      "published_at": "2026-08-04",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "sea_darnold_fleury_2026",
+      "title": "Seahawks QB Sam Darnold Sees Incredible Command From New Offensive Coordinator Brian Fleury",
+      "publisher": "Seattle Seahawks",
+      "source_type": "official_team",
+      "url": "https://www.seahawks.com/news/seahawks-qb-sam-darnold-sees-incredible-command-from-new-offensive-coordinator-brian-fleury",
+      "published_at": "2026-06-04",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "phi_staff_2026",
+      "title": "Philadelphia Eagles Coaches",
+      "publisher": "Philadelphia Eagles",
+      "source_type": "official_team",
+      "url": "https://www.philadelphiaeagles.com/team/coaches/",
+      "published_at": null,
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "phi_mannion_hire_2026",
+      "title": "Eagles are hiring Sean Mannion as offensive coordinator",
+      "publisher": "Philadelphia Eagles",
+      "source_type": "official_team",
+      "url": "https://www.philadelphiaeagles.com/news/eagles-sean-mannion-offensive-coordinator-hire",
+      "published_at": "2026-01-29",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "phi_mannion_first_caller_2026",
+      "title": "Eagles coach Nick Sirianni not worried about putting inexperienced Sean Mannion in charge of offense",
+      "publisher": "NFL.com",
+      "source_type": "official_league",
+      "url": "https://www.nfl.com/news/eagles-coach-nick-sirianni-not-worried-about-putting-inexperienced-sean-mannion-in-charge-of-offense",
+      "published_at": "2026-07-21",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "phi_mannion_intentions_2026",
+      "title": "New Eagles offensive coordinator Sean Mannion will lean into using tush push, making Saquon Barkley focal point",
+      "publisher": "NFL.com",
+      "source_type": "official_league",
+      "url": "https://www.nfl.com/news/new-eagles-offensive-coordinator-sean-mannion-will-lean-into-using-tush-push-making-saquon-barkley-focal-point-of-our-offense",
+      "published_at": "2026-08-09",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "phi_stoutland_exit_2026",
+      "title": "Eagles honor Jeff Stoutland for his legendary contributions to the game of football",
+      "publisher": "Philadelphia Eagles",
+      "source_type": "official_team",
+      "url": "https://www.philadelphiaeagles.com/news/eagles-honor-jeff-stoutland",
+      "published_at": "2026-02-04",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "phi_kuper_scheme_2026",
+      "title": "Chris Kuper: Players, if you can help them, are going to listen",
+      "publisher": "Philadelphia Eagles",
+      "source_type": "official_team",
+      "url": "https://www.philadelphiaeagles.com/news/chris-kuper-players-if-you-can-help-them-are-going-to-listen",
+      "published_at": "2026-07-16",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "phi_oline_continuity_2026",
+      "title": "Eagles 2026 Training Camp Position Preview: Offensive Line",
+      "publisher": "Philadelphia Eagles",
+      "source_type": "official_team",
+      "url": "https://www.philadelphiaeagles.com/news/eagles-2026-training-camp-position-preview-offensive-line",
+      "published_at": "2026-07-10",
+      "accessed_at": "2026-09-02"
+    },
+    {
+      "id": "phi_frazier_role_2026",
+      "title": "Inside Parks Frazier's quarterback room",
+      "publisher": "Philadelphia Eagles",
+      "source_type": "official_team",
+      "url": "https://www.philadelphiaeagles.com/news/inside-parks-frazier-s-quarterback-room",
+      "published_at": "2026-06-24",
+      "accessed_at": "2026-09-02"
+    }
+  ],
+  "teams": [
+    {
+      "team": "KC",
+      "scheme_family": "Andy Reid West Coast spread and RPO multiplicity",
+      "scheme_continuity": 0.95,
+      "scheme_rationale": "Reid remains the offensive architect and reported play caller, while Bieniemy returns to the coordinator role he held from 2018 through 2022.",
+      "scheme_source_ids": [
+        "kc_staff_2026",
+        "kc_bieniemy_hire_2026",
+        "kc_bieniemy_vision_2026",
+        "kc_playcaller_report_2026"
+      ],
+      "returning_starters_fraction": null,
+      "personnel_source_ids": [],
+      "staff": [
+        {
+          "name": "Andy Reid",
+          "roles": ["Head Coach", "Offensive Architect", "Play Caller"],
+          "continuity": "returning_same_role",
+          "influence_dimensions": [
+            "volume",
+            "pass_run_tendency",
+            "pace",
+            "formation",
+            "passing_profile",
+            "target_distribution",
+            "explosiveness",
+            "efficiency",
+            "run_concepts",
+            "pass_concepts",
+            "red_zone"
+          ],
+          "influence_weight": 3.0,
+          "source_ids": ["kc_staff_2026", "kc_playcaller_report_2026"],
+          "is_head_coach": true,
+          "is_play_caller": true,
+          "playcaller_confirmation": "reported",
+          "completed_nfl_playcalling_seasons": 13
+        },
+        {
+          "name": "Eric Bieniemy",
+          "roles": ["Offensive Coordinator"],
+          "continuity": "returning_after_gap",
+          "influence_dimensions": [
+            "pass_run_tendency",
+            "pace",
+            "formation",
+            "target_distribution",
+            "run_concepts",
+            "pass_concepts",
+            "red_zone"
+          ],
+          "influence_weight": 2.0,
+          "source_ids": ["kc_bieniemy_hire_2026", "kc_bieniemy_vision_2026"]
+        },
+        {
+          "name": "Joe Bleymaier",
+          "roles": ["Pass Game Coordinator"],
+          "continuity": "returning_same_role",
+          "influence_dimensions": ["formation", "passing_profile", "target_distribution", "pass_concepts"],
+          "influence_weight": 1.5,
+          "source_ids": ["kc_staff_2026"]
+        },
+        {
+          "name": "David Girardi",
+          "roles": ["Quarterbacks"],
+          "continuity": "returning_same_role",
+          "influence_dimensions": ["passing_profile", "quarterback_run", "pass_concepts"],
+          "influence_weight": 1.0,
+          "source_ids": ["kc_staff_2026"]
+        },
+        {
+          "name": "Dan Williams",
+          "roles": ["Assistant Quarterbacks"],
+          "continuity": "unknown",
+          "influence_dimensions": ["passing_profile", "quarterback_run"],
+          "influence_weight": 0.5,
+          "source_ids": ["kc_staff_2026"]
+        },
+        {
+          "name": "DeMarco Murray",
+          "roles": ["Running Backs"],
+          "continuity": "new_to_team",
+          "influence_dimensions": ["target_distribution", "run_concepts", "red_zone"],
+          "influence_weight": 1.0,
+          "source_ids": ["kc_staff_2026", "kc_staff_additions_2026"]
+        },
+        {
+          "name": "Chad O'Shea",
+          "roles": ["Wide Receivers"],
+          "continuity": "new_to_team",
+          "influence_dimensions": ["passing_profile", "target_distribution", "pass_concepts"],
+          "influence_weight": 1.0,
+          "source_ids": ["kc_staff_2026", "kc_staff_additions_2026"]
+        },
+        {
+          "name": "Tom Melvin",
+          "roles": ["Tight Ends"],
+          "continuity": "returning_same_role",
+          "influence_dimensions": ["target_distribution", "run_concepts", "pass_concepts"],
+          "influence_weight": 1.0,
+          "source_ids": ["kc_staff_2026"]
+        },
+        {
+          "name": "Andy Heck",
+          "roles": ["Offensive Line"],
+          "continuity": "returning_same_role",
+          "influence_dimensions": ["efficiency", "run_concepts", "pass_concepts"],
+          "influence_weight": 1.5,
+          "source_ids": ["kc_staff_2026"]
+        },
+        {
+          "name": "Corey Matthaei",
+          "roles": ["Assistant Offensive Line"],
+          "continuity": "unknown",
+          "influence_dimensions": ["run_concepts", "pass_concepts"],
+          "influence_weight": 0.5,
+          "source_ids": ["kc_staff_2026"]
+        },
+        {
+          "name": "Nate Pagan",
+          "roles": ["Offensive Quality Control"],
+          "continuity": "new_to_team",
+          "influence_dimensions": ["pass_concepts"],
+          "influence_weight": 0.5,
+          "source_ids": ["kc_staff_2026", "kc_staff_additions_2026"]
+        }
+      ],
+      "historical_anchors": [
+        {"team": "KC", "season": 2021, "weight": 1.0, "reason": "Reid and Bieniemy in the same roles"},
+        {"team": "KC", "season": 2022, "weight": 1.2, "reason": "Reid and Bieniemy in the same roles"},
+        {"team": "KC", "season": 2023, "weight": 0.7, "reason": "Reid retained as offensive architect under a different coordinator"},
+        {"team": "KC", "season": 2024, "weight": 0.8, "reason": "Reid retained as offensive architect under a different coordinator"},
+        {"team": "KC", "season": 2025, "weight": 1.0, "reason": "Most recent Reid offense"}
+      ],
+      "claims": [
+        {
+          "id": "kc_reid_playcaller_continues",
+          "source_id": "kc_playcaller_report_2026",
+          "summary": "A credentialed local report says Reid remains the play caller after Bieniemy's return.",
+          "evidence_type": "staff_fact",
+          "dimensions": ["pass_run_tendency", "pace", "formation", "passing_profile", "red_zone"],
+          "reliability": 0.85,
+          "strength": 1.0,
+          "certainty_effect": 1.0,
+          "metric_signals": {}
+        },
+        {
+          "id": "kc_bieniemy_system_familiarity",
+          "source_id": "kc_bieniemy_vision_2026",
+          "summary": "Reid described Bieniemy's prior system familiarity as continuity while also valuing ideas learned during his time away.",
+          "evidence_type": "direct_quote",
+          "dimensions": ["pass_run_tendency", "formation", "run_concepts", "pass_concepts"],
+          "reliability": 0.95,
+          "strength": 0.8,
+          "certainty_effect": 0.8,
+          "metric_signals": {}
+        }
+      ]
+    },
+    {
+      "team": "SEA",
+      "scheme_family": "Shanahan-Kubiak West Coast and wide-zone family",
+      "scheme_continuity": 0.9,
+      "scheme_rationale": "Fleury replaces Kubiak but comes from the same Shanahan lineage; Seattle retained most offensive coaches and explicitly prioritized carrying forward the 2025 foundation.",
+      "scheme_source_ids": ["sea_fleury_hire_2026", "sea_continuity_camp_2026"],
+      "returning_starters_fraction": 0.909091,
+      "personnel_source_ids": ["sea_continuity_camp_2026"],
+      "staff": [
+        {
+          "name": "Mike Macdonald",
+          "roles": ["Head Coach"],
+          "continuity": "returning_same_role",
+          "influence_dimensions": ["volume", "pass_run_tendency", "pace"],
+          "influence_weight": 1.5,
+          "source_ids": ["sea_staff_2026"],
+          "is_head_coach": true
+        },
+        {
+          "name": "Brian Fleury",
+          "roles": ["Offensive Coordinator", "Play Caller"],
+          "continuity": "new_to_team",
+          "influence_dimensions": [
+            "volume",
+            "pass_run_tendency",
+            "pace",
+            "formation",
+            "passing_profile",
+            "target_distribution",
+            "explosiveness",
+            "efficiency",
+            "run_concepts",
+            "pass_concepts",
+            "red_zone"
+          ],
+          "influence_weight": 2.5,
+          "source_ids": ["sea_fleury_hire_2026", "sea_playcaller_camp_2026"],
+          "is_play_caller": true,
+          "playcaller_confirmation": "official",
+          "completed_nfl_playcalling_seasons": 0
+        },
+        {
+          "name": "John Benton",
+          "roles": ["Senior Offensive Assistant", "Offensive Line"],
+          "continuity": "returning_same_role",
+          "influence_dimensions": ["efficiency", "run_concepts", "pass_concepts"],
+          "influence_weight": 1.5,
+          "source_ids": ["sea_staff_2026", "sea_continuity_camp_2026"]
+        },
+        {
+          "name": "Justin Outten",
+          "roles": ["Run Game Coordinator"],
+          "continuity": "returning_changed_role",
+          "influence_dimensions": ["pass_run_tendency", "run_concepts", "red_zone"],
+          "influence_weight": 1.5,
+          "source_ids": ["sea_staff_2026"]
+        },
+        {
+          "name": "Jake Peetz",
+          "roles": ["Offensive Passing Game Coordinator", "Quarterbacks"],
+          "continuity": "returning_same_role",
+          "influence_dimensions": ["formation", "passing_profile", "quarterback_run", "target_distribution", "pass_concepts"],
+          "influence_weight": 1.5,
+          "source_ids": ["sea_staff_2026", "sea_continuity_camp_2026"]
+        },
+        {
+          "name": "Tyson Prince",
+          "roles": ["Quarterbacks"],
+          "continuity": "returning_same_role",
+          "influence_dimensions": ["passing_profile", "quarterback_run"],
+          "influence_weight": 1.0,
+          "source_ids": ["sea_staff_2026", "sea_continuity_camp_2026"]
+        },
+        {
+          "name": "Thomas Hammock",
+          "roles": ["Senior Offensive Assistant", "Running Backs"],
+          "continuity": "new_to_team",
+          "influence_dimensions": ["target_distribution", "run_concepts", "red_zone"],
+          "influence_weight": 1.0,
+          "source_ids": ["sea_staff_2026", "sea_continuity_camp_2026"]
+        },
+        {
+          "name": "Frisman Jackson",
+          "roles": ["Wide Receivers"],
+          "continuity": "returning_same_role",
+          "influence_dimensions": ["passing_profile", "target_distribution", "pass_concepts"],
+          "influence_weight": 1.0,
+          "source_ids": ["sea_staff_2026", "sea_continuity_camp_2026"]
+        },
+        {
+          "name": "Mack Brown",
+          "roles": ["Tight Ends"],
+          "continuity": "returning_same_role",
+          "influence_dimensions": ["target_distribution", "run_concepts", "pass_concepts"],
+          "influence_weight": 1.0,
+          "source_ids": ["sea_staff_2026", "sea_continuity_camp_2026"]
+        },
+        {
+          "name": "Michael Byrne",
+          "roles": ["Assistant Tight Ends"],
+          "continuity": "returning_same_role",
+          "influence_dimensions": ["target_distribution", "run_concepts"],
+          "influence_weight": 0.5,
+          "source_ids": ["sea_staff_2026", "sea_continuity_camp_2026"]
+        },
+        {
+          "name": "Quinshon Odom",
+          "roles": ["Assistant Offensive Line"],
+          "continuity": "returning_same_role",
+          "influence_dimensions": ["run_concepts", "pass_concepts"],
+          "influence_weight": 0.5,
+          "source_ids": ["sea_staff_2026", "sea_continuity_camp_2026"]
+        },
+        {
+          "name": "Daniel Stern",
+          "roles": ["Pass-Game Strategist"],
+          "continuity": "new_to_team",
+          "influence_dimensions": ["formation", "passing_profile", "pass_concepts"],
+          "influence_weight": 0.5,
+          "source_ids": ["sea_staff_2026", "sea_continuity_camp_2026"]
+        },
+        {
+          "name": "Johnathan Williams",
+          "roles": ["Offensive Assistant"],
+          "continuity": "new_to_team",
+          "influence_dimensions": ["pass_concepts"],
+          "influence_weight": 0.5,
+          "source_ids": ["sea_staff_2026", "sea_continuity_camp_2026"]
+        }
+      ],
+      "historical_anchors": [
+        {"team": "SEA", "season": 2024, "weight": 0.2, "reason": "Same head coach and partial organizational context, but a different coordinator"},
+        {"team": "SEA", "season": 2025, "weight": 1.5, "reason": "Foundation Seattle explicitly intends to maintain"},
+        {"team": "SF", "season": 2023, "weight": 0.3, "reason": "Fleury coached in the same Shanahan system"},
+        {"team": "SF", "season": 2024, "weight": 0.35, "reason": "Fleury coached in the same Shanahan system"},
+        {"team": "SF", "season": 2025, "weight": 0.45, "reason": "Fleury was run game coordinator and tight ends coach"}
+      ],
+      "claims": [
+        {
+          "id": "sea_system_carryover",
+          "source_id": "sea_continuity_camp_2026",
+          "summary": "Seattle says the 2025 foundation remains while Fleury adds selected new concepts; most offensive staff and ten of eleven starters returned.",
+          "evidence_type": "direct_quote",
+          "dimensions": ["pass_run_tendency", "formation", "passing_profile", "target_distribution", "run_concepts", "pass_concepts"],
+          "reliability": 0.95,
+          "strength": 0.9,
+          "certainty_effect": 0.9,
+          "metric_signals": {}
+        },
+        {
+          "id": "sea_first_time_nfl_caller",
+          "source_id": "sea_playcaller_camp_2026",
+          "summary": "Fleury is the confirmed caller but has not previously called plays in the NFL.",
+          "evidence_type": "staff_fact",
+          "dimensions": ["pass_run_tendency", "pace", "red_zone"],
+          "reliability": 1.0,
+          "strength": 1.0,
+          "certainty_effect": -0.8,
+          "metric_signals": {}
+        },
+        {
+          "id": "sea_camp_faster_operation",
+          "source_id": "sea_continuity_camp_2026",
+          "summary": "A veteran defender observed a faster offensive operation and quicker pre-snap communication during camp.",
+          "evidence_type": "practice_observation",
+          "dimensions": ["volume", "pace"],
+          "reliability": 0.65,
+          "strength": 0.55,
+          "certainty_effect": 0.1,
+          "metric_signals": {"no_huddle_rate": 0.6, "plays_per_game": 0.35}
+        },
+        {
+          "id": "sea_physical_run_intent",
+          "source_id": "sea_continuity_camp_2026",
+          "summary": "Seattle players described a continued physical, smash-mouth offensive identity.",
+          "evidence_type": "direct_quote",
+          "dimensions": ["pass_run_tendency", "run_concepts"],
+          "reliability": 0.65,
+          "strength": 0.5,
+          "certainty_effect": 0.25,
+          "metric_signals": {"pass_rate": -0.35, "neutral_early_down_pass_rate": -0.35}
+        }
+      ]
+    },
+    {
+      "team": "PHI",
+      "scheme_family": "Sean Mannion blend of LaFleur-McVay background with retained Eagles run-game anchors",
+      "scheme_continuity": 0.35,
+      "scheme_rationale": "Mannion is installing and calling a new offense, the run and pass coordinators are new, and the offensive-line coach changed after thirteen seasons; team-specific rushing and short-yardage anchors remain.",
+      "scheme_source_ids": [
+        "phi_mannion_hire_2026",
+        "phi_mannion_first_caller_2026",
+        "phi_mannion_intentions_2026",
+        "phi_stoutland_exit_2026",
+        "phi_kuper_scheme_2026"
+      ],
+      "returning_starters_fraction": null,
+      "personnel_source_ids": ["phi_oline_continuity_2026"],
+      "staff": [
+        {
+          "name": "Nick Sirianni",
+          "roles": ["Head Coach"],
+          "continuity": "returning_same_role",
+          "influence_dimensions": ["volume", "pass_run_tendency", "pace", "red_zone"],
+          "influence_weight": 1.5,
+          "source_ids": ["phi_staff_2026"],
+          "is_head_coach": true
+        },
+        {
+          "name": "Sean Mannion",
+          "roles": ["Offensive Coordinator", "Play Caller"],
+          "continuity": "new_to_team",
+          "influence_dimensions": [
+            "volume",
+            "pass_run_tendency",
+            "pace",
+            "formation",
+            "passing_profile",
+            "target_distribution",
+            "explosiveness",
+            "efficiency",
+            "run_concepts",
+            "pass_concepts",
+            "red_zone"
+          ],
+          "influence_weight": 2.5,
+          "source_ids": ["phi_mannion_hire_2026", "phi_mannion_first_caller_2026"],
+          "is_play_caller": true,
+          "playcaller_confirmation": "official",
+          "completed_nfl_playcalling_seasons": 0
+        },
+        {
+          "name": "Josh Grizzard",
+          "roles": ["Offensive Passing Game Coordinator"],
+          "continuity": "new_to_team",
+          "influence_dimensions": ["formation", "passing_profile", "target_distribution", "pass_concepts"],
+          "influence_weight": 1.5,
+          "source_ids": ["phi_staff_2026"]
+        },
+        {
+          "name": "Ryan Mahaffey",
+          "roles": ["Run Game Coordinator", "Tight Ends"],
+          "continuity": "new_to_team",
+          "influence_dimensions": ["pass_run_tendency", "target_distribution", "run_concepts", "red_zone"],
+          "influence_weight": 1.5,
+          "source_ids": ["phi_staff_2026"]
+        },
+        {
+          "name": "Parks Frazier",
+          "roles": ["Quarterbacks"],
+          "continuity": "returning_changed_role",
+          "influence_dimensions": ["passing_profile", "quarterback_run", "pass_concepts"],
+          "influence_weight": 1.0,
+          "source_ids": ["phi_staff_2026", "phi_frazier_role_2026"]
+        },
+        {
+          "name": "Jemal Singleton",
+          "roles": ["Running Backs", "Assistant Head Coach"],
+          "continuity": "returning_same_role",
+          "influence_dimensions": ["target_distribution", "run_concepts", "red_zone"],
+          "influence_weight": 1.0,
+          "source_ids": ["phi_staff_2026"]
+        },
+        {
+          "name": "Aaron Moorehead",
+          "roles": ["Wide Receivers"],
+          "continuity": "returning_same_role",
+          "influence_dimensions": ["passing_profile", "target_distribution", "pass_concepts"],
+          "influence_weight": 1.0,
+          "source_ids": ["phi_staff_2026"]
+        },
+        {
+          "name": "Chris Kuper",
+          "roles": ["Offensive Line"],
+          "continuity": "new_to_team",
+          "influence_dimensions": ["efficiency", "run_concepts", "pass_concepts"],
+          "influence_weight": 1.5,
+          "source_ids": ["phi_staff_2026", "phi_kuper_scheme_2026", "phi_stoutland_exit_2026"]
+        },
+        {
+          "name": "Greg Austin",
+          "roles": ["Assistant Offensive Line"],
+          "continuity": "returning_same_role",
+          "influence_dimensions": ["run_concepts", "pass_concepts"],
+          "influence_weight": 0.5,
+          "source_ids": ["phi_staff_2026"]
+        },
+        {
+          "name": "Eric Dickerson",
+          "roles": ["Offensive Assistant", "Assistant Tight Ends"],
+          "continuity": "unknown",
+          "influence_dimensions": ["target_distribution", "run_concepts"],
+          "influence_weight": 0.5,
+          "source_ids": ["phi_staff_2026"]
+        },
+        {
+          "name": "Montgomery VanGorder",
+          "roles": ["Offensive Assistant", "Assistant Quarterbacks"],
+          "continuity": "unknown",
+          "influence_dimensions": ["passing_profile", "quarterback_run"],
+          "influence_weight": 0.5,
+          "source_ids": ["phi_staff_2026"]
+        }
+      ],
+      "historical_anchors": [
+        {"team": "PHI", "season": 2024, "weight": 0.7, "reason": "Retained Sirianni, quarterback, rushing identity and core personnel"},
+        {"team": "PHI", "season": 2025, "weight": 0.9, "reason": "Most recent team-specific personnel and organizational baseline"},
+        {"team": "GB", "season": 2024, "weight": 0.3, "reason": "Mannion worked as an offensive assistant under Matt LaFleur"},
+        {"team": "GB", "season": 2025, "weight": 0.4, "reason": "Mannion coached quarterbacks under Matt LaFleur"}
+      ],
+      "claims": [
+        {
+          "id": "phi_new_first_time_caller",
+          "source_id": "phi_mannion_first_caller_2026",
+          "summary": "Mannion is a first-time NFL play caller installing a new offense, and Philadelphia is on its fifth offensive coordinator in six seasons.",
+          "evidence_type": "staff_fact",
+          "dimensions": ["pass_run_tendency", "pace", "formation", "passing_profile", "target_distribution", "run_concepts", "pass_concepts", "red_zone"],
+          "reliability": 0.95,
+          "strength": 1.0,
+          "certainty_effect": -1.0,
+          "metric_signals": {}
+        },
+        {
+          "id": "phi_run_playpass_anchor",
+          "source_id": "phi_mannion_intentions_2026",
+          "summary": "Mannion identified Barkley as a focal point and described a run foundation married to play-pass and keeper concepts.",
+          "evidence_type": "direct_quote",
+          "dimensions": ["pass_run_tendency", "run_concepts", "pass_concepts"],
+          "reliability": 0.85,
+          "strength": 0.7,
+          "certainty_effect": 0.5,
+          "metric_signals": {"pass_rate": -0.45, "neutral_early_down_pass_rate": -0.35}
+        },
+        {
+          "id": "phi_tush_push_retained",
+          "source_id": "phi_mannion_intentions_2026",
+          "summary": "Mannion said Philadelphia intends to retain its established short-yardage quarterback-push package.",
+          "evidence_type": "direct_quote",
+          "dimensions": ["quarterback_run", "red_zone"],
+          "reliability": 0.9,
+          "strength": 0.8,
+          "certainty_effect": 0.8,
+          "metric_signals": {"designed_qb_run_share": 0.7}
+        },
+        {
+          "id": "phi_line_coach_scheme_change",
+          "source_id": "phi_kuper_scheme_2026",
+          "summary": "Philadelphia's offensive line is undergoing its first position-coach and blocking-scheme change after Stoutland's long tenure.",
+          "evidence_type": "staff_fact",
+          "dimensions": ["efficiency", "run_concepts", "pass_concepts"],
+          "reliability": 0.95,
+          "strength": 0.85,
+          "certainty_effect": -0.8,
+          "metric_signals": {}
+        },
+        {
+          "id": "phi_line_starters_return",
+          "source_id": "phi_oline_continuity_2026",
+          "summary": "All five starting offensive linemen return even though their position coach and blocking scheme changed.",
+          "evidence_type": "staff_fact",
+          "dimensions": ["efficiency", "run_concepts", "pass_concepts"],
+          "reliability": 0.95,
+          "strength": 0.75,
+          "certainty_effect": 0.5,
+          "metric_signals": {}
+        }
+      ]
+    }
+  ]
+}

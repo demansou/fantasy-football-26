@@ -7,7 +7,7 @@ const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin']
 const siteOrigin = process.env.NEXT_PUBLIC_SITE_ORIGIN ?? 'https://fantasy-football-26.vista-verde-6860.chatgpt.site';
 
 const title = 'Draft Room — Fantasy Football 2026';
-const description = 'A live Yahoo PPR draft board with team-context analytics and adjustable positional weights.';
+const description = 'Live 2026 PPR player rankings grounded in NFL opportunity, team environment, and market timing.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteOrigin),
