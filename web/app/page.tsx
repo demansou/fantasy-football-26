@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  Fragment,
   useEffect,
   useMemo,
   useState,
@@ -11,6 +12,7 @@ import {
   Check,
   Database,
   DraftingCompass,
+  LayoutGrid,
   RefreshCw,
   RotateCcw,
   Search,
@@ -213,6 +215,15 @@ function nextPickForTeam(start: number, teamCount: number, teamIndex: number) {
   let pick = start;
   while (ownerForPick(pick, teamCount) !== teamIndex) pick += 1;
   return pick;
+}
+
+function pickForRoundAndTeam(
+  round: number,
+  teamIndex: number,
+  teamCount: number,
+) {
+  const offset = round % 2 ? teamIndex : teamCount - 1 - teamIndex;
+  return (round - 1) * teamCount + offset + 1;
 }
 
 function isValidWeights(value: unknown): value is Weights {
@@ -563,6 +574,10 @@ export default function Home() {
   const [benchCount, setBenchCount] = useState(DEFAULT_BENCH_COUNT);
   const [teamNames, setTeamNames] = useState(() => defaultTeamNames(5));
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [boardOpen, setBoardOpen] = useState(false);
+  const [editingPickOverall, setEditingPickOverall] = useState<number | null>(
+    null,
+  );
   const [pendingTeamCount, setPendingTeamCount] = useState(10);
   const [pendingDraftSlot, setPendingDraftSlot] = useState(5);
   const [pendingBenchCount, setPendingBenchCount] =
@@ -820,7 +835,21 @@ export default function Home() {
       return { slot, player };
     });
   }, [benchCount, myPlayers]);
-  const draft = (playerId: string) =>
+  const editingPick =
+    editingPickOverall === null ? null : picks[editingPickOverall - 1];
+  const editingPlayer = editingPick
+    ? players.find((player) => player.id === editingPick.playerId)
+    : null;
+  const draft = (playerId: string) => {
+    if (editingPickOverall !== null) {
+      setPicks((current) =>
+        current.map((pick) =>
+          pick.overall === editingPickOverall ? { ...pick, playerId } : pick,
+        ),
+      );
+      setEditingPickOverall(null);
+      return;
+    }
     setPicks((current) => [
       ...current,
       {
@@ -829,6 +858,7 @@ export default function Home() {
         teamIndex: ownerForPick(current.length + 1, teamCount),
       },
     ]);
+  };
   const openSettings = (open: boolean) => {
     if (open) {
       setPendingTeamCount(teamCount);
@@ -849,12 +879,16 @@ export default function Home() {
         Math.min(pendingDraftSlot, pendingTeamCount),
       ),
     );
-    if (teamCountChanged) setPicks([]);
+    if (teamCountChanged) {
+      setPicks([]);
+      setEditingPickOverall(null);
+    }
     setSettingsOpen(false);
   };
   const teamCountWillResetDraft = pendingTeamCount !== teamCount;
   const resetBoard = () => {
     setPicks([]);
+    setEditingPickOverall(null);
     setSettingsOpen(false);
   };
   const avgDraftRank = myPlayers.length
@@ -993,6 +1027,106 @@ export default function Home() {
                   Read the methodology
                 </a>
               </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          <Dialog open={boardOpen} onOpenChange={setBoardOpen}>
+            <DialogTrigger render={<Button variant="outline" size="sm" />}>
+              <LayoutGrid /> <span>Board</span>
+            </DialogTrigger>
+            <DialogContent className="draft-board-dialog">
+              <DialogHeader>
+                <DialogTitle>League draft board</DialogTitle>
+                <DialogDescription>
+                  Every pick in snake order. Select a completed pick to correct
+                  its player without changing later picks.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="draft-board-scroll">
+                <div
+                  className="draft-board-grid"
+                  style={{
+                    gridTemplateColumns: `64px repeat(${teamCount}, minmax(142px, 1fr))`,
+                  }}
+                >
+                  <div className="draft-board-corner">Round</div>
+                  {teamNames.slice(0, teamCount).map((teamName, teamIndex) => (
+                    <div
+                      className={
+                        teamIndex === myTeamIndex
+                          ? 'draft-team-heading is-mine'
+                          : 'draft-team-heading'
+                      }
+                      key={`team-${teamIndex}`}
+                    >
+                      <strong>{teamName}</strong>
+                      <span>Pick {teamIndex + 1}</span>
+                    </div>
+                  ))}
+                  {Array.from(
+                    { length: STARTER_SLOTS.length + benchCount },
+                    (_, roundIndex) => {
+                      const round = roundIndex + 1;
+                      return (
+                        <Fragment key={`round-${round}`}>
+                          <div className="draft-round-label">{round}</div>
+                          {Array.from({ length: teamCount }, (_, teamIndex) => {
+                            const overall = pickForRoundAndTeam(
+                              round,
+                              teamIndex,
+                              teamCount,
+                            );
+                            const pick = picks[overall - 1];
+                            const player = pick
+                              ? players.find(
+                                  (candidate) => candidate.id === pick.playerId,
+                                )
+                              : null;
+                            const isCurrent = overall === currentPick;
+                            return (
+                              <button
+                                aria-label={
+                                  player
+                                    ? `Correct pick ${overall}, ${player.name}, ${teamNames[teamIndex]}`
+                                    : `Pick ${overall}, ${teamNames[teamIndex]}${isCurrent ? ', currently on the clock' : ''}`
+                                }
+                                className={[
+                                  'draft-board-cell',
+                                  player ? 'is-filled' : '',
+                                  isCurrent ? 'is-current' : '',
+                                  teamIndex === myTeamIndex ? 'is-mine' : '',
+                                ]
+                                  .filter(Boolean)
+                                  .join(' ')}
+                                disabled={!player}
+                                key={`pick-${overall}`}
+                                onClick={() => {
+                                  setEditingPickOverall(overall);
+                                  setBoardOpen(false);
+                                }}
+                                type="button"
+                              >
+                                <span>{overall}</span>
+                                {player ? (
+                                  <>
+                                    <strong>{player.name}</strong>
+                                    <small>
+                                      {player.position} · {player.team}
+                                    </small>
+                                  </>
+                                ) : (
+                                  <strong>
+                                    {isCurrent ? 'On clock' : '—'}
+                                  </strong>
+                                )}
+                              </button>
+                            );
+                          })}
+                        </Fragment>
+                      );
+                    },
+                  )}
+                </div>
+              </div>
             </DialogContent>
           </Dialog>
           <Dialog open={settingsOpen} onOpenChange={openSettings}>
@@ -1147,7 +1281,10 @@ export default function Home() {
             variant="outline"
             size="sm"
             disabled={!picks.length}
-            onClick={() => setPicks((current) => current.slice(0, -1))}
+            onClick={() => {
+              setEditingPickOverall(null);
+              setPicks((current) => current.slice(0, -1));
+            }}
           >
             <Undo2 /> Undo
           </Button>
@@ -1277,6 +1414,24 @@ export default function Home() {
               </div>
             </div>
           </div>
+          {editingPick && editingPlayer && (
+            <output className="pick-correction">
+              <div>
+                <strong>Correcting pick {editingPick.overall}</strong>
+                <span>
+                  Replace {editingPlayer.name} for{' '}
+                  {teamNames[editingPick.teamIndex]}.
+                </span>
+              </div>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setEditingPickOverall(null)}
+              >
+                Cancel correction
+              </Button>
+            </output>
+          )}
           <div className="position-filters">
             {(['ALL', ...ALL_POSITIONS] as const).map((position) => (
               <button
@@ -1383,10 +1538,18 @@ export default function Home() {
                     </div>
                     <Button
                       size="sm"
-                      variant={currentOwnerIsMine ? 'default' : 'outline'}
+                      variant={
+                        editingPickOverall !== null || currentOwnerIsMine
+                          ? 'default'
+                          : 'outline'
+                      }
                       onClick={() => draft(player.id)}
                     >
-                      {currentOwnerIsMine ? 'Draft' : 'Mark gone'}
+                      {editingPickOverall !== null
+                        ? `Replace pick ${editingPickOverall}`
+                        : currentOwnerIsMine
+                          ? 'Draft'
+                          : 'Mark gone'}
                     </Button>
                   </article>
                 );

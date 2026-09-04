@@ -169,6 +169,8 @@ held-out historical drafts under predeclared metrics.
   - [x] Add a free, no-token, once-daily Sleeper injury/roster-status refresh with
     local caching, complete current skill-player reconciliation, visible source age,
     and no automatic rank mutation. Yahoo draft-result reconciliation remains open.
+  - [x] Add a league-wide snake-draft matrix keyed by custom team names, with
+    current-pick highlighting and non-destructive correction of any completed pick.
 - Draft-day health panel for data age, API state, and local fallback readiness.
 - Precompute expensive simulations so a new recommendation arrives within seconds.
 

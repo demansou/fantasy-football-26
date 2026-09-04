@@ -6,8 +6,9 @@ list. The first working slice is an offline, deterministic recommendation engine
 
 It currently supports:
 
-- a responsive browser draft room with click-to-place picks, snake-draft tracking,
-  roster construction, undo, local persistence, and adjustable position weights;
+- a responsive browser draft room with click-to-place picks, a full league-wide
+  snake-draft matrix, past-pick correction, roster construction, undo, local
+  persistence, and adjustable position weights;
 - 264 current draft rankings that use FFC ADP only for cross-position market timing,
   then adjust QB/RB/WR/TE with pinned opportunity, high-value usage, team environment,
   and role evidence while labeling K/DST as market-only;
