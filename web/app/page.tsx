@@ -76,6 +76,15 @@ type Player = {
 };
 type Pick = { playerId: string; overall: number; teamIndex: number };
 type Weights = Record<ModeledPosition, Record<Metric, number>>;
+type DraftCache = {
+  schemaVersion: 1;
+  savedAt: number;
+  picks: Pick[];
+  weights: Weights;
+  teamCount: number;
+  draftSlot: number;
+  benchCount: number;
+};
 type RosterSlot = Position | 'FLEX' | 'BN';
 type InjuryAlert = {
   status: string | null;
@@ -120,7 +129,9 @@ const TEAM_LABELS = [
   'Route Concepts',
   'Clock Managers',
 ];
-const STORAGE_KEY = 'fantasy-football-26:draft-room:v2';
+const STORAGE_KEY = 'fantasy-football-26:draft-room:v3';
+const STORAGE_BACKUP_KEY = 'fantasy-football-26:draft-room:backup:v1';
+const LEGACY_STORAGE_KEY = 'fantasy-football-26:draft-room:v2';
 const INJURY_CACHE_KEY = 'fantasy-football-26:sleeper-injuries:v1';
 const INJURY_REFRESH_MS = 20 * 60 * 60 * 1000;
 const DEFAULT_BENCH_COUNT = 6;
@@ -184,6 +195,105 @@ function nextPickForTeam(start: number, teamCount: number, teamIndex: number) {
   let pick = start;
   while (ownerForPick(pick, teamCount) !== teamIndex) pick += 1;
   return pick;
+}
+
+function isValidWeights(value: unknown): value is Weights {
+  if (!value || typeof value !== 'object') return false;
+  const candidate = value as Partial<Weights>;
+  return MODELED_POSITIONS.every((position) =>
+    FACTORS.every(({ key }) => {
+      const weight = candidate[position]?.[key];
+      return (
+        typeof weight === 'number' &&
+        Number.isFinite(weight) &&
+        weight >= 0 &&
+        weight <= 200
+      );
+    }),
+  );
+}
+
+function parseDraftCache(raw: string | null): DraftCache | null {
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as Partial<DraftCache>;
+    const teamCount = [8, 10, 12].includes(parsed.teamCount ?? 0)
+      ? parsed.teamCount!
+      : 10;
+    const draftSlot =
+      typeof parsed.draftSlot === 'number' &&
+      parsed.draftSlot >= 1 &&
+      parsed.draftSlot <= teamCount
+        ? parsed.draftSlot
+        : Math.min(5, teamCount);
+    const benchCount =
+      typeof parsed.benchCount === 'number' &&
+      parsed.benchCount >= 0 &&
+      parsed.benchCount <= 12
+        ? parsed.benchCount
+        : DEFAULT_BENCH_COUNT;
+    const knownPlayerIds = new Set(players.map((player) => player.id));
+    const seen = new Set<string>();
+    const picks = Array.isArray(parsed.picks)
+      ? parsed.picks.reduce<Pick[]>((valid, pick, index) => {
+          const overall = index + 1;
+          if (
+            valid.length !== index ||
+            !pick ||
+            !knownPlayerIds.has(pick.playerId) ||
+            seen.has(pick.playerId) ||
+            pick.overall !== overall ||
+            pick.teamIndex !== ownerForPick(overall, teamCount)
+          )
+            return valid;
+          seen.add(pick.playerId);
+          valid.push(pick);
+          return valid;
+        }, [])
+      : [];
+    return {
+      schemaVersion: 1,
+      savedAt:
+        typeof parsed.savedAt === 'number' && Number.isFinite(parsed.savedAt)
+          ? parsed.savedAt
+          : 0,
+      picks,
+      weights: isValidWeights(parsed.weights)
+        ? parsed.weights
+        : DEFAULT_WEIGHTS,
+      teamCount,
+      draftSlot,
+      benchCount,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function writeDraftCache(cache: DraftCache) {
+  const serialized = JSON.stringify(cache);
+  let saved = false;
+  try {
+    window.localStorage.setItem(STORAGE_KEY, serialized);
+    saved = true;
+  } catch {
+    /* Try the same-tab backup. */
+  }
+  try {
+    window.sessionStorage.setItem(STORAGE_BACKUP_KEY, serialized);
+    saved = true;
+  } catch {
+    /* Report failure only if neither browser store worked. */
+  }
+  if (!saved) throw new Error('Browser storage is unavailable');
+}
+
+function readDraftCache(storage: Storage, key: string) {
+  try {
+    return parseDraftCache(storage.getItem(key));
+  } catch {
+    return null;
+  }
 }
 
 function normalCdf(value: number) {
@@ -438,6 +548,9 @@ export default function Home() {
   const [pendingBenchCount, setPendingBenchCount] =
     useState(DEFAULT_BENCH_COUNT);
   const [hydrated, setHydrated] = useState(false);
+  const [storageAvailable, setStorageAvailable] = useState<boolean | null>(
+    null,
+  );
   const [injuryCache, setInjuryCache] = useState<InjuryCache | null>(null);
   const [injuryCacheIsFresh, setInjuryCacheIsFresh] = useState(false);
   const [injuryLoading, setInjuryLoading] = useState(false);
@@ -446,41 +559,35 @@ export default function Home() {
   useEffect(() => {
     const timer = window.setTimeout(() => {
       try {
-        const saved = window.localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-          const parsed = JSON.parse(saved) as {
-            picks?: Pick[];
-            weights?: Weights;
-            teamCount?: number;
-            draftSlot?: number;
-            benchCount?: number;
-          };
-          if (Array.isArray(parsed.picks))
-            setPicks(
-              parsed.picks.filter((pick) =>
-                players.some((player) => player.id === pick.playerId),
-              ),
-            );
-          if (parsed.weights) setWeights(parsed.weights);
-          const savedTeamCount = [8, 10, 12].includes(parsed.teamCount ?? 0)
-            ? parsed.teamCount!
-            : 10;
-          setTeamCount(savedTeamCount);
-          if (
-            typeof parsed.draftSlot === 'number' &&
-            parsed.draftSlot >= 1 &&
-            parsed.draftSlot <= savedTeamCount
-          )
-            setDraftSlot(parsed.draftSlot);
-          if (
-            typeof parsed.benchCount === 'number' &&
-            parsed.benchCount >= 0 &&
-            parsed.benchCount <= 12
-          )
-            setBenchCount(parsed.benchCount);
+        const candidates = [
+          readDraftCache(window.localStorage, STORAGE_KEY),
+          readDraftCache(window.sessionStorage, STORAGE_BACKUP_KEY),
+          readDraftCache(window.localStorage, LEGACY_STORAGE_KEY),
+        ].filter((candidate): candidate is DraftCache => Boolean(candidate));
+        const restored = candidates.sort((a, b) => b.savedAt - a.savedAt)[0];
+        if (restored) {
+          setPicks(restored.picks);
+          setWeights(restored.weights);
+          setTeamCount(restored.teamCount);
+          setDraftSlot(restored.draftSlot);
+          setBenchCount(restored.benchCount);
         }
+        writeDraftCache(
+          restored
+            ? { ...restored, savedAt: Date.now() }
+            : {
+                schemaVersion: 1,
+                savedAt: Date.now(),
+                picks: [],
+                weights: DEFAULT_WEIGHTS,
+                teamCount: 10,
+                draftSlot: 5,
+                benchCount: DEFAULT_BENCH_COUNT,
+              },
+        );
+        setStorageAvailable(true);
       } catch {
-        window.localStorage.removeItem(STORAGE_KEY);
+        setStorageAvailable(false);
       } finally {
         setHydrated(true);
       }
@@ -490,13 +597,46 @@ export default function Home() {
   useEffect(() => {
     if (!hydrated) return;
     try {
-      window.localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify({ picks, weights, teamCount, draftSlot, benchCount }),
-      );
+      writeDraftCache({
+        schemaVersion: 1,
+        savedAt: Date.now(),
+        picks,
+        weights,
+        teamCount,
+        draftSlot,
+        benchCount,
+      });
     } catch {
       /* Usable without storage. */
     }
+  }, [benchCount, draftSlot, hydrated, picks, teamCount, weights]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    const flushDraft = () => {
+      try {
+        writeDraftCache({
+          schemaVersion: 1,
+          savedAt: Date.now(),
+          picks,
+          weights,
+          teamCount,
+          draftSlot,
+          benchCount,
+        });
+      } catch {
+        /* Usable without storage. */
+      }
+    };
+    const flushWhenHidden = () => {
+      if (document.visibilityState === 'hidden') flushDraft();
+    };
+    window.addEventListener('pagehide', flushDraft);
+    document.addEventListener('visibilitychange', flushWhenHidden);
+    return () => {
+      window.removeEventListener('pagehide', flushDraft);
+      document.removeEventListener('visibilitychange', flushWhenHidden);
+    };
   }, [benchCount, draftSlot, hydrated, picks, teamCount, weights]);
 
   useEffect(() => {
@@ -968,6 +1108,14 @@ export default function Home() {
             </div>
           ) : null;
         })}
+        <div className="ticker-save" aria-live="polite">
+          <Check />{' '}
+          {storageAvailable === null
+            ? 'Restoring draft…'
+            : storageAvailable
+              ? 'Draft saved locally'
+              : 'Browser storage blocked'}
+        </div>
         <div className="ticker-next">
           <Zap /> Pick {currentPick} ready
         </div>

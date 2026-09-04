@@ -258,12 +258,24 @@ select {
   height: 6px;
   border-radius: 99px;
 }
-.ticker-next {
+.ticker-save {
   display: flex;
   align-items: center;
   gap: 5px;
   flex: none;
   margin-left: auto;
+  color: oklch(0.78 0.13 155);
+  font-size: 11px;
+  font-weight: 650;
+}
+.ticker-save svg {
+  width: 13px;
+}
+.ticker-next {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex: none;
   color: var(--primary);
   font-size: 11px;
   font-weight: 650;
