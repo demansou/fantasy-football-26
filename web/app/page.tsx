@@ -4,6 +4,7 @@ import {
   Fragment,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type Dispatch,
   type SetStateAction,
@@ -11,14 +12,18 @@ import {
 import {
   Check,
   Database,
+  Download,
   DraftingCompass,
+  EyeOff,
   LayoutGrid,
   RefreshCw,
   RotateCcw,
   Search,
   Settings2,
+  ShieldCheck,
   SlidersHorizontal,
   Undo2,
+  Upload,
   Zap,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -41,6 +46,7 @@ import {
 } from '@/components/ui/native-select';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Slider } from '@/components/ui/slider';
+import { Switch } from '@/components/ui/switch';
 import { PLAYERS, RANKING_METADATA } from '@/data/players';
 
 type Position = 'QB' | 'RB' | 'WR' | 'TE' | 'K' | 'DST';
@@ -87,6 +93,8 @@ type DraftCache = {
   draftSlot: number;
   benchCount: number;
   teamNames: string[];
+  avoidedPlayerIds: string[];
+  hideInactivePlayers: boolean;
 };
 type RosterSlot = Position | 'FLEX' | 'BN';
 type InjuryAlert = {
@@ -294,6 +302,17 @@ function parseDraftCache(raw: string | null): DraftCache | null {
       draftSlot,
       benchCount,
       teamNames: normalizeTeamNames(parsed.teamNames, draftSlot),
+      avoidedPlayerIds: Array.isArray(parsed.avoidedPlayerIds)
+        ? [
+            ...new Set(
+              parsed.avoidedPlayerIds.filter(
+                (playerId): playerId is string =>
+                  typeof playerId === 'string' && knownPlayerIds.has(playerId),
+              ),
+            ),
+          ]
+        : [],
+      hideInactivePlayers: parsed.hideInactivePlayers === true,
     };
   } catch {
     return null;
@@ -573,6 +592,8 @@ export default function Home() {
   const [draftSlot, setDraftSlot] = useState(5);
   const [benchCount, setBenchCount] = useState(DEFAULT_BENCH_COUNT);
   const [teamNames, setTeamNames] = useState(() => defaultTeamNames(5));
+  const [avoidedPlayerIds, setAvoidedPlayerIds] = useState<string[]>([]);
+  const [hideInactivePlayers, setHideInactivePlayers] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [boardOpen, setBoardOpen] = useState(false);
   const [editingPickOverall, setEditingPickOverall] = useState<number | null>(
@@ -589,6 +610,11 @@ export default function Home() {
   const [storageAvailable, setStorageAvailable] = useState<boolean | null>(
     null,
   );
+  const [offlineStatus, setOfflineStatus] = useState<
+    'checking' | 'ready' | 'unavailable'
+  >('checking');
+  const [backupMessage, setBackupMessage] = useState<string | null>(null);
+  const importInputRef = useRef<HTMLInputElement>(null);
   const [injuryCache, setInjuryCache] = useState<InjuryCache | null>(null);
   const [injuryCacheIsFresh, setInjuryCacheIsFresh] = useState(false);
   const [injuryLoading, setInjuryLoading] = useState(false);
@@ -610,6 +636,8 @@ export default function Home() {
           setDraftSlot(restored.draftSlot);
           setBenchCount(restored.benchCount);
           setTeamNames(restored.teamNames);
+          setAvoidedPlayerIds(restored.avoidedPlayerIds);
+          setHideInactivePlayers(restored.hideInactivePlayers);
         }
         writeDraftCache(
           restored
@@ -623,6 +651,8 @@ export default function Home() {
                 draftSlot: 5,
                 benchCount: DEFAULT_BENCH_COUNT,
                 teamNames: defaultTeamNames(5),
+                avoidedPlayerIds: [],
+                hideInactivePlayers: false,
               },
         );
         setStorageAvailable(true);
@@ -646,11 +676,23 @@ export default function Home() {
         draftSlot,
         benchCount,
         teamNames,
+        avoidedPlayerIds,
+        hideInactivePlayers,
       });
     } catch {
       /* Usable without storage. */
     }
-  }, [benchCount, draftSlot, hydrated, picks, teamCount, teamNames, weights]);
+  }, [
+    avoidedPlayerIds,
+    benchCount,
+    draftSlot,
+    hideInactivePlayers,
+    hydrated,
+    picks,
+    teamCount,
+    teamNames,
+    weights,
+  ]);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -665,6 +707,8 @@ export default function Home() {
           draftSlot,
           benchCount,
           teamNames,
+          avoidedPlayerIds,
+          hideInactivePlayers,
         });
       } catch {
         /* Usable without storage. */
@@ -679,7 +723,37 @@ export default function Home() {
       window.removeEventListener('pagehide', flushDraft);
       document.removeEventListener('visibilitychange', flushWhenHidden);
     };
-  }, [benchCount, draftSlot, hydrated, picks, teamCount, teamNames, weights]);
+  }, [
+    avoidedPlayerIds,
+    benchCount,
+    draftSlot,
+    hideInactivePlayers,
+    hydrated,
+    picks,
+    teamCount,
+    teamNames,
+    weights,
+  ]);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!('serviceWorker' in navigator)) {
+      const timer = window.setTimeout(() => setOfflineStatus('unavailable'), 0);
+      return () => window.clearTimeout(timer);
+    }
+    navigator.serviceWorker
+      .register('/sw.js')
+      .then(() => navigator.serviceWorker.ready)
+      .then(() => {
+        if (!cancelled) setOfflineStatus('ready');
+      })
+      .catch(() => {
+        if (!cancelled) setOfflineStatus('unavailable');
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -735,6 +809,10 @@ export default function Home() {
     () => new Set(picks.map((pick) => pick.playerId)),
     [picks],
   );
+  const avoidedIds = useMemo(
+    () => new Set(avoidedPlayerIds),
+    [avoidedPlayerIds],
+  );
   const currentPick = picks.length + 1;
   const currentOwner = ownerForPick(currentPick, teamCount);
   const currentRound = Math.floor((currentPick - 1) / teamCount) + 1;
@@ -767,6 +845,8 @@ export default function Home() {
     () =>
       players
         .filter((player) => !draftedIds.has(player.id))
+        .filter((player) => !avoidedIds.has(player.id))
+        .filter((player) => !hideInactivePlayers || player.currentActive)
         .filter((player) => filter === 'ALL' || player.position === filter)
         .filter((player) =>
           `${player.name} ${player.team} ${player.position}`
@@ -794,7 +874,9 @@ export default function Home() {
     [
       currentRound,
       draftedIds,
+      avoidedIds,
       filter,
+      hideInactivePlayers,
       picks,
       query,
       rosterCounts,
@@ -859,6 +941,72 @@ export default function Home() {
       },
     ]);
   };
+  const draftCacheSnapshot = (): DraftCache => ({
+    schemaVersion: 1,
+    savedAt: Date.now(),
+    picks,
+    weights,
+    teamCount,
+    draftSlot,
+    benchCount,
+    teamNames,
+    avoidedPlayerIds,
+    hideInactivePlayers,
+  });
+  const avoidPlayer = (playerId: string) => {
+    setAvoidedPlayerIds((current) =>
+      current.includes(playerId) ? current : [...current, playerId],
+    );
+  };
+  const restorePlayer = (playerId: string) => {
+    setAvoidedPlayerIds((current) =>
+      current.filter((candidate) => candidate !== playerId),
+    );
+  };
+  const exportDraftBackup = () => {
+    const blob = new Blob([JSON.stringify(draftCacheSnapshot(), null, 2)], {
+      type: 'application/json',
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `fantasy-draft-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+    setBackupMessage('Backup downloaded.');
+  };
+  const importDraftBackup = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const raw = JSON.parse(text) as Record<string, unknown>;
+      if (!Array.isArray(raw.picks) || typeof raw.teamCount !== 'number')
+        throw new Error('This is not a draft-room backup.');
+      const restored = parseDraftCache(text);
+      if (!restored) throw new Error('The backup could not be read.');
+      setPicks(restored.picks);
+      setWeights(restored.weights);
+      setTeamCount(restored.teamCount);
+      setDraftSlot(restored.draftSlot);
+      setBenchCount(restored.benchCount);
+      setTeamNames(restored.teamNames);
+      setAvoidedPlayerIds(restored.avoidedPlayerIds);
+      setHideInactivePlayers(restored.hideInactivePlayers);
+      setEditingPickOverall(null);
+      writeDraftCache({ ...restored, savedAt: Date.now() });
+      setStorageAvailable(true);
+      setBackupMessage(`Restored ${restored.picks.length} picks from backup.`);
+    } catch (error) {
+      setBackupMessage(
+        error instanceof Error ? error.message : 'Backup import failed.',
+      );
+    } finally {
+      event.target.value = '';
+    }
+  };
   const openSettings = (open: boolean) => {
     if (open) {
       setPendingTeamCount(teamCount);
@@ -900,6 +1048,29 @@ export default function Home() {
   const injuryAlertCount = injuryCache
     ? Object.keys(injuryCache.alerts).length
     : 0;
+  const injuryPlayers = injuryCache
+    ? Object.entries(injuryCache.alerts)
+        .map(([playerId, alert]) => ({
+          player: players.find((player) => player.id === playerId),
+          alert,
+        }))
+        .filter(
+          (
+            item,
+          ): item is {
+            player: Player;
+            alert: InjuryAlert;
+          } => Boolean(item.player),
+        )
+    : [];
+  const avoidedPlayers = avoidedPlayerIds
+    .map((playerId) => players.find((player) => player.id === playerId))
+    .filter((player): player is Player => Boolean(player));
+  const draftDayReady =
+    storageAvailable === true &&
+    offlineStatus === 'ready' &&
+    RANKING_METADATA.freshnessStatus === 'fresh' &&
+    injuryCacheIsFresh;
   return (
     <main className="draft-shell">
       <header className="app-header">
@@ -927,6 +1098,169 @@ export default function Home() {
           </div>
         </div>
         <div className="header-actions">
+          <Dialog>
+            <DialogTrigger
+              render={
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className={
+                    draftDayReady ? 'health-trigger is-ready' : 'health-trigger'
+                  }
+                />
+              }
+            >
+              <ShieldCheck /> <span>{draftDayReady ? 'Ready' : 'Health'}</span>
+            </DialogTrigger>
+            <DialogContent className="health-dialog sm:max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Draft-day reliability</DialogTitle>
+                <DialogDescription>
+                  Confirm the board, data, and offline fallback before the room
+                  opens.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="health-grid">
+                <div>
+                  <span>Draft state</span>
+                  <strong>
+                    {storageAvailable === null
+                      ? 'Checking'
+                      : storageAvailable
+                        ? `${picks.length} picks saved`
+                        : 'Storage blocked'}
+                  </strong>
+                  <small>Primary save plus same-tab backup</small>
+                </div>
+                <div>
+                  <span>Offline reload</span>
+                  <strong>
+                    {offlineStatus === 'checking'
+                      ? 'Preparing'
+                      : offlineStatus === 'ready'
+                        ? 'Ready'
+                        : 'Unavailable'}
+                  </strong>
+                  <small>App shell cached on this device</small>
+                </div>
+                <div>
+                  <span>Rankings</span>
+                  <strong>{RANKING_METADATA.freshnessStatus}</strong>
+                  <small>
+                    {RANKING_METADATA.playerCount} players · ADP through{' '}
+                    {RANKING_METADATA.ffcWindow.split(' to ')[1]}
+                  </small>
+                </div>
+                <div>
+                  <span>Injury feed</span>
+                  <strong>
+                    {injuryCacheIsFresh
+                      ? `${injuryAlertCount} flags loaded`
+                      : 'Refresh needed'}
+                  </strong>
+                  <small>
+                    {injuryCache
+                      ? new Date(injuryCache.fetchedAt).toLocaleString()
+                      : 'No draft-day refresh yet'}
+                  </small>
+                </div>
+              </div>
+              <div className="reliability-controls">
+                <div className="reliability-toggle">
+                  <div>
+                    <strong>Hide inactive players</strong>
+                    <span>Uses the frozen preseason roster status.</span>
+                  </div>
+                  <Switch
+                    aria-label="Hide inactive players"
+                    checked={hideInactivePlayers}
+                    onCheckedChange={setHideInactivePlayers}
+                  />
+                </div>
+                <div className="backup-actions">
+                  <Button variant="outline" onClick={exportDraftBackup}>
+                    <Download /> Download backup
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => importInputRef.current?.click()}
+                  >
+                    <Upload /> Restore backup
+                  </Button>
+                  <input
+                    ref={importInputRef}
+                    type="file"
+                    accept="application/json,.json"
+                    hidden
+                    onChange={importDraftBackup}
+                  />
+                  {backupMessage && <span>{backupMessage}</span>}
+                </div>
+              </div>
+              <div className="health-player-sections">
+                <section>
+                  <div className="health-section-heading">
+                    <strong>Live injury queue</strong>
+                    <span>{injuryPlayers.length}</span>
+                  </div>
+                  <div className="health-player-list">
+                    {injuryPlayers.length ? (
+                      injuryPlayers.map(({ player, alert }) => (
+                        <div key={player.id}>
+                          <div>
+                            <strong>{player.name}</strong>
+                            <span>{injurySummary(alert)}</span>
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() =>
+                              avoidedIds.has(player.id)
+                                ? restorePlayer(player.id)
+                                : avoidPlayer(player.id)
+                            }
+                          >
+                            {avoidedIds.has(player.id) ? 'Restore' : 'Avoid'}
+                          </Button>
+                        </div>
+                      ))
+                    ) : (
+                      <p>Refresh injuries to populate this queue.</p>
+                    )}
+                  </div>
+                </section>
+                <section>
+                  <div className="health-section-heading">
+                    <strong>Avoided players</strong>
+                    <span>{avoidedPlayers.length}</span>
+                  </div>
+                  <div className="health-player-list">
+                    {avoidedPlayers.length ? (
+                      avoidedPlayers.map((player) => (
+                        <div key={player.id}>
+                          <div>
+                            <strong>{player.name}</strong>
+                            <span>
+                              {player.position} · {player.team}
+                            </span>
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => restorePlayer(player.id)}
+                          >
+                            Restore
+                          </Button>
+                        </div>
+                      ))
+                    ) : (
+                      <p>No players manually avoided.</p>
+                    )}
+                  </div>
+                </section>
+              </div>
+            </DialogContent>
+          </Dialog>
           <Button
             variant="outline"
             size="sm"
@@ -1536,21 +1870,32 @@ export default function Home() {
                           : player.context}
                       </span>
                     </div>
-                    <Button
-                      size="sm"
-                      variant={
-                        editingPickOverall !== null || currentOwnerIsMine
-                          ? 'default'
-                          : 'outline'
-                      }
-                      onClick={() => draft(player.id)}
-                    >
-                      {editingPickOverall !== null
-                        ? `Replace pick ${editingPickOverall}`
-                        : currentOwnerIsMine
-                          ? 'Draft'
-                          : 'Mark gone'}
-                    </Button>
+                    <div className="player-actions">
+                      <Button
+                        size="sm"
+                        variant={
+                          editingPickOverall !== null || currentOwnerIsMine
+                            ? 'default'
+                            : 'outline'
+                        }
+                        onClick={() => draft(player.id)}
+                      >
+                        {editingPickOverall !== null
+                          ? `Replace pick ${editingPickOverall}`
+                          : currentOwnerIsMine
+                            ? 'Draft'
+                            : 'Mark gone'}
+                      </Button>
+                      <Button
+                        aria-label={`Avoid ${player.name}`}
+                        size="icon-sm"
+                        title={`Hide ${player.name} from recommendations`}
+                        variant="ghost"
+                        onClick={() => avoidPlayer(player.id)}
+                      >
+                        <EyeOff />
+                      </Button>
+                    </div>
                   </article>
                 );
               })}

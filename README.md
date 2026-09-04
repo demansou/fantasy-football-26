@@ -8,8 +8,9 @@ It currently supports:
 
 - a responsive browser draft room with click-to-place picks, a full league-wide
   snake-draft matrix, past-pick correction, roster construction, undo, local
-  persistence, and adjustable position weights;
-- 264 current draft rankings that use FFC ADP only for cross-position market timing,
+  persistence, downloadable/importable backups, offline reload support, avoid/hide
+  controls, a draft-day health panel, and adjustable position weights;
+- 267 current draft rankings that use FFC ADP only for cross-position market timing,
   then adjust QB/RB/WR/TE with pinned opportunity, high-value usage, team environment,
   and role evidence while labeling K/DST as market-only;
 - next-snake-turn market survival estimates using each player's observed ADP spread,
@@ -50,7 +51,7 @@ persist in the current browser. The deployed owner-only board is at
 <https://fantasy-football-26.vista-verde-6860.chatgpt.site>.
 
 Use **Refresh injuries** once on draft day to pull Sleeper's free, no-token player
-status feed. The browser caches it for 20 hours, matches it to the 216 modeled skill
+status feed. The browser caches it for 20 hours, matches it to the 217 modeled skill
 players, and adds visible injury/practice/roster warnings without changing their
 frozen ranks. Confirm any consequential alert against Yahoo before selecting a player.
 

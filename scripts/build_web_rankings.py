@@ -63,9 +63,9 @@ def verify_ffc_snapshot(snapshot: Path, *, as_of: date, max_age_days: int) -> di
             f"FFC ADP is stale: {age_days} days old, maximum is {max_age_days}; fetch a new snapshot"
         )
     quality = manifest.get("quality", {})
-    if quality.get("record_count") != 264 or quality.get("duplicate_source_ids") != 0:
+    if quality.get("record_count") != 267 or quality.get("duplicate_source_ids") != 0:
         raise RuntimeError("FFC ADP coverage is incomplete or contains duplicate player IDs")
-    expected_positions = {"DST": 27, "K": 21, "QB": 31, "RB": 70, "TE": 26, "WR": 89}
+    expected_positions = {"DST": 27, "K": 23, "QB": 30, "RB": 69, "TE": 26, "WR": 92}
     if quality.get("position_counts") != expected_positions:
         raise RuntimeError("FFC ADP position coverage differs from the reviewed snapshot")
     manifest["verified_age_days"] = age_days

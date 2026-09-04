@@ -120,7 +120,7 @@ and every material score component is inspectable.
 - [x] Join the current team, player, availability, high-value, and reviewed-evidence
   families into one dated, hash-verified Python snapshot with a pinned identity.
 - [x] Make the browser consume the pinned production snapshot rather than synthetic
-  player data. The 264-player draft board joins verified FFC IDs to the frozen
+  player data. The 267-player draft board joins verified FFC IDs to the frozen
   QB/RB/WR/TE opportunity, high-value, role-evidence, and team-environment artifacts;
   K/DST remain explicitly market-only.
 - [x] Add freshness checks that fail closed for stale or incomplete draft-day data.
@@ -171,7 +171,8 @@ held-out historical drafts under predeclared metrics.
     and no automatic rank mutation. Yahoo draft-result reconciliation remains open.
   - [x] Add a league-wide snake-draft matrix keyed by custom team names, with
     current-pick highlighting and non-destructive correction of any completed pick.
-- Draft-day health panel for data age, API state, and local fallback readiness.
+- [x] Draft-day health panel for ranking/injury age, browser-save state, offline
+  fallback readiness, backup import/export, and reversible player avoidance.
 - Precompute expensive simulations so a new recommendation arrives within seconds.
 
 Exit criterion: complete mock drafts can be run without editing files or touching a
