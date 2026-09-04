@@ -84,6 +84,7 @@ type DraftCache = {
   teamCount: number;
   draftSlot: number;
   benchCount: number;
+  teamNames: string[];
 };
 type RosterSlot = Position | 'FLEX' | 'BN';
 type InjuryAlert = {
@@ -185,6 +186,23 @@ const positionClass: Record<Position, string> = {
   DST: 'position-dst',
 };
 
+function defaultTeamNames(draftSlot: number) {
+  return TEAM_LABELS.map((name, index) =>
+    index === draftSlot - 1 ? 'My Team' : name,
+  );
+}
+
+function normalizeTeamNames(value: unknown, draftSlot: number) {
+  const defaults = defaultTeamNames(draftSlot);
+  if (!Array.isArray(value)) return defaults;
+  return defaults.map((fallback, index) => {
+    const name = value[index];
+    return typeof name === 'string' && name.trim()
+      ? name.trim().slice(0, 32)
+      : fallback;
+  });
+}
+
 function ownerForPick(overall: number, teamCount: number) {
   const round = Math.floor((overall - 1) / teamCount) + 1;
   const offset = (overall - 1) % teamCount;
@@ -264,6 +282,7 @@ function parseDraftCache(raw: string | null): DraftCache | null {
       teamCount,
       draftSlot,
       benchCount,
+      teamNames: normalizeTeamNames(parsed.teamNames, draftSlot),
     };
   } catch {
     return null;
@@ -542,11 +561,15 @@ export default function Home() {
   const [teamCount, setTeamCount] = useState(10);
   const [draftSlot, setDraftSlot] = useState(5);
   const [benchCount, setBenchCount] = useState(DEFAULT_BENCH_COUNT);
+  const [teamNames, setTeamNames] = useState(() => defaultTeamNames(5));
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [pendingTeamCount, setPendingTeamCount] = useState(10);
   const [pendingDraftSlot, setPendingDraftSlot] = useState(5);
   const [pendingBenchCount, setPendingBenchCount] =
     useState(DEFAULT_BENCH_COUNT);
+  const [pendingTeamNames, setPendingTeamNames] = useState(() =>
+    defaultTeamNames(5),
+  );
   const [hydrated, setHydrated] = useState(false);
   const [storageAvailable, setStorageAvailable] = useState<boolean | null>(
     null,
@@ -571,6 +594,7 @@ export default function Home() {
           setTeamCount(restored.teamCount);
           setDraftSlot(restored.draftSlot);
           setBenchCount(restored.benchCount);
+          setTeamNames(restored.teamNames);
         }
         writeDraftCache(
           restored
@@ -583,6 +607,7 @@ export default function Home() {
                 teamCount: 10,
                 draftSlot: 5,
                 benchCount: DEFAULT_BENCH_COUNT,
+                teamNames: defaultTeamNames(5),
               },
         );
         setStorageAvailable(true);
@@ -605,11 +630,12 @@ export default function Home() {
         teamCount,
         draftSlot,
         benchCount,
+        teamNames,
       });
     } catch {
       /* Usable without storage. */
     }
-  }, [benchCount, draftSlot, hydrated, picks, teamCount, weights]);
+  }, [benchCount, draftSlot, hydrated, picks, teamCount, teamNames, weights]);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -623,6 +649,7 @@ export default function Home() {
           teamCount,
           draftSlot,
           benchCount,
+          teamNames,
         });
       } catch {
         /* Usable without storage. */
@@ -637,7 +664,7 @@ export default function Home() {
       window.removeEventListener('pagehide', flushDraft);
       document.removeEventListener('visibilitychange', flushWhenHidden);
     };
-  }, [benchCount, draftSlot, hydrated, picks, teamCount, weights]);
+  }, [benchCount, draftSlot, hydrated, picks, teamCount, teamNames, weights]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -689,13 +716,6 @@ export default function Home() {
   };
 
   const myTeamIndex = draftSlot - 1;
-  const teamNames = useMemo(
-    () =>
-      Array.from({ length: teamCount }, (_, index) =>
-        index === myTeamIndex ? 'My Team' : TEAM_LABELS[index],
-      ),
-    [myTeamIndex, teamCount],
-  );
   const draftedIds = useMemo(
     () => new Set(picks.map((pick) => pick.playerId)),
     [picks],
@@ -814,16 +834,25 @@ export default function Home() {
       setPendingTeamCount(teamCount);
       setPendingDraftSlot(Math.min(draftSlot, teamCount));
       setPendingBenchCount(benchCount);
+      setPendingTeamNames(teamNames);
     }
     setSettingsOpen(open);
   };
   const applyLeagueSettings = () => {
+    const teamCountChanged = pendingTeamCount !== teamCount;
     setTeamCount(pendingTeamCount);
     setDraftSlot(Math.min(pendingDraftSlot, pendingTeamCount));
     setBenchCount(pendingBenchCount);
-    setPicks([]);
+    setTeamNames(
+      normalizeTeamNames(
+        pendingTeamNames,
+        Math.min(pendingDraftSlot, pendingTeamCount),
+      ),
+    );
+    if (teamCountChanged) setPicks([]);
     setSettingsOpen(false);
   };
+  const teamCountWillResetDraft = pendingTeamCount !== teamCount;
   const resetBoard = () => {
     setPicks([]);
     setSettingsOpen(false);
@@ -970,7 +999,7 @@ export default function Home() {
             <DialogTrigger render={<Button variant="outline" size="sm" />}>
               <Settings2 /> <span>League</span>
             </DialogTrigger>
-            <DialogContent className="league-dialog sm:max-w-lg">
+            <DialogContent className="league-dialog sm:max-w-2xl">
               <DialogHeader>
                 <DialogTitle>League setup</DialogTitle>
                 <DialogDescription>
@@ -1030,9 +1059,43 @@ export default function Home() {
                   </NativeSelect>
                 </div>
               </div>
+              <div className="team-name-settings">
+                <div className="team-name-heading">
+                  <div>
+                    <strong>Team names</strong>
+                    <span>Match the draft order shown in Yahoo.</span>
+                  </div>
+                  <span>{pendingTeamCount} draft slots</span>
+                </div>
+                <div className="team-name-grid">
+                  {Array.from({ length: pendingTeamCount }, (_, teamIndex) => (
+                    <div className="team-name-field" key={teamIndex}>
+                      <Label htmlFor={`team-name-${teamIndex}`}>
+                        Team {teamIndex + 1}
+                        {teamIndex === pendingDraftSlot - 1 && (
+                          <span>Your slot</span>
+                        )}
+                      </Label>
+                      <Input
+                        id={`team-name-${teamIndex}`}
+                        maxLength={32}
+                        value={pendingTeamNames[teamIndex] ?? ''}
+                        onChange={(event) => {
+                          const name = event.target.value;
+                          setPendingTeamNames((current) =>
+                            current.map((value, index) =>
+                              index === teamIndex ? name : value,
+                            ),
+                          );
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
               <div className="persistence-note">
-                <Check /> Picks, settings, and custom weights save in this
-                browser.
+                <Check /> Team names, picks, settings, and custom weights save
+                in this browser.
               </div>
               <DialogFooter>
                 <DialogClose render={<Button variant="outline" />}>
@@ -1042,7 +1105,9 @@ export default function Home() {
                   <RotateCcw /> Reset board
                 </Button>
                 <Button onClick={applyLeagueSettings}>
-                  Apply &amp; start fresh
+                  {teamCountWillResetDraft
+                    ? 'Apply & start fresh'
+                    : 'Save league setup'}
                 </Button>
               </DialogFooter>
             </DialogContent>
@@ -1104,7 +1169,9 @@ export default function Home() {
               />
               <strong>{pick.overall}</strong>
               <span>{player.name}</span>
-              <small>{player.position}</small>
+              <small>
+                {player.position} · {teamNames[pick.teamIndex]}
+              </small>
             </div>
           ) : null;
         })}
