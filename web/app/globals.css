@@ -188,8 +188,10 @@ select {
   color: var(--primary);
 }
 .header-actions {
+  min-width: 0;
   justify-content: flex-end;
   gap: 8px;
+  white-space: nowrap;
 }
 .data-badge {
   height: 32px;
@@ -295,7 +297,9 @@ select {
 
 .workspace-grid {
   display: grid;
-  grid-template-columns: 248px minmax(520px, 1fr) 310px;
+  grid-template-columns:
+    clamp(218px, 17vw, 248px) minmax(700px, 1fr)
+    clamp(280px, 20vw, 310px);
   gap: 10px;
   height: calc(100vh - 118px);
   padding: 10px;
@@ -664,11 +668,8 @@ select {
 .player-table-header,
 .player-row {
   display: grid;
-  grid-template-columns: minmax(240px, 1.15fr) 56px 56px minmax(
-      170px,
-      1fr
-    ) 148px;
-  gap: 10px;
+  grid-template-columns: minmax(210px, 1.2fr) 52px 56px minmax(150px, 1fr) 142px;
+  gap: 8px;
 }
 .player-table-header {
   padding: 8px 16px;
@@ -1345,6 +1346,15 @@ select {
   margin: 8px 2px 2px;
 }
 
+@media (max-width: 1560px) {
+  .app-header {
+    grid-template-columns: minmax(190px, 1fr) auto;
+  }
+  .draft-status {
+    display: none;
+  }
+}
+
 @media (max-width: 1120px) {
   .workspace-grid {
     grid-template-columns: 220px minmax(500px, 1fr);
@@ -1356,11 +1366,15 @@ select {
   .mobile-weight-trigger {
     display: inline-flex;
   }
-  .app-header {
-    grid-template-columns: 1fr auto;
-  }
-  .draft-status {
+}
+
+@media (max-width: 920px) {
+  .header-actions button span {
     display: none;
+  }
+  .header-actions button {
+    width: 34px;
+    padding-inline: 0;
   }
 }
 

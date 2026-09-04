@@ -1931,7 +1931,7 @@ export default function Home() {
               : 'Browser storage blocked'}
         </div>
         <div className="ticker-next">
-          <Zap /> Pick {currentPick} ready
+          <Zap /> Pick {currentPick} · {teamNames[currentOwner]}
         </div>
       </section>
       <div className="workspace-grid">
