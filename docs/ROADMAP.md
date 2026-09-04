@@ -173,6 +173,8 @@ held-out historical drafts under predeclared metrics.
   - [x] Expose opponent roster intelligence through league-board needs, before-turn
     demand pressure, and per-player availability explanations without simulating the
     remainder of the draft.
+  - [x] Make every browser roster-position count editable and propagate the league
+    shape through lineup fit, opponent demand, availability, and tier alerts.
   - [x] Add a browser-persisted target queue that follows live recommendation order,
     identifies tier exhaustion risk before the next turn, and names the next
     same-position fallback.

@@ -51,9 +51,11 @@ artifact preserves those limitations in its metadata and the browser exposes the
 ### Browser draft room
 
 The browser app lives in `web/` and requires Node.js. Use **League** to choose 8, 10,
-or 12 teams, your draft slot, and 0-12 bench spots, then click **Draft** on your turn
-or **Mark gone** for every other selection. Picks, league settings, and weights
-persist in the current browser. The deployed owner-only board is at
+or 12 teams, your draft slot, and the count for every starter, W/R/T flex, and bench
+position. The browser defaults to this league's Yahoo shape: QB, 2 WR, 2 RB, TE,
+2 W/R/T, K, DEF, and 6 bench. Then click **Draft** on your turn or **Mark gone** for
+every other selection. Picks, league settings, and weights persist in the current
+browser. The deployed owner-only board is at
 <https://fantasy-football-26.vista-verde-6860.chatgpt.site>.
 
 Use **Refresh injuries** once on draft day to pull Sleeper's free, no-token player

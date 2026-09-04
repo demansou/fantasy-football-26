@@ -6,6 +6,7 @@ import {
   opponentAdjustedSurvival,
   opponentDemandForPosition,
   ownerForPick,
+  rosterNeeds,
   tierCliffForPlayer,
 } from './draft-intelligence.ts';
 
@@ -38,6 +39,20 @@ void test('lineup needs distinguish fixed starters, flex, and bench', () => {
   assert.equal(lineupStatus('RB', { RB: 1, WR: 2 }), 'starter');
   assert.equal(lineupStatus('RB', { RB: 2, WR: 2, TE: 1 }), 'flex');
   assert.equal(lineupStatus('RB', { RB: 3, WR: 2, TE: 1 }), 'bench');
+});
+
+void test('custom roster rules support two W/R/T flex spots', () => {
+  const rules = {
+    starters: { QB: 1, RB: 2, WR: 2, TE: 1, K: 1, DST: 1 },
+    flexCount: 2,
+  };
+  assert.equal(lineupStatus('RB', { RB: 3, WR: 2, TE: 1 }, rules), 'flex');
+  assert.equal(lineupStatus('RB', { RB: 4, WR: 2, TE: 1 }, rules), 'bench');
+  assert.deepEqual(rosterNeeds({ QB: 1, RB: 2, WR: 2, TE: 1 }, 5, rules), [
+    'RB',
+    'WR',
+    'TE',
+  ]);
 });
 
 void test('needy opponents lower the estimate that an RB survives', () => {

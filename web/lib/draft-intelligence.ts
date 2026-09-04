@@ -1,6 +1,10 @@
 export type DraftPosition = 'QB' | 'RB' | 'WR' | 'TE' | 'K' | 'DST';
 export type PositionCounts = Partial<Record<DraftPosition, number>>;
 export type LineupStatus = 'starter' | 'flex' | 'bench';
+export type RosterRules = {
+  starters: Record<DraftPosition, number>;
+  flexCount: number;
+};
 
 export type MarketRange = {
   adp: number;
@@ -44,6 +48,10 @@ const FIXED_STARTERS: Record<DraftPosition, number> = {
   DST: 1,
 };
 const FLEX_POSITIONS = new Set<DraftPosition>(['RB', 'WR', 'TE']);
+const DEFAULT_ROSTER_RULES: RosterRules = {
+  starters: FIXED_STARTERS,
+  flexCount: 1,
+};
 const POSITION_PICK_SHARE: Record<DraftPosition, number> = {
   QB: 0.11,
   RB: 0.27,
@@ -81,24 +89,26 @@ export function ownerForPick(overall: number, teamCount: number) {
 export function lineupStatus(
   position: DraftPosition,
   counts: PositionCounts,
+  rules: RosterRules = DEFAULT_ROSTER_RULES,
 ): LineupStatus {
-  if ((counts[position] ?? 0) < FIXED_STARTERS[position]) return 'starter';
+  if ((counts[position] ?? 0) < rules.starters[position]) return 'starter';
   if (!FLEX_POSITIONS.has(position)) return 'bench';
 
   const flexPlayers = (['RB', 'WR', 'TE'] as DraftPosition[]).reduce(
     (total, eligible) =>
-      total + Math.max(0, (counts[eligible] ?? 0) - FIXED_STARTERS[eligible]),
+      total + Math.max(0, (counts[eligible] ?? 0) - rules.starters[eligible]),
     0,
   );
-  return flexPlayers < 1 ? 'flex' : 'bench';
+  return flexPlayers < rules.flexCount ? 'flex' : 'bench';
 }
 
 function demandWeight(
   position: DraftPosition,
   counts: PositionCounts,
   currentRound: number,
+  rules: RosterRules,
 ) {
-  const status = lineupStatus(position, counts);
+  const status = lineupStatus(position, counts, rules);
   if (status === 'starter') {
     if ((position === 'K' || position === 'DST') && currentRound < 11)
       return 0.2;
@@ -155,6 +165,7 @@ export function opponentDemandForPosition({
   myTeamIndex,
   teamRosters,
   currentRound,
+  rosterRules = DEFAULT_ROSTER_RULES,
 }: {
   position: DraftPosition;
   firstOpponentPick: number;
@@ -163,6 +174,7 @@ export function opponentDemandForPosition({
   myTeamIndex: number;
   teamRosters: PositionCounts[];
   currentRound: number;
+  rosterRules?: RosterRules;
 }): OpponentDemand {
   const owners: number[] = [];
   for (let overall = firstOpponentPick; overall < targetPick; overall += 1) {
@@ -171,19 +183,26 @@ export function opponentDemandForPosition({
   }
   const baseline =
     teamRosters.reduce(
-      (total, counts) => total + demandWeight(position, counts, currentRound),
+      (total, counts) =>
+        total + demandWeight(position, counts, currentRound, rosterRules),
       0,
     ) / Math.max(1, teamRosters.length);
   const exposure = owners.reduce(
     (total, owner) =>
-      total + demandWeight(position, teamRosters[owner] ?? {}, currentRound),
+      total +
+      demandWeight(
+        position,
+        teamRosters[owner] ?? {},
+        currentRound,
+        rosterRules,
+      ),
     0,
   );
   const pressure = owners.length
     ? clamp(exposure / owners.length / Math.max(0.1, baseline), 0.45, 1.9)
     : 1;
   const statuses = owners.map((owner) =>
-    lineupStatus(position, teamRosters[owner] ?? {}),
+    lineupStatus(position, teamRosters[owner] ?? {}, rosterRules),
   );
   return {
     position,
@@ -211,11 +230,19 @@ export function opponentAdjustedSurvival(
   return clamp(Math.pow(market, demand.pressure), 0.005, 0.995);
 }
 
-export function rosterNeeds(counts: PositionCounts, currentRound: number) {
+export function rosterNeeds(
+  counts: PositionCounts,
+  currentRound: number,
+  rules: RosterRules = DEFAULT_ROSTER_RULES,
+) {
   return (['QB', 'RB', 'WR', 'TE', 'K', 'DST'] as DraftPosition[]).filter(
-    (position) =>
-      lineupStatus(position, counts) === 'starter' &&
-      !((position === 'K' || position === 'DST') && currentRound < 11),
+    (position) => {
+      const status = lineupStatus(position, counts, rules);
+      return (
+        (status === 'starter' || status === 'flex') &&
+        !((position === 'K' || position === 'DST') && currentRound < 11)
+      );
+    },
   );
 }
 

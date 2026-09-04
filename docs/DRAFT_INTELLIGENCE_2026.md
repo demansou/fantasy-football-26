@@ -52,6 +52,10 @@ classified for the candidate position as:
 - bench/depth;
 - deferred K/DST demand before Round 11.
 
+Fixed-starter and W/R/T flex counts come from the browser's League setup, so custom
+roster shapes affect lineup fit, opponent needs, demand pressure, and tier alerts.
+The current league default has two W/R/T flex spots.
+
 The upcoming owners' average position demand is compared with the current league
 average. That relative pressure adjusts market survival:
 

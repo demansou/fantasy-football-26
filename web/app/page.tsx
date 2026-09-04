@@ -57,6 +57,7 @@ import {
   tierCliffForPlayer,
   type OpponentDemand,
   type PositionCounts,
+  type RosterRules,
 } from '@/lib/draft-intelligence';
 
 type Position = 'QB' | 'RB' | 'WR' | 'TE' | 'K' | 'DST';
@@ -102,6 +103,8 @@ type DraftCache = {
   teamCount: number;
   draftSlot: number;
   benchCount: number;
+  starterCounts: Record<Position, number>;
+  flexCount: number;
   teamNames: string[];
   avoidedPlayerIds: string[];
   watchedPlayerIds: string[];
@@ -157,19 +160,27 @@ const LEGACY_STORAGE_KEY = 'fantasy-football-26:draft-room:v2';
 const INJURY_CACHE_KEY = 'fantasy-football-26:sleeper-injuries:v1';
 const INJURY_REFRESH_MS = 20 * 60 * 60 * 1000;
 const DEFAULT_BENCH_COUNT = 6;
-const STARTER_SLOTS: RosterSlot[] = [
+const DEFAULT_FLEX_COUNT = 2;
+const DEFAULT_STARTER_COUNTS: Record<Position, number> = {
+  QB: 1,
+  RB: 2,
+  WR: 2,
+  TE: 1,
+  K: 1,
+  DST: 1,
+};
+const MODELED_POSITIONS: ModeledPosition[] = ['QB', 'RB', 'WR', 'TE'];
+const ALL_POSITIONS: Position[] = ['QB', 'RB', 'WR', 'TE', 'K', 'DST'];
+const ROSTER_POSITION_ORDER: RosterSlot[] = [
   'QB',
-  'RB',
-  'RB',
   'WR',
-  'WR',
+  'RB',
   'TE',
   'FLEX',
   'K',
   'DST',
+  'BN',
 ];
-const MODELED_POSITIONS: ModeledPosition[] = ['QB', 'RB', 'WR', 'TE'];
-const ALL_POSITIONS: Position[] = ['QB', 'RB', 'WR', 'TE', 'K', 'DST'];
 const DEFAULT_WEIGHTS: Weights = {
   QB: { opportunity: 100, highValue: 100, environment: 100, roleEvidence: 100 },
   RB: { opportunity: 100, highValue: 100, environment: 100, roleEvidence: 100 },
@@ -261,6 +272,51 @@ function isValidWeights(value: unknown): value is Weights {
   );
 }
 
+function normalizeStarterCounts(value: unknown): Record<Position, number> {
+  const candidate =
+    value && typeof value === 'object'
+      ? (value as Partial<Record<Position, unknown>>)
+      : {};
+  return Object.fromEntries(
+    ALL_POSITIONS.map((position) => {
+      const count = candidate[position];
+      return [
+        position,
+        typeof count === 'number' &&
+        Number.isInteger(count) &&
+        count >= 0 &&
+        count <= 4
+          ? count
+          : DEFAULT_STARTER_COUNTS[position],
+      ];
+    }),
+  ) as Record<Position, number>;
+}
+
+function buildStarterSlots(
+  starterCounts: Record<Position, number>,
+  flexCount: number,
+) {
+  const order: Array<Position | 'FLEX'> = [
+    'QB',
+    'WR',
+    'RB',
+    'TE',
+    'FLEX',
+    'K',
+    'DST',
+  ];
+  return order.flatMap((position) =>
+    Array.from(
+      {
+        length:
+          position === 'FLEX' ? flexCount : (starterCounts[position] ?? 0),
+      },
+      () => position,
+    ),
+  );
+}
+
 function parseDraftCache(raw: string | null): DraftCache | null {
   if (!raw) return null;
   try {
@@ -280,6 +336,13 @@ function parseDraftCache(raw: string | null): DraftCache | null {
       parsed.benchCount <= 12
         ? parsed.benchCount
         : DEFAULT_BENCH_COUNT;
+    const flexCount =
+      typeof parsed.flexCount === 'number' &&
+      Number.isInteger(parsed.flexCount) &&
+      parsed.flexCount >= 0 &&
+      parsed.flexCount <= 4
+        ? parsed.flexCount
+        : DEFAULT_FLEX_COUNT;
     const knownPlayerIds = new Set(players.map((player) => player.id));
     const seen = new Set<string>();
     const picks = Array.isArray(parsed.picks)
@@ -312,6 +375,8 @@ function parseDraftCache(raw: string | null): DraftCache | null {
       teamCount,
       draftSlot,
       benchCount,
+      starterCounts: normalizeStarterCounts(parsed.starterCounts),
+      flexCount,
       teamNames: normalizeTeamNames(parsed.teamNames, draftSlot),
       avoidedPlayerIds: Array.isArray(parsed.avoidedPlayerIds)
         ? [
@@ -459,6 +524,7 @@ function scorePlayer(
   positionPool: Player[],
   picksUntilNext: number,
   myPlayers: Player[],
+  rosterRules: RosterRules,
 ) {
   const position = player.position;
   const modeledPosition = position as ModeledPosition;
@@ -473,7 +539,7 @@ function scorePlayer(
           0,
         )
       : 0;
-  const status = lineupStatus(position, rosterCounts);
+  const status = lineupStatus(position, rosterCounts, rosterRules);
   const draftProgress = Math.min(1, Math.max(0, (currentRound - 1) / 12));
   const need =
     status === 'starter'
@@ -514,12 +580,28 @@ function scorePlayer(
     penalty -= (12 - currentRound) * 0.65;
   }
   if (status === 'bench') {
-    const starterCapacity =
+    const depthAfterPick =
       position === 'RB' || position === 'WR' || position === 'TE'
-        ? ({ RB: 3, WR: 3, TE: 2 } as const)[position]
-        : 1;
-    penalty -=
-      Math.max(0, (rosterCounts[position] ?? 0) - starterCapacity + 1) * 0.8;
+        ? Math.max(
+            1,
+            (['RB', 'WR', 'TE'] as Position[]).reduce(
+              (total, eligible) =>
+                total +
+                Math.max(
+                  0,
+                  (rosterCounts[eligible] ?? 0) -
+                    rosterRules.starters[eligible],
+                ),
+              0,
+            ) -
+              rosterRules.flexCount +
+              1,
+          )
+        : Math.max(
+            1,
+            (rosterCounts[position] ?? 0) - rosterRules.starters[position] + 1,
+          );
+    penalty -= depthAfterPick * 0.8;
   }
   if (myPlayers.length >= 8 && player.bye) {
     penalty -=
@@ -684,6 +766,8 @@ export default function Home() {
   const [teamCount, setTeamCount] = useState(10);
   const [draftSlot, setDraftSlot] = useState(5);
   const [benchCount, setBenchCount] = useState(DEFAULT_BENCH_COUNT);
+  const [starterCounts, setStarterCounts] = useState(DEFAULT_STARTER_COUNTS);
+  const [flexCount, setFlexCount] = useState(DEFAULT_FLEX_COUNT);
   const [teamNames, setTeamNames] = useState(() => defaultTeamNames(5));
   const [avoidedPlayerIds, setAvoidedPlayerIds] = useState<string[]>([]);
   const [watchedPlayerIds, setWatchedPlayerIds] = useState<string[]>([]);
@@ -697,6 +781,10 @@ export default function Home() {
   const [pendingDraftSlot, setPendingDraftSlot] = useState(5);
   const [pendingBenchCount, setPendingBenchCount] =
     useState(DEFAULT_BENCH_COUNT);
+  const [pendingStarterCounts, setPendingStarterCounts] = useState(
+    DEFAULT_STARTER_COUNTS,
+  );
+  const [pendingFlexCount, setPendingFlexCount] = useState(DEFAULT_FLEX_COUNT);
   const [pendingTeamNames, setPendingTeamNames] = useState(() =>
     defaultTeamNames(5),
   );
@@ -729,6 +817,8 @@ export default function Home() {
           setTeamCount(restored.teamCount);
           setDraftSlot(restored.draftSlot);
           setBenchCount(restored.benchCount);
+          setStarterCounts(restored.starterCounts);
+          setFlexCount(restored.flexCount);
           setTeamNames(restored.teamNames);
           setAvoidedPlayerIds(restored.avoidedPlayerIds);
           setWatchedPlayerIds(restored.watchedPlayerIds);
@@ -745,6 +835,8 @@ export default function Home() {
                 teamCount: 10,
                 draftSlot: 5,
                 benchCount: DEFAULT_BENCH_COUNT,
+                starterCounts: DEFAULT_STARTER_COUNTS,
+                flexCount: DEFAULT_FLEX_COUNT,
                 teamNames: defaultTeamNames(5),
                 avoidedPlayerIds: [],
                 watchedPlayerIds: [],
@@ -771,6 +863,8 @@ export default function Home() {
         teamCount,
         draftSlot,
         benchCount,
+        starterCounts,
+        flexCount,
         teamNames,
         avoidedPlayerIds,
         watchedPlayerIds,
@@ -783,11 +877,13 @@ export default function Home() {
     avoidedPlayerIds,
     benchCount,
     draftSlot,
+    flexCount,
     hideInactivePlayers,
     hydrated,
     picks,
     teamCount,
     teamNames,
+    starterCounts,
     watchedPlayerIds,
     weights,
   ]);
@@ -804,6 +900,8 @@ export default function Home() {
           teamCount,
           draftSlot,
           benchCount,
+          starterCounts,
+          flexCount,
           teamNames,
           avoidedPlayerIds,
           watchedPlayerIds,
@@ -826,11 +924,13 @@ export default function Home() {
     avoidedPlayerIds,
     benchCount,
     draftSlot,
+    flexCount,
     hideInactivePlayers,
     hydrated,
     picks,
     teamCount,
     teamNames,
+    starterCounts,
     watchedPlayerIds,
     weights,
   ]);
@@ -956,6 +1056,14 @@ export default function Home() {
       ),
     [myPlayers],
   );
+  const rosterRules = useMemo<RosterRules>(
+    () => ({ starters: starterCounts, flexCount }),
+    [flexCount, starterCounts],
+  );
+  const starterSlots = useMemo(
+    () => buildStarterSlots(starterCounts, flexCount),
+    [flexCount, starterCounts],
+  );
   const teamRosters = useMemo(
     () =>
       Array.from({ length: teamCount }, (_, teamIndex) =>
@@ -985,6 +1093,7 @@ export default function Home() {
             myTeamIndex,
             teamRosters,
             currentRound,
+            rosterRules,
           }),
         ]),
       ) as Record<Position, OpponentDemand>,
@@ -993,6 +1102,7 @@ export default function Home() {
       firstOpponentPick,
       myTeamIndex,
       nextMyPick,
+      rosterRules,
       teamCount,
       teamRosters,
     ],
@@ -1050,6 +1160,7 @@ export default function Home() {
               positionPools[player.position],
               Math.max(1, nextMyPick - currentPick),
               myPlayers,
+              rosterRules,
             ),
           };
         })
@@ -1065,6 +1176,7 @@ export default function Home() {
       positionPools,
       recentPositionCounts,
       rosterCounts,
+      rosterRules,
       weights,
     ],
   );
@@ -1141,7 +1253,7 @@ export default function Home() {
   const rosterSlots = useMemo(() => {
     const used = new Set<string>();
     return [
-      ...STARTER_SLOTS,
+      ...starterSlots,
       ...Array.from({ length: benchCount }, () => 'BN' as const),
     ].map((slot) => {
       const player = myPlayers.find(
@@ -1155,7 +1267,7 @@ export default function Home() {
       if (player) used.add(player.id);
       return { slot, player };
     });
-  }, [benchCount, myPlayers]);
+  }, [benchCount, myPlayers, starterSlots]);
   const editingPick =
     editingPickOverall === null ? null : picks[editingPickOverall - 1];
   const editingPlayer = editingPick
@@ -1188,6 +1300,8 @@ export default function Home() {
     teamCount,
     draftSlot,
     benchCount,
+    starterCounts,
+    flexCount,
     teamNames,
     avoidedPlayerIds,
     watchedPlayerIds,
@@ -1242,6 +1356,8 @@ export default function Home() {
       setTeamCount(restored.teamCount);
       setDraftSlot(restored.draftSlot);
       setBenchCount(restored.benchCount);
+      setStarterCounts(restored.starterCounts);
+      setFlexCount(restored.flexCount);
       setTeamNames(restored.teamNames);
       setAvoidedPlayerIds(restored.avoidedPlayerIds);
       setWatchedPlayerIds(restored.watchedPlayerIds);
@@ -1263,6 +1379,8 @@ export default function Home() {
       setPendingTeamCount(teamCount);
       setPendingDraftSlot(Math.min(draftSlot, teamCount));
       setPendingBenchCount(benchCount);
+      setPendingStarterCounts(starterCounts);
+      setPendingFlexCount(flexCount);
       setPendingTeamNames(teamNames);
     }
     setSettingsOpen(open);
@@ -1272,6 +1390,8 @@ export default function Home() {
     setTeamCount(pendingTeamCount);
     setDraftSlot(Math.min(pendingDraftSlot, pendingTeamCount));
     setBenchCount(pendingBenchCount);
+    setStarterCounts(pendingStarterCounts);
+    setFlexCount(pendingFlexCount);
     setTeamNames(
       normalizeTeamNames(
         pendingTeamNames,
@@ -1665,14 +1785,18 @@ export default function Home() {
                       <span>Pick {teamIndex + 1}</span>
                       <small>
                         Needs{' '}
-                        {rosterNeeds(teamRosters[teamIndex] ?? {}, currentRound)
+                        {rosterNeeds(
+                          teamRosters[teamIndex] ?? {},
+                          currentRound,
+                          rosterRules,
+                        )
                           .slice(0, 4)
                           .join('/') || 'depth'}
                       </small>
                     </div>
                   ))}
                   {Array.from(
-                    { length: STARTER_SLOTS.length + benchCount },
+                    { length: starterSlots.length + benchCount },
                     (_, roundIndex) => {
                       const round = roundIndex + 1;
                       return (
@@ -1746,8 +1870,9 @@ export default function Home() {
               <DialogHeader>
                 <DialogTitle>League setup</DialogTitle>
                 <DialogDescription>
-                  Set the snake draft shape. Rankings use 10-team PPR market
-                  timing, while pick ownership adapts to 8, 10, or 12 teams.
+                  Match your league&apos;s draft order and roster positions.
+                  These settings drive roster fit and opponent-demand
+                  intelligence.
                 </DialogDescription>
               </DialogHeader>
               <div className="settings-grid">
@@ -1785,21 +1910,61 @@ export default function Home() {
                     ))}
                   </NativeSelect>
                 </div>
-                <div className="settings-field">
-                  <Label htmlFor="bench-count">Bench spots</Label>
-                  <NativeSelect
-                    id="bench-count"
-                    value={pendingBenchCount}
-                    onChange={(event) =>
-                      setPendingBenchCount(Number(event.target.value))
-                    }
-                  >
-                    {Array.from({ length: 13 }, (_, count) => (
-                      <NativeSelectOption key={count} value={count}>
-                        {count} {count === 1 ? 'spot' : 'spots'}
-                      </NativeSelectOption>
-                    ))}
-                  </NativeSelect>
+              </div>
+              <div className="roster-position-settings">
+                <div className="team-name-heading">
+                  <div>
+                    <strong>Roster positions</strong>
+                    <span>Yahoo W/R/T maps to FLEX; DEF maps to DST.</span>
+                  </div>
+                  <span>
+                    {Object.values(pendingStarterCounts).reduce(
+                      (total, count) => total + count,
+                      pendingFlexCount + pendingBenchCount,
+                    )}{' '}
+                    rounds
+                  </span>
+                </div>
+                <div className="roster-position-grid">
+                  {ROSTER_POSITION_ORDER.map((position) => {
+                    const value =
+                      position === 'BN'
+                        ? pendingBenchCount
+                        : position === 'FLEX'
+                          ? pendingFlexCount
+                          : pendingStarterCounts[position];
+                    const max = position === 'BN' ? 12 : 4;
+                    return (
+                      <div className="settings-field" key={position}>
+                        <Label htmlFor={`roster-${position}`}>
+                          {position === 'FLEX' ? 'W/R/T (FLEX)' : position}
+                        </Label>
+                        <NativeSelect
+                          id={`roster-${position}`}
+                          value={value}
+                          onChange={(event) => {
+                            const count = Number(event.target.value);
+                            if (position === 'BN') {
+                              setPendingBenchCount(count);
+                            } else if (position === 'FLEX') {
+                              setPendingFlexCount(count);
+                            } else {
+                              setPendingStarterCounts((current) => ({
+                                ...current,
+                                [position]: count,
+                              }));
+                            }
+                          }}
+                        >
+                          {Array.from({ length: max + 1 }, (_, count) => (
+                            <NativeSelectOption key={count} value={count}>
+                              {count}
+                            </NativeSelectOption>
+                          ))}
+                        </NativeSelect>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
               <div className="team-name-settings">
@@ -1837,8 +2002,8 @@ export default function Home() {
                 </div>
               </div>
               <div className="persistence-note">
-                <Check /> Team names, picks, target queue, settings, and custom
-                weights save in this browser.
+                <Check /> Team names, roster positions, picks, target queue,
+                settings, and custom weights save in this browser.
               </div>
               <DialogFooter>
                 <DialogClose render={<Button variant="outline" />}>
@@ -1942,7 +2107,7 @@ export default function Home() {
               <h2>My Team</h2>
             </div>
             <span className="panel-count">
-              {myPlayers.length}/{STARTER_SLOTS.length + benchCount}
+              {myPlayers.length}/{starterSlots.length + benchCount}
             </span>
           </div>
           <div className="roster-summary">

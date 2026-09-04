@@ -1247,7 +1247,7 @@ select {
 }
 .settings-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 12px;
   padding-block: 4px;
 }
@@ -1261,6 +1261,20 @@ select {
 }
 .settings-field [data-slot='native-select-wrapper'] {
   width: 100%;
+}
+.roster-position-settings {
+  display: grid;
+  gap: 10px;
+  padding-block: 4px;
+}
+.roster-position-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px 12px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: oklch(1 0 0 / 2%);
 }
 .team-name-settings {
   display: grid;
@@ -1461,6 +1475,9 @@ select {
   }
   .settings-grid {
     grid-template-columns: 1fr;
+  }
+  .roster-position-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .team-name-heading > div {
     align-items: flex-start;
