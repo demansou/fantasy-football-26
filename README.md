@@ -1,5 +1,61 @@
 # Fantasy Football 2026 Draft Optimizer
 
+## Season research from the command line
+
+The Python engine now reads the web app's **Export season** backup directly.
+The website does not need to be running. Keep real league exports under ignored
+`data/private/`; updates write a new file and never overwrite their inputs.
+
+From the repository root, save your export as `data/private/season.json`, then:
+
+```bash
+# Preseason-only, roster-aware waiver and trade watchlists (no network).
+python3 -m fantasy_draft season-research \
+  --state data/private/season.json --output data/derived/season/preseason
+
+# Once regular-season stats are published, capture a dated usage snapshot.
+python3 -m fantasy_draft fetch-season-usage \
+  --output data/raw/season/usage-2026-09-15.json
+
+python3 -m fantasy_draft season-research \
+  --state data/private/season.json \
+  --stats data/raw/season/usage-2026-09-15.json \
+  --output data/derived/season/week-1
+
+# Transfer/add a player to team 1 (team numbers are 1-based).
+# Replace PLAYER_ID with a player_id from report.json.
+python3 -m fantasy_draft season-update \
+  --state data/private/season.json --player PLAYER_ID --team 1 --slot Bench \
+  --output data/private/season-v2.json
+
+# A drop uses --player PLAYER_ID --drop; undo uses --undo without --player.
+python3 -m fantasy_draft season-update \
+  --state data/private/season-v2.json --undo \
+  --output data/private/season-v3.json
+```
+
+Each research directory contains `report.md` and full `report.json`, including
+roster/catalog/stats SHA-256 hashes, separate refresh timestamps, candidate owners,
+usage trends, qualitative confidence, and the same-position roster comparison.
+Import the updated season JSON into the web app to carry script edits back;
+there is no automatic synchronization. The saved draft remains unchanged.
+
+The default catalog reuses checked-in `web/data/players.ts` as data, without
+executing JavaScript. `--catalog players.json` accepts the same player array
+(`id`, `gsisId`, `name`, `position`, `team`, optional `metrics.opportunity` from
+0–100). Include new players in that catalog when recording adds outside the
+original pool. Research also expands its pool from observed NFL usage and saved
+roster metadata. Use `fetch-season-usage --input weekly.csv --output snapshot.json`
+to normalize an already-downloaded nflverse CSV entirely offline.
+
+The free feed is nflverse's `stats_player_week_2026.csv`; unavailable or invalid
+data fails without replacing existing snapshots. Use a new path for each refresh
+and report. `--through-week N` filters usage after N but is **not** a historical
+backtest: the roster and preseason priors still come from the supplied files.
+These are research watchlists, not calibrated trade prices, lineup forecasts, or
+automatic drop advice. Injuries, snap counts and red-zone usage are not yet
+integrated. Verify league ownership and eligibility in Yahoo.
+
 This repository is the foundation for a Yahoo PPR draft assistant that ranks a
 player **for this league, roster, and pick** instead of copying a static expert
 list. The first working slice is an offline, deterministic recommendation engine.

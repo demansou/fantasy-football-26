@@ -174,6 +174,30 @@ def _parser() -> argparse.ArgumentParser:
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
+    season_fetch = subparsers.add_parser('fetch-season-usage', help='snapshot free regular-season NFL usage')
+    season_fetch.add_argument('--season', type=int, default=2026)
+    season_fetch.add_argument('--input', type=Path, help='offline nflverse weekly stats CSV; omit to fetch')
+    season_fetch.add_argument('--output', type=Path, required=True, help='new JSON snapshot path (never overwritten)')
+
+    season_update = subparsers.add_parser('season-update', help='update an interoperable season roster backup')
+    season_update.add_argument('--state', type=Path, required=True)
+    season_update.add_argument('--output', type=Path, required=True, help='new backup path; input is preserved')
+    season_update.add_argument('--player', help='catalog player ID to add, move, or drop')
+    destination = season_update.add_mutually_exclusive_group(required=True)
+    destination.add_argument('--team', type=int, help='destination team number, 1-based')
+    destination.add_argument('--drop', action='store_true')
+    destination.add_argument('--undo', action='store_true')
+    season_update.add_argument('--slot', choices=('Starter','Bench','IR'), default='Bench')
+    season_update.add_argument('--catalog', type=Path, default=Path('web/data/players.ts'))
+
+    season_report = subparsers.add_parser('season-research', help='roster-aware waiver and trade opportunity watchlists')
+    season_report.add_argument('--state', type=Path, required=True, help='web season backup JSON')
+    season_report.add_argument('--stats', type=Path, help='fetch-season-usage snapshot; omit for preseason-only research')
+    season_report.add_argument('--catalog', type=Path, default=Path('web/data/players.ts'), help='player JSON array or generated TS catalog')
+    season_report.add_argument('--through-week', type=int, help='exclude stats after this week; not a backtest')
+    season_report.add_argument('--top', type=int, default=20)
+    season_report.add_argument('--output', type=Path, required=True, help='new output directory containing report.json and report.md')
+
     rank = subparsers.add_parser("rank", help="rank an undrafted player pool")
     _add_inputs(rank, state_required=False)
 
@@ -1355,6 +1379,46 @@ def _render_table(recommendations: list[Recommendation]) -> str:
 def main(argv: list[str] | None = None) -> int:
     parser = _parser()
     args = parser.parse_args(argv)
+
+    if args.command in ('fetch-season-usage', 'season-update', 'season-research'):
+        from .season import digest, fetch_usage, load_catalog, load_state, research, render_report, update_state, write_new
+        try:
+            if args.command == 'fetch-season-usage':
+                result = fetch_usage(args.output, args.season, args.input)
+                print(f'Saved {len(result["rows"])} player-weeks to {args.output}')
+            elif args.command == 'season-update':
+                state = load_state(args.state)
+                if args.undo and args.player:
+                    raise ValueError('--undo cannot be combined with --player')
+                if not args.undo and not args.player:
+                    raise ValueError('--player is required for a roster change')
+                known = {p['id']: p for p in load_catalog(args.catalog)}
+                known.update(state.get('playerInfo', {}))
+                if not args.undo and args.player not in known and args.player not in state['owners']:
+                    raise ValueError('Unknown player ID; provide a catalog including the player')
+                updated = update_state(state, args.player, args.team - 1 if args.team is not None else None, args.slot, args.undo)
+                if args.player in known:
+                    player = known[args.player]
+                    updated.setdefault('playerInfo', {})[args.player] = {k: player.get(k) for k in ('name','position','team','gsisId')}
+                write_new(args.output, updated)
+                print(f'Saved season roster to {args.output}; draft and input backup unchanged')
+            else:
+                if args.top < 1:
+                    raise ValueError('--top must be positive')
+                state = load_state(args.state)
+                snapshot = json.loads(args.stats.read_text()) if args.stats else None
+                report = research(state, load_catalog(args.catalog), snapshot, args.through_week)
+                report['provenance'] = {name: {'path': str(path), 'sha256': digest(path.read_bytes())} for name, path in
+                    [('roster', args.state), ('catalog', args.catalog), ('stats', args.stats)] if path}
+                args.output.mkdir(parents=True, exist_ok=False)
+                write_new(args.output / 'report.json', report)
+                with (args.output / 'report.md').open('x') as handle:
+                    handle.write(render_report(report, args.top))
+                print(f'Saved {report["mode"]} to {args.output}')
+            return 0
+        except (OSError, ValueError, KeyError, TypeError, IndexError) as error:
+            print(f'error: {error}', file=sys.stderr)
+            return 2
 
     if args.command == "fetch-ffc-adp":
         try:
