@@ -2,6 +2,25 @@
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 
+.season-nav { display: flex; gap: .5rem; padding: .65rem 1.4rem; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+.season-room { max-width: 1200px; margin: auto; padding: 1.5rem; font-size: 1rem; }
+.season-room h1 { font-size: 1.8rem; font-weight: 700; }
+.season-room h2 { font-size: 1.2rem; font-weight: 600; margin: 1rem 0; }
+.season-heading, .season-actions, .season-status, .season-toolbar { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+.season-heading { justify-content: space-between; margin-bottom: 1rem; }
+.season-status, .season-note { color: var(--muted-foreground); font-size: .875rem; margin: .8rem 0; line-height: 1.6; }
+.season-notice { padding: 1rem; border: 1px solid var(--primary); border-radius: .7rem; margin: 1rem 0; }
+.season-toolbar { margin: 1.5rem 0; }
+.season-toolbar input { max-width: 300px; }
+.season-room label { display: grid; gap: .4rem; font-size: .875rem; }
+.season-list { display: grid; gap: .65rem; margin: 1rem 0; }
+.season-player { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; padding: 1rem; }
+.season-player > div:first-child { flex: 1; min-width: 230px; }
+.season-player p { font-size: .875rem; color: var(--muted-foreground); margin-top: .4rem; }
+.season-empty, .season-history { padding: 1.5rem; line-height: 1.8; }
+.season-room a { text-decoration: underline; }
+@media (max-width: 600px) { .season-room { padding: 1rem; } .season-actions { gap: .5rem; } .season-player > div:first-child { min-width: 100%; } }
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

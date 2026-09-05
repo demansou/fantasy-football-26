@@ -49,6 +49,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { PLAYERS, RANKING_METADATA } from '@/data/players';
+import { SeasonRoom } from '@/components/season-room';
 import {
   lineupStatus,
   opponentAdjustedSurvival,
@@ -757,6 +758,7 @@ function WeightControls({
 }
 
 export default function Home() {
+  const [screen, setScreen] = useState<'draft' | 'team' | 'research'>('draft');
   const [picks, setPicks] = useState<Pick[]>([]);
   const [weights, setWeights] = useState<Weights>(DEFAULT_WEIGHTS);
   const [activePosition, setActivePosition] = useState<ModeledPosition>('WR');
@@ -1443,1045 +1445,1103 @@ export default function Home() {
     RANKING_METADATA.freshnessStatus === 'fresh' &&
     injuryCacheIsFresh;
   return (
-    <main className="draft-shell">
-      <header className="app-header">
-        <div className="brand-lockup">
-          <div className="brand-mark">
-            <DraftingCompass aria-hidden="true" />
+    <>
+      <nav className="season-nav" aria-label="League workspace">
+        {(['draft', 'team', 'research'] as const).map((view) => (
+          <Button
+            key={view}
+            variant={screen === view ? 'default' : 'ghost'}
+            aria-pressed={screen === view}
+            onClick={() => setScreen(view)}
+          >
+            {view === 'draft'
+              ? 'Draft'
+              : view === 'team'
+                ? 'My Team'
+                : 'Research'}
+          </Button>
+        ))}
+      </nav>
+      <div hidden={screen === 'draft'}>
+        <SeasonRoom
+          view={screen === 'research' ? 'research' : 'team'}
+          picks={picks}
+          teams={teamNames.slice(0, teamCount)}
+          myTeam={draftSlot - 1}
+          capacity={starterSlots.length + benchCount}
+        />
+      </div>
+      <main
+        className="draft-shell"
+        style={screen === 'draft' ? undefined : { display: 'none' }}
+      >
+        <header className="app-header">
+          <div className="brand-lockup">
+            <div className="brand-mark">
+              <DraftingCompass aria-hidden="true" />
+            </div>
+            <div>
+              <p className="eyebrow">Fantasy Football 2026</p>
+              <h1>Draft Room</h1>
+            </div>
           </div>
-          <div>
-            <p className="eyebrow">Fantasy Football 2026</p>
-            <h1>Draft Room</h1>
-          </div>
-        </div>
-        <div className="draft-status" aria-label="Current draft status">
-          <div>
-            <span>Round</span>
-            <strong>{currentRound}</strong>
-          </div>
-          <div>
-            <span>Overall</span>
-            <strong>{currentPick}</strong>
-          </div>
-          <div className={currentOwnerIsMine ? 'on-clock is-mine' : 'on-clock'}>
-            <span>On the clock</span>
-            <strong>{teamNames[currentOwner]}</strong>
-          </div>
-        </div>
-        <div className="header-actions">
-          <Dialog>
-            <DialogTrigger
-              render={
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className={
-                    draftDayReady ? 'health-trigger is-ready' : 'health-trigger'
-                  }
-                />
-              }
+          <div className="draft-status" aria-label="Current draft status">
+            <div>
+              <span>Round</span>
+              <strong>{currentRound}</strong>
+            </div>
+            <div>
+              <span>Overall</span>
+              <strong>{currentPick}</strong>
+            </div>
+            <div
+              className={currentOwnerIsMine ? 'on-clock is-mine' : 'on-clock'}
             >
-              <ShieldCheck /> <span>{draftDayReady ? 'Ready' : 'Health'}</span>
-            </DialogTrigger>
-            <DialogContent className="health-dialog sm:max-w-2xl">
-              <DialogHeader>
-                <DialogTitle>Draft-day reliability</DialogTitle>
-                <DialogDescription>
-                  Confirm the board, data, and offline fallback before the room
-                  opens.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="health-grid">
-                <div>
-                  <span>Draft state</span>
-                  <strong>
-                    {storageAvailable === null
-                      ? 'Checking'
-                      : storageAvailable
-                        ? `${picks.length} picks saved`
-                        : 'Storage blocked'}
-                  </strong>
-                  <small>Primary save plus same-tab backup</small>
-                </div>
-                <div>
-                  <span>Offline reload</span>
-                  <strong>
-                    {offlineStatus === 'checking'
-                      ? 'Preparing'
-                      : offlineStatus === 'ready'
-                        ? 'Ready'
-                        : 'Unavailable'}
-                  </strong>
-                  <small>App shell cached on this device</small>
-                </div>
-                <div>
-                  <span>Rankings</span>
-                  <strong>{RANKING_METADATA.freshnessStatus}</strong>
-                  <small>
-                    {RANKING_METADATA.playerCount} players · ADP through{' '}
-                    {RANKING_METADATA.ffcWindow.split(' to ')[1]}
-                  </small>
-                </div>
-                <div>
-                  <span>Injury feed</span>
-                  <strong>
-                    {injuryCacheIsFresh
-                      ? `${injuryAlertCount} flags loaded`
-                      : 'Refresh needed'}
-                  </strong>
-                  <small>
-                    {injuryCache
-                      ? new Date(injuryCache.fetchedAt).toLocaleString()
-                      : 'No draft-day refresh yet'}
-                  </small>
-                </div>
-                <div>
-                  <span>Availability</span>
-                  <strong>Opponent-aware</strong>
-                  <small>FFC range + every roster before your turn</small>
-                </div>
-                <div>
-                  <span>Demand pressure</span>
-                  <strong>{opponentSignal}</strong>
-                  <small>
-                    {hottestOpponentDemand?.starterPicks ?? 0} upcoming starter
-                    needs
-                  </small>
-                </div>
-              </div>
-              <div className="reliability-controls">
-                <div className="reliability-toggle">
-                  <div>
-                    <strong>Hide inactive players</strong>
-                    <span>Uses the frozen preseason roster status.</span>
-                  </div>
-                  <Switch
-                    aria-label="Hide inactive players"
-                    checked={hideInactivePlayers}
-                    onCheckedChange={setHideInactivePlayers}
-                  />
-                </div>
-                <div className="backup-actions">
-                  <Button variant="outline" onClick={exportDraftBackup}>
-                    <Download /> Download backup
-                  </Button>
+              <span>On the clock</span>
+              <strong>{teamNames[currentOwner]}</strong>
+            </div>
+          </div>
+          <div className="header-actions">
+            <Dialog>
+              <DialogTrigger
+                render={
                   <Button
                     variant="outline"
-                    onClick={() => importInputRef.current?.click()}
-                  >
-                    <Upload /> Restore backup
-                  </Button>
-                  <input
-                    ref={importInputRef}
-                    type="file"
-                    accept="application/json,.json"
-                    hidden
-                    onChange={importDraftBackup}
+                    size="sm"
+                    className={
+                      draftDayReady
+                        ? 'health-trigger is-ready'
+                        : 'health-trigger'
+                    }
                   />
-                  {backupMessage && <span>{backupMessage}</span>}
+                }
+              >
+                <ShieldCheck />{' '}
+                <span>{draftDayReady ? 'Ready' : 'Health'}</span>
+              </DialogTrigger>
+              <DialogContent className="health-dialog sm:max-w-2xl">
+                <DialogHeader>
+                  <DialogTitle>Draft-day reliability</DialogTitle>
+                  <DialogDescription>
+                    Confirm the board, data, and offline fallback before the
+                    room opens.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="health-grid">
+                  <div>
+                    <span>Draft state</span>
+                    <strong>
+                      {storageAvailable === null
+                        ? 'Checking'
+                        : storageAvailable
+                          ? `${picks.length} picks saved`
+                          : 'Storage blocked'}
+                    </strong>
+                    <small>Primary save plus same-tab backup</small>
+                  </div>
+                  <div>
+                    <span>Offline reload</span>
+                    <strong>
+                      {offlineStatus === 'checking'
+                        ? 'Preparing'
+                        : offlineStatus === 'ready'
+                          ? 'Ready'
+                          : 'Unavailable'}
+                    </strong>
+                    <small>App shell cached on this device</small>
+                  </div>
+                  <div>
+                    <span>Rankings</span>
+                    <strong>{RANKING_METADATA.freshnessStatus}</strong>
+                    <small>
+                      {RANKING_METADATA.playerCount} players · ADP through{' '}
+                      {RANKING_METADATA.ffcWindow.split(' to ')[1]}
+                    </small>
+                  </div>
+                  <div>
+                    <span>Injury feed</span>
+                    <strong>
+                      {injuryCacheIsFresh
+                        ? `${injuryAlertCount} flags loaded`
+                        : 'Refresh needed'}
+                    </strong>
+                    <small>
+                      {injuryCache
+                        ? new Date(injuryCache.fetchedAt).toLocaleString()
+                        : 'No draft-day refresh yet'}
+                    </small>
+                  </div>
+                  <div>
+                    <span>Availability</span>
+                    <strong>Opponent-aware</strong>
+                    <small>FFC range + every roster before your turn</small>
+                  </div>
+                  <div>
+                    <span>Demand pressure</span>
+                    <strong>{opponentSignal}</strong>
+                    <small>
+                      {hottestOpponentDemand?.starterPicks ?? 0} upcoming
+                      starter needs
+                    </small>
+                  </div>
                 </div>
-              </div>
-              <div className="health-player-sections">
-                <section>
-                  <div className="health-section-heading">
-                    <strong>Live injury queue</strong>
-                    <span>{injuryPlayers.length}</span>
+                <div className="reliability-controls">
+                  <div className="reliability-toggle">
+                    <div>
+                      <strong>Hide inactive players</strong>
+                      <span>Uses the frozen preseason roster status.</span>
+                    </div>
+                    <Switch
+                      aria-label="Hide inactive players"
+                      checked={hideInactivePlayers}
+                      onCheckedChange={setHideInactivePlayers}
+                    />
                   </div>
-                  <div className="health-player-list">
-                    {injuryPlayers.length ? (
-                      injuryPlayers.map(({ player, alert }) => (
-                        <div key={player.id}>
-                          <div>
-                            <strong>{player.name}</strong>
-                            <span>{injurySummary(alert)}</span>
+                  <div className="backup-actions">
+                    <Button variant="outline" onClick={exportDraftBackup}>
+                      <Download /> Download backup
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => importInputRef.current?.click()}
+                    >
+                      <Upload /> Restore backup
+                    </Button>
+                    <input
+                      ref={importInputRef}
+                      type="file"
+                      accept="application/json,.json"
+                      hidden
+                      onChange={importDraftBackup}
+                    />
+                    {backupMessage && <span>{backupMessage}</span>}
+                  </div>
+                </div>
+                <div className="health-player-sections">
+                  <section>
+                    <div className="health-section-heading">
+                      <strong>Live injury queue</strong>
+                      <span>{injuryPlayers.length}</span>
+                    </div>
+                    <div className="health-player-list">
+                      {injuryPlayers.length ? (
+                        injuryPlayers.map(({ player, alert }) => (
+                          <div key={player.id}>
+                            <div>
+                              <strong>{player.name}</strong>
+                              <span>{injurySummary(alert)}</span>
+                            </div>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() =>
+                                avoidedIds.has(player.id)
+                                  ? restorePlayer(player.id)
+                                  : avoidPlayer(player.id)
+                              }
+                            >
+                              {avoidedIds.has(player.id) ? 'Restore' : 'Avoid'}
+                            </Button>
                           </div>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() =>
-                              avoidedIds.has(player.id)
-                                ? restorePlayer(player.id)
-                                : avoidPlayer(player.id)
-                            }
-                          >
-                            {avoidedIds.has(player.id) ? 'Restore' : 'Avoid'}
-                          </Button>
-                        </div>
-                      ))
-                    ) : (
-                      <p>Refresh injuries to populate this queue.</p>
-                    )}
-                  </div>
-                </section>
-                <section>
-                  <div className="health-section-heading">
-                    <strong>Avoided players</strong>
-                    <span>{avoidedPlayers.length}</span>
-                  </div>
-                  <div className="health-player-list">
-                    {avoidedPlayers.length ? (
-                      avoidedPlayers.map((player) => (
-                        <div key={player.id}>
-                          <div>
-                            <strong>{player.name}</strong>
-                            <span>
-                              {player.position} · {player.team}
-                            </span>
+                        ))
+                      ) : (
+                        <p>Refresh injuries to populate this queue.</p>
+                      )}
+                    </div>
+                  </section>
+                  <section>
+                    <div className="health-section-heading">
+                      <strong>Avoided players</strong>
+                      <span>{avoidedPlayers.length}</span>
+                    </div>
+                    <div className="health-player-list">
+                      {avoidedPlayers.length ? (
+                        avoidedPlayers.map((player) => (
+                          <div key={player.id}>
+                            <div>
+                              <strong>{player.name}</strong>
+                              <span>
+                                {player.position} · {player.team}
+                              </span>
+                            </div>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => restorePlayer(player.id)}
+                            >
+                              Restore
+                            </Button>
                           </div>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => restorePlayer(player.id)}
-                          >
-                            Restore
-                          </Button>
-                        </div>
-                      ))
-                    ) : (
-                      <p>No players manually avoided.</p>
-                    )}
-                  </div>
-                </section>
-              </div>
-            </DialogContent>
-          </Dialog>
-          <Button
-            variant="outline"
-            size="sm"
-            className={
-              injuryAlertCount ? 'injury-refresh has-alerts' : 'injury-refresh'
-            }
-            onClick={refreshInjuries}
-            disabled={injuryLoading || injuryCacheIsFresh}
-            title={
-              injuryError ??
-              (injuryCache
-                ? `${injuryCache.matchedPlayers} ranked skill players matched · refreshed ${new Date(injuryCache.fetchedAt).toLocaleString()}`
-                : 'Pull today’s free Sleeper injury and roster-status feed')
-            }
-          >
-            <RefreshCw className={injuryLoading ? 'is-spinning' : ''} />
-            <span>
-              {injuryLoading
-                ? 'Refreshing'
-                : injuryCacheIsFresh
-                  ? `${injuryAlertCount} injury flags`
-                  : 'Refresh injuries'}
-            </span>
-          </Button>
-          <Dialog>
-            <DialogTrigger
-              render={
-                <Button variant="outline" size="sm" className="data-badge" />
+                        ))
+                      ) : (
+                        <p>No players manually avoided.</p>
+                      )}
+                    </div>
+                  </section>
+                </div>
+              </DialogContent>
+            </Dialog>
+            <Button
+              variant="outline"
+              size="sm"
+              className={
+                injuryAlertCount
+                  ? 'injury-refresh has-alerts'
+                  : 'injury-refresh'
+              }
+              onClick={refreshInjuries}
+              disabled={injuryLoading || injuryCacheIsFresh}
+              title={
+                injuryError ??
+                (injuryCache
+                  ? `${injuryCache.matchedPlayers} ranked skill players matched · refreshed ${new Date(injuryCache.fetchedAt).toLocaleString()}`
+                  : 'Pull today’s free Sleeper injury and roster-status feed')
               }
             >
-              <Database />{' '}
+              <RefreshCw className={injuryLoading ? 'is-spinning' : ''} />
               <span>
-                Fresh · ADP {RANKING_METADATA.ffcWindow.split(' to ')[1]}
+                {injuryLoading
+                  ? 'Refreshing'
+                  : injuryCacheIsFresh
+                    ? `${injuryAlertCount} injury flags`
+                    : 'Refresh injuries'}
               </span>
-            </DialogTrigger>
-            <DialogContent className="source-dialog sm:max-w-xl">
-              <DialogHeader>
-                <DialogTitle>What these rankings mean</DialogTitle>
-                <DialogDescription>
-                  {RANKING_METADATA.playerCount} players ranked for a 10-team
-                  PPR draft. {RANKING_METADATA.modeledPlayerCount} have
-                  bottom-up NFL opportunity context.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="source-list">
-                <div>
-                  <Badge variant="secondary">NFL</Badge>
-                  <strong>Role + environment</strong>
-                  <span>
-                    nflverse/PFR history, current depth and availability,
-                    official team staff evidence, and measured play-caller
-                    tendencies. Team certainty is evidence context and does not
-                    inflate the rank.
-                  </span>
+            </Button>
+            <Dialog>
+              <DialogTrigger
+                render={
+                  <Button variant="outline" size="sm" className="data-badge" />
+                }
+              >
+                <Database />{' '}
+                <span>
+                  Fresh · ADP {RANKING_METADATA.ffcWindow.split(' to ')[1]}
+                </span>
+              </DialogTrigger>
+              <DialogContent className="source-dialog sm:max-w-xl">
+                <DialogHeader>
+                  <DialogTitle>What these rankings mean</DialogTitle>
+                  <DialogDescription>
+                    {RANKING_METADATA.playerCount} players ranked for a 10-team
+                    PPR draft. {RANKING_METADATA.modeledPlayerCount} have
+                    bottom-up NFL opportunity context.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="source-list">
+                  <div>
+                    <Badge variant="secondary">NFL</Badge>
+                    <strong>Role + environment</strong>
+                    <span>
+                      nflverse/PFR history, current depth and availability,
+                      official team staff evidence, and measured play-caller
+                      tendencies. Team certainty is evidence context and does
+                      not inflate the rank.
+                    </span>
+                  </div>
+                  <div>
+                    <Badge variant="secondary">Market</Badge>
+                    <strong>Fantasy Football Calculator</strong>
+                    <span>
+                      {RANKING_METADATA.ffcDrafts.toLocaleString()} recent
+                      10-team PPR drafts from {RANKING_METADATA.ffcWindow}. ADP
+                      anchors cross-position timing. The published mean, spread,
+                      high/low range, and sample count now feed a bounded market
+                      estimate, then the actual roster needs of teams selecting
+                      before your next turn adjust it. It remains an
+                      estimate—not a calibrated probability or point
+                      projection—because the free feed does not expose
+                      pick-level outcomes. Freshness gate passed at{' '}
+                      {RANKING_METADATA.ffcAgeDays} day old.
+                    </span>
+                  </div>
+                  <div>
+                    <Badge variant="secondary">Freeze</Badge>
+                    <strong>{RANKING_METADATA.freezeModel}</strong>
+                    <span>
+                      Cut off {RANKING_METADATA.freezeCutoff}. Fingerprint{' '}
+                      {RANKING_METADATA.freezeFingerprint.slice(0, 12)}…
+                      verifies the underlying artifact bytes.
+                    </span>
+                  </div>
+                  <div>
+                    <Badge variant="secondary">Live</Badge>
+                    <strong>Sleeper player feed</strong>
+                    <span>
+                      Free, no-token, browser-readable injury, body-part,
+                      practice, roster-status, and news-update fields. Refreshed
+                      at most once daily and used only as a warning overlay;
+                      verify consequential changes in Yahoo.
+                    </span>
+                  </div>
                 </div>
-                <div>
-                  <Badge variant="secondary">Market</Badge>
-                  <strong>Fantasy Football Calculator</strong>
-                  <span>
-                    {RANKING_METADATA.ffcDrafts.toLocaleString()} recent 10-team
-                    PPR drafts from {RANKING_METADATA.ffcWindow}. ADP anchors
-                    cross-position timing. The published mean, spread, high/low
-                    range, and sample count now feed a bounded market estimate,
-                    then the actual roster needs of teams selecting before your
-                    next turn adjust it. It remains an estimate—not a calibrated
-                    probability or point projection—because the free feed does
-                    not expose pick-level outcomes. Freshness gate passed at{' '}
-                    {RANKING_METADATA.ffcAgeDays} day old.
-                  </span>
-                </div>
-                <div>
-                  <Badge variant="secondary">Freeze</Badge>
-                  <strong>{RANKING_METADATA.freezeModel}</strong>
-                  <span>
-                    Cut off {RANKING_METADATA.freezeCutoff}. Fingerprint{' '}
-                    {RANKING_METADATA.freezeFingerprint.slice(0, 12)}… verifies
-                    the underlying artifact bytes.
-                  </span>
-                </div>
-                <div>
-                  <Badge variant="secondary">Live</Badge>
-                  <strong>Sleeper player feed</strong>
-                  <span>
-                    Free, no-token, browser-readable injury, body-part,
-                    practice, roster-status, and news-update fields. Refreshed
-                    at most once daily and used only as a warning overlay;
-                    verify consequential changes in Yahoo.
-                  </span>
-                </div>
-              </div>
-              <p className="source-warning">
-                No efficiency, touchdown, or fantasy-point projection. QB
-                rushing and RB carry calibration remain higher-risk; K/DST are
-                market-only. Manual pick tracking works without a league login.
-              </p>
-              <DialogFooter showCloseButton>
-                <a
-                  className="source-link"
-                  href="https://github.com/demansou/fantasy-football-26/blob/main/docs/DRAFT_INTELLIGENCE_2026.md"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Read the draft-intelligence method
-                </a>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-          <Dialog open={boardOpen} onOpenChange={setBoardOpen}>
-            <DialogTrigger render={<Button variant="outline" size="sm" />}>
-              <LayoutGrid /> <span>Board</span>
-            </DialogTrigger>
-            <DialogContent className="draft-board-dialog">
-              <DialogHeader>
-                <DialogTitle>League draft board</DialogTitle>
-                <DialogDescription>
-                  Every pick in snake order. Select a completed pick to correct
-                  its player without changing later picks.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="draft-board-scroll">
-                <div
-                  className="draft-board-grid"
-                  style={{
-                    gridTemplateColumns: `64px repeat(${teamCount}, minmax(142px, 1fr))`,
-                  }}
-                >
-                  <div className="draft-board-corner">Round</div>
-                  {teamNames.slice(0, teamCount).map((teamName, teamIndex) => (
-                    <div
-                      className={
-                        teamIndex === myTeamIndex
-                          ? 'draft-team-heading is-mine'
-                          : 'draft-team-heading'
-                      }
-                      key={`team-${teamIndex}`}
-                    >
-                      <strong>{teamName}</strong>
-                      <span>Pick {teamIndex + 1}</span>
-                      <small>
-                        Needs{' '}
-                        {rosterNeeds(
-                          teamRosters[teamIndex] ?? {},
-                          currentRound,
-                          rosterRules,
-                        )
-                          .slice(0, 4)
-                          .join('/') || 'depth'}
-                      </small>
-                    </div>
-                  ))}
-                  {Array.from(
-                    { length: starterSlots.length + benchCount },
-                    (_, roundIndex) => {
-                      const round = roundIndex + 1;
-                      return (
-                        <Fragment key={`round-${round}`}>
-                          <div className="draft-round-label">{round}</div>
-                          {Array.from({ length: teamCount }, (_, teamIndex) => {
-                            const overall = pickForRoundAndTeam(
-                              round,
-                              teamIndex,
-                              teamCount,
-                            );
-                            const pick = picks[overall - 1];
-                            const player = pick
-                              ? players.find(
-                                  (candidate) => candidate.id === pick.playerId,
-                                )
-                              : null;
-                            const isCurrent = overall === currentPick;
-                            return (
-                              <button
-                                aria-label={
-                                  player
-                                    ? `Correct pick ${overall}, ${player.name}, ${teamNames[teamIndex]}`
-                                    : `Pick ${overall}, ${teamNames[teamIndex]}${isCurrent ? ', currently on the clock' : ''}`
-                                }
-                                className={[
-                                  'draft-board-cell',
-                                  player ? 'is-filled' : '',
-                                  isCurrent ? 'is-current' : '',
-                                  teamIndex === myTeamIndex ? 'is-mine' : '',
-                                ]
-                                  .filter(Boolean)
-                                  .join(' ')}
-                                disabled={!player}
-                                key={`pick-${overall}`}
-                                onClick={() => {
-                                  setEditingPickOverall(overall);
-                                  setBoardOpen(false);
-                                }}
-                                type="button"
-                              >
-                                <span>{overall}</span>
-                                {player ? (
-                                  <>
-                                    <strong>{player.name}</strong>
-                                    <small>
-                                      {player.position} · {player.team}
-                                    </small>
-                                  </>
-                                ) : (
-                                  <strong>
-                                    {isCurrent ? 'On clock' : '—'}
-                                  </strong>
-                                )}
-                              </button>
-                            );
-                          })}
-                        </Fragment>
-                      );
-                    },
-                  )}
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
-          <Dialog open={settingsOpen} onOpenChange={openSettings}>
-            <DialogTrigger render={<Button variant="outline" size="sm" />}>
-              <Settings2 /> <span>League</span>
-            </DialogTrigger>
-            <DialogContent className="league-dialog sm:max-w-2xl">
-              <DialogHeader>
-                <DialogTitle>League setup</DialogTitle>
-                <DialogDescription>
-                  Match your league&apos;s draft order and roster positions.
-                  These settings drive roster fit and opponent-demand
-                  intelligence.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="settings-grid">
-                <div className="settings-field">
-                  <Label htmlFor="team-count">Teams</Label>
-                  <NativeSelect
-                    id="team-count"
-                    value={pendingTeamCount}
-                    onChange={(event) => {
-                      const count = Number(event.target.value);
-                      setPendingTeamCount(count);
-                      setPendingDraftSlot((slot) => Math.min(slot, count));
+                <p className="source-warning">
+                  No efficiency, touchdown, or fantasy-point projection. QB
+                  rushing and RB carry calibration remain higher-risk; K/DST are
+                  market-only. Manual pick tracking works without a league
+                  login.
+                </p>
+                <DialogFooter showCloseButton>
+                  <a
+                    className="source-link"
+                    href="https://github.com/demansou/fantasy-football-26/blob/main/docs/DRAFT_INTELLIGENCE_2026.md"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Read the draft-intelligence method
+                  </a>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+            <Dialog open={boardOpen} onOpenChange={setBoardOpen}>
+              <DialogTrigger render={<Button variant="outline" size="sm" />}>
+                <LayoutGrid /> <span>Board</span>
+              </DialogTrigger>
+              <DialogContent className="draft-board-dialog">
+                <DialogHeader>
+                  <DialogTitle>League draft board</DialogTitle>
+                  <DialogDescription>
+                    Every pick in snake order. Select a completed pick to
+                    correct its player without changing later picks.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="draft-board-scroll">
+                  <div
+                    className="draft-board-grid"
+                    style={{
+                      gridTemplateColumns: `64px repeat(${teamCount}, minmax(142px, 1fr))`,
                     }}
                   >
-                    {[8, 10, 12].map((count) => (
-                      <NativeSelectOption key={count} value={count}>
-                        {count} teams
-                      </NativeSelectOption>
-                    ))}
-                  </NativeSelect>
-                </div>
-                <div className="settings-field">
-                  <Label htmlFor="draft-slot">Your draft slot</Label>
-                  <NativeSelect
-                    id="draft-slot"
-                    value={pendingDraftSlot}
-                    onChange={(event) =>
-                      setPendingDraftSlot(Number(event.target.value))
-                    }
-                  >
-                    {Array.from({ length: pendingTeamCount }, (_, index) => (
-                      <NativeSelectOption key={index + 1} value={index + 1}>
-                        Pick {index + 1}
-                      </NativeSelectOption>
-                    ))}
-                  </NativeSelect>
-                </div>
-              </div>
-              <div className="roster-position-settings">
-                <div className="team-name-heading">
-                  <div>
-                    <strong>Roster positions</strong>
-                    <span>Yahoo W/R/T maps to FLEX; DEF maps to DST.</span>
-                  </div>
-                  <span>
-                    {Object.values(pendingStarterCounts).reduce(
-                      (total, count) => total + count,
-                      pendingFlexCount + pendingBenchCount,
-                    )}{' '}
-                    rounds
-                  </span>
-                </div>
-                <div className="roster-position-grid">
-                  {ROSTER_POSITION_ORDER.map((position) => {
-                    const value =
-                      position === 'BN'
-                        ? pendingBenchCount
-                        : position === 'FLEX'
-                          ? pendingFlexCount
-                          : pendingStarterCounts[position];
-                    const max = position === 'BN' ? 12 : 4;
-                    return (
-                      <div className="settings-field" key={position}>
-                        <Label htmlFor={`roster-${position}`}>
-                          {position === 'FLEX' ? 'W/R/T (FLEX)' : position}
-                        </Label>
-                        <NativeSelect
-                          id={`roster-${position}`}
-                          value={value}
-                          onChange={(event) => {
-                            const count = Number(event.target.value);
-                            if (position === 'BN') {
-                              setPendingBenchCount(count);
-                            } else if (position === 'FLEX') {
-                              setPendingFlexCount(count);
-                            } else {
-                              setPendingStarterCounts((current) => ({
-                                ...current,
-                                [position]: count,
-                              }));
-                            }
-                          }}
+                    <div className="draft-board-corner">Round</div>
+                    {teamNames
+                      .slice(0, teamCount)
+                      .map((teamName, teamIndex) => (
+                        <div
+                          className={
+                            teamIndex === myTeamIndex
+                              ? 'draft-team-heading is-mine'
+                              : 'draft-team-heading'
+                          }
+                          key={`team-${teamIndex}`}
                         >
-                          {Array.from({ length: max + 1 }, (_, count) => (
-                            <NativeSelectOption key={count} value={count}>
-                              {count}
-                            </NativeSelectOption>
-                          ))}
-                        </NativeSelect>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-              <div className="team-name-settings">
-                <div className="team-name-heading">
-                  <div>
-                    <strong>Team names</strong>
-                    <span>Match the draft order shown in Yahoo.</span>
+                          <strong>{teamName}</strong>
+                          <span>Pick {teamIndex + 1}</span>
+                          <small>
+                            Needs{' '}
+                            {rosterNeeds(
+                              teamRosters[teamIndex] ?? {},
+                              currentRound,
+                              rosterRules,
+                            )
+                              .slice(0, 4)
+                              .join('/') || 'depth'}
+                          </small>
+                        </div>
+                      ))}
+                    {Array.from(
+                      { length: starterSlots.length + benchCount },
+                      (_, roundIndex) => {
+                        const round = roundIndex + 1;
+                        return (
+                          <Fragment key={`round-${round}`}>
+                            <div className="draft-round-label">{round}</div>
+                            {Array.from(
+                              { length: teamCount },
+                              (_, teamIndex) => {
+                                const overall = pickForRoundAndTeam(
+                                  round,
+                                  teamIndex,
+                                  teamCount,
+                                );
+                                const pick = picks[overall - 1];
+                                const player = pick
+                                  ? players.find(
+                                      (candidate) =>
+                                        candidate.id === pick.playerId,
+                                    )
+                                  : null;
+                                const isCurrent = overall === currentPick;
+                                return (
+                                  <button
+                                    aria-label={
+                                      player
+                                        ? `Correct pick ${overall}, ${player.name}, ${teamNames[teamIndex]}`
+                                        : `Pick ${overall}, ${teamNames[teamIndex]}${isCurrent ? ', currently on the clock' : ''}`
+                                    }
+                                    className={[
+                                      'draft-board-cell',
+                                      player ? 'is-filled' : '',
+                                      isCurrent ? 'is-current' : '',
+                                      teamIndex === myTeamIndex
+                                        ? 'is-mine'
+                                        : '',
+                                    ]
+                                      .filter(Boolean)
+                                      .join(' ')}
+                                    disabled={!player}
+                                    key={`pick-${overall}`}
+                                    onClick={() => {
+                                      setEditingPickOverall(overall);
+                                      setBoardOpen(false);
+                                    }}
+                                    type="button"
+                                  >
+                                    <span>{overall}</span>
+                                    {player ? (
+                                      <>
+                                        <strong>{player.name}</strong>
+                                        <small>
+                                          {player.position} · {player.team}
+                                        </small>
+                                      </>
+                                    ) : (
+                                      <strong>
+                                        {isCurrent ? 'On clock' : '—'}
+                                      </strong>
+                                    )}
+                                  </button>
+                                );
+                              },
+                            )}
+                          </Fragment>
+                        );
+                      },
+                    )}
                   </div>
-                  <span>{pendingTeamCount} draft slots</span>
                 </div>
-                <div className="team-name-grid">
-                  {Array.from({ length: pendingTeamCount }, (_, teamIndex) => (
-                    <div className="team-name-field" key={teamIndex}>
-                      <Label htmlFor={`team-name-${teamIndex}`}>
-                        Team {teamIndex + 1}
-                        {teamIndex === pendingDraftSlot - 1 && (
-                          <span>Your slot</span>
-                        )}
-                      </Label>
-                      <Input
-                        id={`team-name-${teamIndex}`}
-                        maxLength={32}
-                        value={pendingTeamNames[teamIndex] ?? ''}
-                        onChange={(event) => {
-                          const name = event.target.value;
-                          setPendingTeamNames((current) =>
-                            current.map((value, index) =>
-                              index === teamIndex ? name : value,
-                            ),
-                          );
-                        }}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="persistence-note">
-                <Check /> Team names, roster positions, picks, target queue,
-                settings, and custom weights save in this browser.
-              </div>
-              <DialogFooter>
-                <DialogClose render={<Button variant="outline" />}>
-                  Cancel
-                </DialogClose>
-                <Button variant="secondary" onClick={resetBoard}>
-                  <RotateCcw /> Reset board
-                </Button>
-                <Button onClick={applyLeagueSettings}>
-                  {teamCountWillResetDraft
-                    ? 'Apply & start fresh'
-                    : 'Save league setup'}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-          <Dialog>
-            <DialogTrigger
-              render={
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="mobile-weight-trigger"
-                />
-              }
-            >
-              <SlidersHorizontal /> <span>Weights</span>
-            </DialogTrigger>
-            <DialogContent className="weight-dialog sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle>Position weights</DialogTitle>
-                <DialogDescription>
-                  Tilt the model toward the NFL signals you trust most.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="weight-dialog-scroll">
-                <WeightControls
-                  activePosition={activePosition}
-                  currentOwnerIsMine={currentOwnerIsMine}
-                  opponentSignal={opponentSignal}
-                  recentRun={recentRun}
-                  setActivePosition={setActivePosition}
-                  setWeights={setWeights}
-                  weights={weights}
-                />
-              </div>
-            </DialogContent>
-          </Dialog>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={!picks.length}
-            onClick={() => {
-              setEditingPickOverall(null);
-              setPicks((current) => current.slice(0, -1));
-            }}
-          >
-            <Undo2 /> Undo
-          </Button>
-        </div>
-      </header>
-      <section className="pick-ticker" aria-label="Recent draft picks">
-        <span className="ticker-label">Last picks</span>
-        {picks.length === 0 && (
-          <span className="ticker-empty">
-            Board is clean—enter picks as they happen.
-          </span>
-        )}
-        {picks.slice(-5).map((pick) => {
-          const player = players.find((item) => item.id === pick.playerId);
-          return player ? (
-            <div className="ticker-pick" key={pick.overall}>
-              <span
-                className={`position-dot ${positionClass[player.position]}`}
-              />
-              <strong>{pick.overall}</strong>
-              <span>{player.name}</span>
-              <small>
-                {player.position} · {teamNames[pick.teamIndex]}
-              </small>
-            </div>
-          ) : null;
-        })}
-        <div className="ticker-save" aria-live="polite">
-          <Check />{' '}
-          {storageAvailable === null
-            ? 'Restoring draft…'
-            : storageAvailable
-              ? 'Draft saved locally'
-              : 'Browser storage blocked'}
-        </div>
-        <div className="ticker-next">
-          <Zap /> Pick {currentPick} · {teamNames[currentOwner]}
-        </div>
-      </section>
-      <div className="workspace-grid">
-        <aside className="roster-panel panel-surface">
-          <div className="panel-heading">
-            <div>
-              <p className="eyebrow">Roster construction</p>
-              <h2>My Team</h2>
-            </div>
-            <span className="panel-count">
-              {myPlayers.length}/{starterSlots.length + benchCount}
-            </span>
-          </div>
-          <div className="roster-summary">
-            <div>
-              <span>Avg rank</span>
-              <strong>{avgDraftRank}</strong>
-            </div>
-            <div>
-              <span>Draft slot</span>
-              <strong>{draftSlot}</strong>
-            </div>
-            <div>
-              <span>Bench</span>
-              <strong>{benchCount}</strong>
-            </div>
-          </div>
-          <ScrollArea className="roster-scroll">
-            <div className="roster-slots">
-              {rosterSlots.map(({ slot, player }, index) => (
-                <div
-                  className={player ? 'roster-slot is-filled' : 'roster-slot'}
-                  key={`${slot}-${index}`}
-                >
-                  <span className="slot-label">{slot}</span>
-                  {player ? (
-                    <>
-                      <div>
-                        <strong>{player.name}</strong>
-                        <small>
-                          {player.team} · Bye {player.bye}
-                        </small>
-                      </div>
-                      <Check className="slot-check" />
-                    </>
-                  ) : (
-                    <span className="empty-slot">
-                      {slot === 'BN' ? 'Open bench spot' : 'Open roster slot'}
-                    </span>
-                  )}
-                </div>
-              ))}
-            </div>
-          </ScrollArea>
-          <div className="roster-footer">
-            <span>{teamCount}-team PPR</span>
-            <span>{benchCount} bench · Snake</span>
-          </div>
-        </aside>
-        <section className="player-board panel-surface">
-          <div className="board-toolbar">
-            <div>
-              <p className="eyebrow">Draft-day recommendation</p>
-              <h2>Available players</h2>
-            </div>
-            <div className="board-tools">
-              <NativeSelect
-                aria-label="Ranking order"
-                value={sortMode}
-                onChange={(event) =>
-                  setSortMode(event.target.value as SortMode)
-                }
-              >
-                <NativeSelectOption value="draft">
-                  Draft rank
-                </NativeSelectOption>
-                <NativeSelectOption value="opportunity">
-                  NFL opportunity
-                </NativeSelectOption>
-                <NativeSelectOption value="adp">Market ADP</NativeSelectOption>
-              </NativeSelect>
-              <div className="search-wrap">
-                <Search />
-                <Input
-                  aria-label="Search available players"
-                  placeholder="Search player or team"
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                />
-              </div>
-            </div>
-          </div>
-          {editingPick && editingPlayer && (
-            <output className="pick-correction">
-              <div>
-                <strong>Correcting pick {editingPick.overall}</strong>
-                <span>
-                  Replace {editingPlayer.name} for{' '}
-                  {teamNames[editingPick.teamIndex]}.
-                </span>
-              </div>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => setEditingPickOverall(null)}
-              >
-                Cancel correction
-              </Button>
-            </output>
-          )}
-          <div className="position-filters">
-            {(['ALL', ...ALL_POSITIONS] as const).map((position) => (
-              <button
-                key={position}
-                type="button"
-                className={
-                  filter === position ? 'filter-chip is-active' : 'filter-chip'
-                }
-                onClick={() => setFilter(position)}
-              >
-                {position}
-              </button>
-            ))}
-            <span className="rank-note">
-              Next pick {nextMyPick} · top {available[0]?.player.name ?? '—'} ·{' '}
-              {available[0]?.survival ?? 0}% est. to last
-            </span>
-          </div>
-          <section className="target-queue" aria-label="Draft watchlist">
-            <div className="target-queue-heading">
-              <span className="target-queue-icon">
-                <Star />
-              </span>
-              <div>
-                <strong>Target queue</strong>
-                <span>
-                  {watchedTargets.length
-                    ? `${watchedTargets.length} available · sorted by live rank`
-                    : 'Star players to track tier risk and fallbacks'}
-                </span>
-              </div>
-            </div>
-            {watchedTargets.length > 0 && (
-              <div className="target-cards">
-                {watchedTargets.map(({ player, survival, cliff, fallback }) => (
-                  <div
-                    className={`target-card is-${cliff.level}`}
-                    key={player.id}
-                  >
-                    <button
-                      className="target-card-main"
-                      onClick={() => {
-                        setFilter('ALL');
-                        setQuery(player.name);
+              </DialogContent>
+            </Dialog>
+            <Dialog open={settingsOpen} onOpenChange={openSettings}>
+              <DialogTrigger render={<Button variant="outline" size="sm" />}>
+                <Settings2 /> <span>League</span>
+              </DialogTrigger>
+              <DialogContent className="league-dialog sm:max-w-2xl">
+                <DialogHeader>
+                  <DialogTitle>League setup</DialogTitle>
+                  <DialogDescription>
+                    Match your league&apos;s draft order and roster positions.
+                    These settings drive roster fit and opponent-demand
+                    intelligence.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="settings-grid">
+                  <div className="settings-field">
+                    <Label htmlFor="team-count">Teams</Label>
+                    <NativeSelect
+                      id="team-count"
+                      value={pendingTeamCount}
+                      onChange={(event) => {
+                        const count = Number(event.target.value);
+                        setPendingTeamCount(count);
+                        setPendingDraftSlot((slot) => Math.min(slot, count));
                       }}
-                      title={`Show ${player.name} in the player list`}
-                      type="button"
                     >
-                      <span
-                        className={`position-pill ${positionClass[player.position]}`}
-                      >
-                        {player.position}
-                      </span>
-                      <span>
-                        <strong>{player.name}</strong>
-                        <small>
-                          {cliff.label} · {survival}% est.
-                        </small>
-                        <small>
-                          {fallback
-                            ? `Fallback: ${fallback.name}`
-                            : `${cliff.remainingInTier} left in Tier ${player.tier}`}
-                        </small>
-                      </span>
-                    </button>
-                    <button
-                      aria-label={`Remove ${player.name} from target queue`}
-                      className="target-remove"
-                      onClick={() => toggleWatchPlayer(player.id)}
-                      title="Remove from target queue"
-                      type="button"
+                      {[8, 10, 12].map((count) => (
+                        <NativeSelectOption key={count} value={count}>
+                          {count} teams
+                        </NativeSelectOption>
+                      ))}
+                    </NativeSelect>
+                  </div>
+                  <div className="settings-field">
+                    <Label htmlFor="draft-slot">Your draft slot</Label>
+                    <NativeSelect
+                      id="draft-slot"
+                      value={pendingDraftSlot}
+                      onChange={(event) =>
+                        setPendingDraftSlot(Number(event.target.value))
+                      }
                     >
-                      <Star fill="currentColor" />
-                    </button>
+                      {Array.from({ length: pendingTeamCount }, (_, index) => (
+                        <NativeSelectOption key={index + 1} value={index + 1}>
+                          Pick {index + 1}
+                        </NativeSelectOption>
+                      ))}
+                    </NativeSelect>
+                  </div>
+                </div>
+                <div className="roster-position-settings">
+                  <div className="team-name-heading">
+                    <div>
+                      <strong>Roster positions</strong>
+                      <span>Yahoo W/R/T maps to FLEX; DEF maps to DST.</span>
+                    </div>
+                    <span>
+                      {Object.values(pendingStarterCounts).reduce(
+                        (total, count) => total + count,
+                        pendingFlexCount + pendingBenchCount,
+                      )}{' '}
+                      rounds
+                    </span>
+                  </div>
+                  <div className="roster-position-grid">
+                    {ROSTER_POSITION_ORDER.map((position) => {
+                      const value =
+                        position === 'BN'
+                          ? pendingBenchCount
+                          : position === 'FLEX'
+                            ? pendingFlexCount
+                            : pendingStarterCounts[position];
+                      const max = position === 'BN' ? 12 : 4;
+                      return (
+                        <div className="settings-field" key={position}>
+                          <Label htmlFor={`roster-${position}`}>
+                            {position === 'FLEX' ? 'W/R/T (FLEX)' : position}
+                          </Label>
+                          <NativeSelect
+                            id={`roster-${position}`}
+                            value={value}
+                            onChange={(event) => {
+                              const count = Number(event.target.value);
+                              if (position === 'BN') {
+                                setPendingBenchCount(count);
+                              } else if (position === 'FLEX') {
+                                setPendingFlexCount(count);
+                              } else {
+                                setPendingStarterCounts((current) => ({
+                                  ...current,
+                                  [position]: count,
+                                }));
+                              }
+                            }}
+                          >
+                            {Array.from({ length: max + 1 }, (_, count) => (
+                              <NativeSelectOption key={count} value={count}>
+                                {count}
+                              </NativeSelectOption>
+                            ))}
+                          </NativeSelect>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div className="team-name-settings">
+                  <div className="team-name-heading">
+                    <div>
+                      <strong>Team names</strong>
+                      <span>Match the draft order shown in Yahoo.</span>
+                    </div>
+                    <span>{pendingTeamCount} draft slots</span>
+                  </div>
+                  <div className="team-name-grid">
+                    {Array.from(
+                      { length: pendingTeamCount },
+                      (_, teamIndex) => (
+                        <div className="team-name-field" key={teamIndex}>
+                          <Label htmlFor={`team-name-${teamIndex}`}>
+                            Team {teamIndex + 1}
+                            {teamIndex === pendingDraftSlot - 1 && (
+                              <span>Your slot</span>
+                            )}
+                          </Label>
+                          <Input
+                            id={`team-name-${teamIndex}`}
+                            maxLength={32}
+                            value={pendingTeamNames[teamIndex] ?? ''}
+                            onChange={(event) => {
+                              const name = event.target.value;
+                              setPendingTeamNames((current) =>
+                                current.map((value, index) =>
+                                  index === teamIndex ? name : value,
+                                ),
+                              );
+                            }}
+                          />
+                        </div>
+                      ),
+                    )}
+                  </div>
+                </div>
+                <div className="persistence-note">
+                  <Check /> Team names, roster positions, picks, target queue,
+                  settings, and custom weights save in this browser.
+                </div>
+                <DialogFooter>
+                  <DialogClose render={<Button variant="outline" />}>
+                    Cancel
+                  </DialogClose>
+                  <Button variant="secondary" onClick={resetBoard}>
+                    <RotateCcw /> Reset board
+                  </Button>
+                  <Button onClick={applyLeagueSettings}>
+                    {teamCountWillResetDraft
+                      ? 'Apply & start fresh'
+                      : 'Save league setup'}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+            <Dialog>
+              <DialogTrigger
+                render={
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mobile-weight-trigger"
+                  />
+                }
+              >
+                <SlidersHorizontal /> <span>Weights</span>
+              </DialogTrigger>
+              <DialogContent className="weight-dialog sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Position weights</DialogTitle>
+                  <DialogDescription>
+                    Tilt the model toward the NFL signals you trust most.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="weight-dialog-scroll">
+                  <WeightControls
+                    activePosition={activePosition}
+                    currentOwnerIsMine={currentOwnerIsMine}
+                    opponentSignal={opponentSignal}
+                    recentRun={recentRun}
+                    setActivePosition={setActivePosition}
+                    setWeights={setWeights}
+                    weights={weights}
+                  />
+                </div>
+              </DialogContent>
+            </Dialog>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={!picks.length}
+              onClick={() => {
+                setEditingPickOverall(null);
+                setPicks((current) => current.slice(0, -1));
+              }}
+            >
+              <Undo2 /> Undo
+            </Button>
+          </div>
+        </header>
+        <section className="pick-ticker" aria-label="Recent draft picks">
+          <span className="ticker-label">Last picks</span>
+          {picks.length === 0 && (
+            <span className="ticker-empty">
+              Board is clean—enter picks as they happen.
+            </span>
+          )}
+          {picks.slice(-5).map((pick) => {
+            const player = players.find((item) => item.id === pick.playerId);
+            return player ? (
+              <div className="ticker-pick" key={pick.overall}>
+                <span
+                  className={`position-dot ${positionClass[player.position]}`}
+                />
+                <strong>{pick.overall}</strong>
+                <span>{player.name}</span>
+                <small>
+                  {player.position} · {teamNames[pick.teamIndex]}
+                </small>
+              </div>
+            ) : null;
+          })}
+          <div className="ticker-save" aria-live="polite">
+            <Check />{' '}
+            {storageAvailable === null
+              ? 'Restoring draft…'
+              : storageAvailable
+                ? 'Draft saved locally'
+                : 'Browser storage blocked'}
+          </div>
+          <div className="ticker-next">
+            <Zap /> Pick {currentPick} · {teamNames[currentOwner]}
+          </div>
+        </section>
+        <div className="workspace-grid">
+          <aside className="roster-panel panel-surface">
+            <div className="panel-heading">
+              <div>
+                <p className="eyebrow">Roster construction</p>
+                <h2>My Team</h2>
+              </div>
+              <span className="panel-count">
+                {myPlayers.length}/{starterSlots.length + benchCount}
+              </span>
+            </div>
+            <div className="roster-summary">
+              <div>
+                <span>Avg rank</span>
+                <strong>{avgDraftRank}</strong>
+              </div>
+              <div>
+                <span>Draft slot</span>
+                <strong>{draftSlot}</strong>
+              </div>
+              <div>
+                <span>Bench</span>
+                <strong>{benchCount}</strong>
+              </div>
+            </div>
+            <ScrollArea className="roster-scroll">
+              <div className="roster-slots">
+                {rosterSlots.map(({ slot, player }, index) => (
+                  <div
+                    className={player ? 'roster-slot is-filled' : 'roster-slot'}
+                    key={`${slot}-${index}`}
+                  >
+                    <span className="slot-label">{slot}</span>
+                    {player ? (
+                      <>
+                        <div>
+                          <strong>{player.name}</strong>
+                          <small>
+                            {player.team} · Bye {player.bye}
+                          </small>
+                        </div>
+                        <Check className="slot-check" />
+                      </>
+                    ) : (
+                      <span className="empty-slot">
+                        {slot === 'BN' ? 'Open bench spot' : 'Open roster slot'}
+                      </span>
+                    )}
                   </div>
                 ))}
               </div>
+            </ScrollArea>
+            <div className="roster-footer">
+              <span>{teamCount}-team PPR</span>
+              <span>{benchCount} bench · Snake</span>
+            </div>
+          </aside>
+          <section className="player-board panel-surface">
+            <div className="board-toolbar">
+              <div>
+                <p className="eyebrow">Draft-day recommendation</p>
+                <h2>Available players</h2>
+              </div>
+              <div className="board-tools">
+                <NativeSelect
+                  aria-label="Ranking order"
+                  value={sortMode}
+                  onChange={(event) =>
+                    setSortMode(event.target.value as SortMode)
+                  }
+                >
+                  <NativeSelectOption value="draft">
+                    Draft rank
+                  </NativeSelectOption>
+                  <NativeSelectOption value="opportunity">
+                    NFL opportunity
+                  </NativeSelectOption>
+                  <NativeSelectOption value="adp">
+                    Market ADP
+                  </NativeSelectOption>
+                </NativeSelect>
+                <div className="search-wrap">
+                  <Search />
+                  <Input
+                    aria-label="Search available players"
+                    placeholder="Search player or team"
+                    value={query}
+                    onChange={(event) => setQuery(event.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+            {editingPick && editingPlayer && (
+              <output className="pick-correction">
+                <div>
+                  <strong>Correcting pick {editingPick.overall}</strong>
+                  <span>
+                    Replace {editingPlayer.name} for{' '}
+                    {teamNames[editingPick.teamIndex]}.
+                  </span>
+                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setEditingPickOverall(null)}
+                >
+                  Cancel correction
+                </Button>
+              </output>
             )}
-          </section>
-          <div className="opponent-intelligence">
-            <div>
-              <strong>Opponent roster intelligence</strong>
-              <span>
-                {opponentDemands.RB.upcomingPicks} selections before pick{' '}
-                {nextMyPick}
+            <div className="position-filters">
+              {(['ALL', ...ALL_POSITIONS] as const).map((position) => (
+                <button
+                  key={position}
+                  type="button"
+                  className={
+                    filter === position
+                      ? 'filter-chip is-active'
+                      : 'filter-chip'
+                  }
+                  onClick={() => setFilter(position)}
+                >
+                  {position}
+                </button>
+              ))}
+              <span className="rank-note">
+                Next pick {nextMyPick} · top {available[0]?.player.name ?? '—'}{' '}
+                · {available[0]?.survival ?? 0}% est. to last
               </span>
             </div>
-            {MODELED_POSITIONS.map((position) => {
-              const demand = opponentDemands[position];
-              return (
-                <span
-                  className={`demand-chip is-${demand.label}`}
-                  key={position}
-                  title={`${demand.starterPicks} teams have an open ${position} starter; ${demand.flexPicks} can use ${position} in flex`}
-                >
-                  {position} {demand.label} · {demand.starterPicks} need
+            <section className="target-queue" aria-label="Draft watchlist">
+              <div className="target-queue-heading">
+                <span className="target-queue-icon">
+                  <Star />
                 </span>
-              );
-            })}
-          </div>
-          {injuryError && (
-            <div className="injury-notice" role="alert">
-              {injuryError}
-            </div>
-          )}
-          <div className="player-table-header">
-            <span>Rank / player</span>
-            <span>Opp.</span>
-            <span>ADP</span>
-            <span>Why</span>
-            <span />
-          </div>
-          <ScrollArea className="player-scroll">
-            <div className="player-list">
-              {available.map(({ player, score, survival, demand }, index) => {
-                const liveAlert = injuryCache?.alerts[player.id];
-                const watchedTarget = watchedTargetById.get(player.id);
-                return (
-                  <article
-                    className={[
-                      'player-row',
-                      liveAlert ? 'has-live-injury' : '',
-                      !player.currentActive ? 'is-inactive' : '',
-                      watchedTarget ? 'is-watched' : '',
-                    ]
-                      .filter(Boolean)
-                      .join(' ')}
-                    key={player.id}
-                  >
-                    <div className="player-identity">
-                      <span className="rank-number">{index + 1}</span>
-                      <span
-                        className={`position-pill ${positionClass[player.position]}`}
+                <div>
+                  <strong>Target queue</strong>
+                  <span>
+                    {watchedTargets.length
+                      ? `${watchedTargets.length} available · sorted by live rank`
+                      : 'Star players to track tier risk and fallbacks'}
+                  </span>
+                </div>
+              </div>
+              {watchedTargets.length > 0 && (
+                <div className="target-cards">
+                  {watchedTargets.map(
+                    ({ player, survival, cliff, fallback }) => (
+                      <div
+                        className={`target-card is-${cliff.level}`}
+                        key={player.id}
                       >
-                        {player.position}
-                      </span>
-                      <div>
-                        <strong>{player.name}</strong>
-                        <small>
-                          {player.team} · Bye {player.bye} · {player.position}
-                          {player.positionRank} · Tier {player.tier}
-                        </small>
-                        {watchedTarget && (
+                        <button
+                          className="target-card-main"
+                          onClick={() => {
+                            setFilter('ALL');
+                            setQuery(player.name);
+                          }}
+                          title={`Show ${player.name} in the player list`}
+                          type="button"
+                        >
                           <span
-                            className={`tier-alert is-${watchedTarget.cliff.level}`}
-                            title={`${watchedTarget.cliff.remainingInTier} players remain in Tier ${player.tier}; about ${watchedTarget.cliff.expectedPositionPicks} ${player.position}s may be selected before pick ${nextMyPick}. Next-tier score drop: ${watchedTarget.cliff.scoreDrop.toFixed(1)}.`}
+                            className={`position-pill ${positionClass[player.position]}`}
                           >
-                            <Star fill="currentColor" />{' '}
-                            {watchedTarget.cliff.label}
+                            {player.position}
                           </span>
-                        )}
-                        {liveAlert && (
-                          <span
-                            className="injury-pill"
-                            title={
-                              liveAlert.newsUpdated
-                                ? `Sleeper news updated ${new Date(liveAlert.newsUpdated).toLocaleString()}`
-                                : 'Sleeper live status'
-                            }
-                          >
-                            {injurySummary(liveAlert)}
+                          <span>
+                            <strong>{player.name}</strong>
+                            <small>
+                              {cliff.label} · {survival}% est.
+                            </small>
+                            <small>
+                              {fallback
+                                ? `Fallback: ${fallback.name}`
+                                : `${cliff.remainingInTier} left in Tier ${player.tier}`}
+                            </small>
                           </span>
-                        )}
+                        </button>
+                        <button
+                          aria-label={`Remove ${player.name} from target queue`}
+                          className="target-remove"
+                          onClick={() => toggleWatchPlayer(player.id)}
+                          title="Remove from target queue"
+                          type="button"
+                        >
+                          <Star fill="currentColor" />
+                        </button>
                       </div>
-                    </div>
-                    <div className="stat-cell">
-                      <strong>
-                        {player.coverage === 'modeled'
-                          ? player.metrics.opportunity.toFixed(0)
-                          : '—'}
-                      </strong>
-                      <small>
-                        {player.coverage === 'modeled' ? 'index' : 'market'}
-                      </small>
-                    </div>
-                    <div className="stat-cell">
-                      <strong>{player.adp.toFixed(1)}</strong>
-                      <small
-                        title={`Opponent-adjusted market estimate. FFC observed range ${player.marketHighPick}-${player.marketLowPick} across ${player.timesDrafted} drafts; ${demand.starterPicks} upcoming teams need a ${player.position} starter.`}
-                      >
-                        {survival}% est. ·{' '}
-                        {player.rankDelta > 0
-                          ? `↑${player.rankDelta}`
-                          : player.rankDelta < 0
-                            ? `↓${Math.abs(player.rankDelta)}`
-                            : 'even'}
-                      </small>
-                    </div>
-                    <div className="model-cell">
-                      <strong>{score.total.toFixed(1)}</strong>
-                      <span
-                        title={`${score.summary}. ${player.context}. Components: need ${score.components.need.toFixed(1)}, scarcity ${score.components.scarcity.toFixed(1)}, timing ${score.components.urgency.toFixed(1)}, opponents ${score.components.opponent.toFixed(1)}, run ${score.components.run.toFixed(1)}, penalty ${score.components.penalty.toFixed(1)}.`}
-                      >
-                        {!player.currentActive
-                          ? `${player.status} · ${score.summary}`
-                          : score.summary || player.context}
-                      </span>
-                    </div>
-                    <div className="player-actions">
-                      <Button
-                        size="sm"
-                        variant={
-                          editingPickOverall !== null || currentOwnerIsMine
-                            ? 'default'
-                            : 'outline'
-                        }
-                        onClick={() => draft(player.id)}
-                      >
-                        {editingPickOverall !== null
-                          ? `Replace pick ${editingPickOverall}`
-                          : currentOwnerIsMine
-                            ? 'Draft'
-                            : 'Mark gone'}
-                      </Button>
-                      <Button
-                        aria-label={
-                          watchedIds.has(player.id)
-                            ? `Remove ${player.name} from target queue`
-                            : `Add ${player.name} to target queue`
-                        }
-                        className={
-                          watchedIds.has(player.id)
-                            ? 'watch-toggle is-active'
-                            : 'watch-toggle'
-                        }
-                        size="icon-sm"
-                        title={
-                          watchedIds.has(player.id)
-                            ? 'Remove from target queue'
-                            : 'Add to target queue'
-                        }
-                        variant="ghost"
-                        onClick={() => toggleWatchPlayer(player.id)}
-                      >
-                        <Star
-                          fill={
-                            watchedIds.has(player.id) ? 'currentColor' : 'none'
-                          }
-                        />
-                      </Button>
-                      <Button
-                        aria-label={`Avoid ${player.name}`}
-                        size="icon-sm"
-                        title={`Hide ${player.name} from recommendations`}
-                        variant="ghost"
-                        onClick={() => avoidPlayer(player.id)}
-                      >
-                        <EyeOff />
-                      </Button>
-                    </div>
-                  </article>
+                    ),
+                  )}
+                </div>
+              )}
+            </section>
+            <div className="opponent-intelligence">
+              <div>
+                <strong>Opponent roster intelligence</strong>
+                <span>
+                  {opponentDemands.RB.upcomingPicks} selections before pick{' '}
+                  {nextMyPick}
+                </span>
+              </div>
+              {MODELED_POSITIONS.map((position) => {
+                const demand = opponentDemands[position];
+                return (
+                  <span
+                    className={`demand-chip is-${demand.label}`}
+                    key={position}
+                    title={`${demand.starterPicks} teams have an open ${position} starter; ${demand.flexPicks} can use ${position} in flex`}
+                  >
+                    {position} {demand.label} · {demand.starterPicks} need
+                  </span>
                 );
               })}
             </div>
-          </ScrollArea>
-        </section>
-        <aside className="weights-panel panel-surface">
-          <div className="panel-heading weights-heading">
-            <div>
-              <p className="eyebrow">Your draft model</p>
-              <h2>Position weights</h2>
+            {injuryError && (
+              <div className="injury-notice" role="alert">
+                {injuryError}
+              </div>
+            )}
+            <div className="player-table-header">
+              <span>Rank / player</span>
+              <span>Opp.</span>
+              <span>ADP</span>
+              <span>Why</span>
+              <span />
             </div>
-            <SlidersHorizontal />
-          </div>
-          <WeightControls
-            activePosition={activePosition}
-            currentOwnerIsMine={currentOwnerIsMine}
-            opponentSignal={opponentSignal}
-            recentRun={recentRun}
-            setActivePosition={setActivePosition}
-            setWeights={setWeights}
-            weights={weights}
-          />
-        </aside>
-      </div>
-    </main>
+            <ScrollArea className="player-scroll">
+              <div className="player-list">
+                {available.map(({ player, score, survival, demand }, index) => {
+                  const liveAlert = injuryCache?.alerts[player.id];
+                  const watchedTarget = watchedTargetById.get(player.id);
+                  return (
+                    <article
+                      className={[
+                        'player-row',
+                        liveAlert ? 'has-live-injury' : '',
+                        !player.currentActive ? 'is-inactive' : '',
+                        watchedTarget ? 'is-watched' : '',
+                      ]
+                        .filter(Boolean)
+                        .join(' ')}
+                      key={player.id}
+                    >
+                      <div className="player-identity">
+                        <span className="rank-number">{index + 1}</span>
+                        <span
+                          className={`position-pill ${positionClass[player.position]}`}
+                        >
+                          {player.position}
+                        </span>
+                        <div>
+                          <strong>{player.name}</strong>
+                          <small>
+                            {player.team} · Bye {player.bye} · {player.position}
+                            {player.positionRank} · Tier {player.tier}
+                          </small>
+                          {watchedTarget && (
+                            <span
+                              className={`tier-alert is-${watchedTarget.cliff.level}`}
+                              title={`${watchedTarget.cliff.remainingInTier} players remain in Tier ${player.tier}; about ${watchedTarget.cliff.expectedPositionPicks} ${player.position}s may be selected before pick ${nextMyPick}. Next-tier score drop: ${watchedTarget.cliff.scoreDrop.toFixed(1)}.`}
+                            >
+                              <Star fill="currentColor" />{' '}
+                              {watchedTarget.cliff.label}
+                            </span>
+                          )}
+                          {liveAlert && (
+                            <span
+                              className="injury-pill"
+                              title={
+                                liveAlert.newsUpdated
+                                  ? `Sleeper news updated ${new Date(liveAlert.newsUpdated).toLocaleString()}`
+                                  : 'Sleeper live status'
+                              }
+                            >
+                              {injurySummary(liveAlert)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="stat-cell">
+                        <strong>
+                          {player.coverage === 'modeled'
+                            ? player.metrics.opportunity.toFixed(0)
+                            : '—'}
+                        </strong>
+                        <small>
+                          {player.coverage === 'modeled' ? 'index' : 'market'}
+                        </small>
+                      </div>
+                      <div className="stat-cell">
+                        <strong>{player.adp.toFixed(1)}</strong>
+                        <small
+                          title={`Opponent-adjusted market estimate. FFC observed range ${player.marketHighPick}-${player.marketLowPick} across ${player.timesDrafted} drafts; ${demand.starterPicks} upcoming teams need a ${player.position} starter.`}
+                        >
+                          {survival}% est. ·{' '}
+                          {player.rankDelta > 0
+                            ? `↑${player.rankDelta}`
+                            : player.rankDelta < 0
+                              ? `↓${Math.abs(player.rankDelta)}`
+                              : 'even'}
+                        </small>
+                      </div>
+                      <div className="model-cell">
+                        <strong>{score.total.toFixed(1)}</strong>
+                        <span
+                          title={`${score.summary}. ${player.context}. Components: need ${score.components.need.toFixed(1)}, scarcity ${score.components.scarcity.toFixed(1)}, timing ${score.components.urgency.toFixed(1)}, opponents ${score.components.opponent.toFixed(1)}, run ${score.components.run.toFixed(1)}, penalty ${score.components.penalty.toFixed(1)}.`}
+                        >
+                          {!player.currentActive
+                            ? `${player.status} · ${score.summary}`
+                            : score.summary || player.context}
+                        </span>
+                      </div>
+                      <div className="player-actions">
+                        <Button
+                          size="sm"
+                          variant={
+                            editingPickOverall !== null || currentOwnerIsMine
+                              ? 'default'
+                              : 'outline'
+                          }
+                          onClick={() => draft(player.id)}
+                        >
+                          {editingPickOverall !== null
+                            ? `Replace pick ${editingPickOverall}`
+                            : currentOwnerIsMine
+                              ? 'Draft'
+                              : 'Mark gone'}
+                        </Button>
+                        <Button
+                          aria-label={
+                            watchedIds.has(player.id)
+                              ? `Remove ${player.name} from target queue`
+                              : `Add ${player.name} to target queue`
+                          }
+                          className={
+                            watchedIds.has(player.id)
+                              ? 'watch-toggle is-active'
+                              : 'watch-toggle'
+                          }
+                          size="icon-sm"
+                          title={
+                            watchedIds.has(player.id)
+                              ? 'Remove from target queue'
+                              : 'Add to target queue'
+                          }
+                          variant="ghost"
+                          onClick={() => toggleWatchPlayer(player.id)}
+                        >
+                          <Star
+                            fill={
+                              watchedIds.has(player.id)
+                                ? 'currentColor'
+                                : 'none'
+                            }
+                          />
+                        </Button>
+                        <Button
+                          aria-label={`Avoid ${player.name}`}
+                          size="icon-sm"
+                          title={`Hide ${player.name} from recommendations`}
+                          variant="ghost"
+                          onClick={() => avoidPlayer(player.id)}
+                        >
+                          <EyeOff />
+                        </Button>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            </ScrollArea>
+          </section>
+          <aside className="weights-panel panel-surface">
+            <div className="panel-heading weights-heading">
+              <div>
+                <p className="eyebrow">Your draft model</p>
+                <h2>Position weights</h2>
+              </div>
+              <SlidersHorizontal />
+            </div>
+            <WeightControls
+              activePosition={activePosition}
+              currentOwnerIsMine={currentOwnerIsMine}
+              opponentSignal={opponentSignal}
+              recentRun={recentRun}
+              setActivePosition={setActivePosition}
+              setWeights={setWeights}
+              weights={weights}
+            />
+          </aside>
+        </div>
+      </main>
+    </>
   );
 }

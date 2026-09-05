@@ -193,6 +193,24 @@ terminal, including loss of network access mid-draft.
 
 ## Phase 6 — In-season team optimizer
 
+First season workspace delivered (2026-09-05):
+
+- Draft / My Team / Research views. Starting a season copies draft ownership and
+  team names into a separate device-local season snapshot; draft history is preserved.
+- Manual owner transfers, adds/drops and Starter/Bench/IR labels, with 100-change
+  undo history, validated JSON backup import/export and explicit save-failure notices.
+- Free nflverse 2026 weekly player-stat refresh, independently timestamped from
+  manual roster updates. No fallback to prior-year stats; unpublished data and fetch
+  failures retain the last valid snapshot. API routes bypass the offline shell cache.
+- Roster-aware waiver/trade watchlists compare same-position opportunity indices
+  and recent usage. Confidence is qualitative, not a calibrated probability.
+
+Remaining: cloud persistence/Yahoo synchronization, complete pre-game player
+catalog, atomic multi-player trades, exact lineup/IR eligibility enforcement,
+snap/red-zone/injury integration, calibrated improvement/trade valuation and
+automated waiver/drop recommendations. The current screen is an evidence watchlist,
+not the completed optimizer described below.
+
 - Weekly lineup optimization using opponent, weather, injury, and role uncertainty.
 - Waiver prioritization by expected lineup gain and rest-of-season option value.
 - Trade evaluation with positional replacement effects and playoff schedules.

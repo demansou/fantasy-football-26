@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fantasy-football-26-shell-v5';
+const CACHE_NAME = 'fantasy-football-26-shell-v6';
 const APP_SHELL = ['/', '/favicon.svg', '/og.png'];
 
 self.addEventListener('install', (event) => {
@@ -31,6 +31,7 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
+  if (url.pathname.startsWith('/api/')) return;
 
   if (request.mode === 'navigate') {
     event.respondWith(

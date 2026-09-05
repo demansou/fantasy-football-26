@@ -9,7 +9,7 @@
     "dev": "vinext dev",
     "build": "vinext build",
     "start": "wrangler dev --config dist/server/wrangler.json",
-    "test:intelligence": "node --experimental-strip-types --test lib/draft-intelligence.test.ts",
+    "test:intelligence": "node --experimental-strip-types --test lib/draft-intelligence.test.ts lib/season.test.ts",
     "lint": "oxlint",
     "format": "oxfmt"
   },
