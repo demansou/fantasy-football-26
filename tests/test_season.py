@@ -15,7 +15,7 @@ STATE = {'version': 1, 'season': 2026, 'startedAt': 1, 'updatedAt': 1,
          'owners': {'a': {'team': 0, 'slot': 'Bench'}, 'c': {'team': 1, 'slot': 'Starter'}}, 'history': []}
 CATALOG = [{'id': i, 'gsisId': i, 'name': i.upper(), 'position': 'WR', 'team': 'SEA', 'metrics': {'opportunity': 40}}
            for i in ('a','b','c')]
-CSV = b'player_id,player_display_name,position,team,season,season_type,week,targets,carries,attempts\na,A,WR,SEA,2026,REG,1,2,0,0\nb,B,WR,SEA,2026,REG,1,10,0,0\n'
+CSV = b'player_id,player_display_name,position,team,season,season_type,week,targets,carries,attempts,target_share\na,A,WR,SEA,2026,REG,1,2,0,0,0.10\nb,B,WR,SEA,2026,REG,1,10,0,0,0.30\n'
 
 
 class SeasonTests(unittest.TestCase):
@@ -111,6 +111,39 @@ class SeasonTests(unittest.TestCase):
         result = research(state, catalog, None)
         self.assertEqual(result['mode'], 'preseason watchlist')
         self.assertEqual(result['waivers'][0]['player_id'], 'high')
+
+    def test_parse_keeps_target_share(self):
+        rows = parse_usage(CSV, 2026)
+        self.assertEqual([r['targetShare'] for r in rows], [0.10, 0.30])
+
+    def test_share_lifts_equal_volume_catcher(self):
+        def rows(pid, targets, share):
+            return [{'id': pid, 'name': pid.upper(), 'position': 'WR', 'team': 'SEA',
+                     'week': w, 'targets': targets, 'carries': 0, 'attempts': 0, 'targetShare': share}
+                    for w in range(1, 7)]
+        catalog = [
+            {'id': 'mine', 'gsisId': 'mine', 'name': 'MINE', 'position': 'WR', 'team': 'SEA', 'metrics': {'opportunity': 50}},
+            {'id': 'low', 'gsisId': 'low', 'name': 'LOW', 'position': 'WR', 'team': 'SEA', 'metrics': {'opportunity': 50}},
+            {'id': 'high', 'gsisId': 'high', 'name': 'HIGH', 'position': 'WR', 'team': 'SEA', 'metrics': {'opportunity': 50}},
+        ]
+        state = {**STATE, 'owners': {'mine': {'team': 0, 'slot': 'Starter'}}, 'draft': []}
+        snapshot = {'season': 2026, 'latestWeek': 6, 'fetchedAt': 5,
+                    'rows': rows('mine', 4, 0.10) + rows('low', 5, 0.08) + rows('high', 5, 0.25)}
+        by_id = {r['player_id']: r for r in research(state, catalog, snapshot)['waivers']}
+        self.assertGreater(by_id['high']['screen_score'], by_id['low']['screen_score'])
+
+    def test_missing_share_falls_back_to_volume(self):
+        catalog = [
+            {'id': 'mine', 'gsisId': 'mine', 'name': 'MINE', 'position': 'WR', 'team': 'SEA', 'metrics': {'opportunity': 50}},
+            {'id': 'noshare', 'gsisId': 'noshare', 'name': 'NOSHARE', 'position': 'WR', 'team': 'SEA', 'metrics': {'opportunity': 50}},
+        ]
+        state = {**STATE, 'owners': {'mine': {'team': 0, 'slot': 'Starter'}}, 'draft': []}
+        snapshot = {'season': 2026, 'latestWeek': 6, 'fetchedAt': 5,
+                    'rows': [{'id': pid, 'name': pid.upper(), 'position': 'WR', 'team': 'SEA',
+                              'week': w, 'targets': t, 'carries': 0, 'attempts': 0}
+                             for pid, t in (('mine', 4), ('noshare', 6)) for w in range(1, 7)]}
+        by_id = {r['player_id']: r for r in research(state, catalog, snapshot)['waivers']}
+        self.assertGreater(by_id['noshare']['screen_score'], 0)
 
     def test_parser_rejects_duplicates_and_wrong_season(self):
         with self.assertRaises(ValueError):

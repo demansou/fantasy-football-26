@@ -102,7 +102,15 @@ def parse_usage(raw: bytes, season: int) -> list[dict]:
         values = {k: float(row[k] or 0) for k in ('targets','carries','attempts')}
         if not all(math.isfinite(n) and n >= 0 for n in values.values()):
             raise ValueError('Invalid opportunity count')
-        rows.append({'id': row['player_id'], 'name': row['player_display_name'], 'position': row['position'], 'team': row['team'], 'week': week, **values})
+        share = None
+        if 'target_share' in reader.fieldnames and (row.get('target_share') or '').strip():
+            try:
+                share = float(row['target_share'])
+            except ValueError:
+                raise ValueError('Invalid target share') from None
+            if not math.isfinite(share) or not 0 <= share <= 1:
+                raise ValueError('Invalid target share')
+        rows.append({'id': row['player_id'], 'name': row['player_display_name'], 'position': row['position'], 'team': row['team'], 'week': week, 'targetShare': share, **values})
     if not rows:
         raise ValueError(f'No {season} regular-season usage; prior snapshots unchanged')
     return rows
@@ -178,6 +186,9 @@ def research(state: dict, catalog: list[dict], snapshot: dict | None, through_we
             continue
         if not all(isinstance(r[k], (int,float)) and math.isfinite(r[k]) and r[k] >= 0 for k in ('targets','carries','attempts')):
             raise ValueError('Invalid stats snapshot counts')
+        share = r.get('targetShare')
+        if share is not None and (not isinstance(share, (int, float)) or not math.isfinite(share) or not 0 <= share <= 1):
+            raise ValueError('Invalid target share')
         grouped.setdefault(r['id'], []).append(r)
         if r['id'] not in by_gsis:
             p = {'id': f'nfl-{r["id"]}', 'gsisId': r['id'], 'name': r['name'], 'position': r['position'], 'team': r['team']}
@@ -186,7 +197,9 @@ def research(state: dict, catalog: list[dict], snapshot: dict | None, through_we
     # Season-trend scoring: once a stats snapshot exists, scores come from the
     # season's own opportunity series, not the preseason index. Each player is
     # scored on late-half volume (recent form) and trajectory (late-half minus
-    # early-half average), both as same-position percentiles. A player with no
+    # early-half average), both as same-position percentiles. For WR/TE the
+    # level component also averages in late-half target share, so role is not
+    # hidden by team pass volume. A player with no
     # recorded games in the late half is flagged unavailable, not scored:
     # absence (injury, benching) is not declining usage, and such players are
     # also excluded from peer percentiles and from baseline comparisons. The
@@ -205,10 +218,14 @@ def research(state: dict, catalog: list[dict], snapshot: dict | None, through_we
         early = [r for r in games if r['week'] <= mid]
         late = [r for r in games if r['week'] > mid]
         # A trajectory needs games on both sides of the split; a player with
-        # games in only one half gets a neutral trend component (their volume
+        # games in only one half gets a neutral trend component (their level
         # percentile), so a single late game cannot mint a maximum trend.
+        def share_average(window):
+            shares = [r['targetShare'] for r in window if r.get('targetShare') is not None]
+            return sum(shares) / len(shares) if shares else None
         summaries[p['id']] = {'games': len(late), 'volume': average(late),
                               'trend': average(late) - average(early) if early and late else None,
+                              'share': share_average(late),
                               'season_games': len(games), 'season_volume': average(games),
                               'unavailable': bool(grouped) and not late,
                               'confidence': 'Moderate' if len(games) >= 4 else 'Low'}
@@ -230,8 +247,16 @@ def research(state: dict, catalog: list[dict], snapshot: dict | None, through_we
                      and summaries[q['id']][key] is not None]
             return 100 * sum(v <= value for v in peers) / len(peers) if peers else 0
         pct_volume = percentile(u['volume'], 'volume')
-        pct_trend = percentile(u['trend'], 'trend') if u['trend'] is not None else pct_volume
-        scores[p['id']] = .7 * pct_volume + .3 * pct_trend
+        # For pass catchers, role (target share) tempers raw volume: a player
+        # on a low-volume passing team, or still ramping up after a trade, is
+        # not a minor option just because his targets per game are modest.
+        # RB opportunity is carries-driven and QB share is undefined, so those
+        # positions stay on volume alone.
+        level = pct_volume
+        if p['position'] in ('WR', 'TE') and u['share'] is not None:
+            level = (pct_volume + percentile(u['share'], 'share')) / 2
+        pct_trend = percentile(u['trend'], 'trend') if u['trend'] is not None else level
+        scores[p['id']] = .7 * level + .3 * pct_trend
     mine = [p for p in players.values() if state['owners'].get(p['id'], {}).get('team') == state['myTeam']]
     result = {'waivers': [], 'trades': []}
     for p in players.values():
@@ -263,7 +288,7 @@ def research(state: dict, catalog: list[dict], snapshot: dict | None, through_we
                 'Not calibrated trade values, fantasy projections, or automatic drop advice.',
                 'Players with no recorded games in the late half are flagged unavailable rather than scored; absence is not treated as declining usage.',
                 'Partial weeks and small samples can distort usage. No snap/red-zone/injury adjustments.',
-                'Scores use season opportunity trends (late-half volume and trajectory percentiles); the preseason index applies only when no stats snapshot exists.',
+                'Scores use season opportunity trends (late-half volume and trajectory percentiles); for WR/TE the level also averages in late-half target share. The preseason index applies only when no stats snapshot exists.',
                 'Week cutoff filters stats only; this is not a historical backtest of roster or preseason priors.'], **result}
 
 
