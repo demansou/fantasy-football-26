@@ -1,5 +1,20 @@
 # Fantasy Football 2026 Draft Optimizer
 
+## Python environment
+
+The engine uses only the Python standard library (no third-party
+dependencies) and requires Python 3.11 or newer; `.python-version` pins 3.12.
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e .
+python -m unittest discover -s tests
+```
+
+That installs the `fantasy_draft` package and the `ff-draft` command.
+Run the commands below from the repository root with the venv active.
+
 ## Season research from the command line
 
 The Python engine now reads the web app's **Export season** backup directly.
