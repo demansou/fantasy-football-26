@@ -183,27 +183,52 @@ def research(state: dict, catalog: list[dict], snapshot: dict | None, through_we
             p = {'id': f'nfl-{r["id"]}', 'gsisId': r['id'], 'name': r['name'], 'position': r['position'], 'team': r['team']}
             players[p['id']] = p
             by_gsis[r['id']] = p
+    # Season-trend scoring: once a stats snapshot exists, scores come from the
+    # season's own opportunity series, not the preseason index. Each player is
+    # scored on late-half volume (recent form) and trajectory (late-half minus
+    # early-half average), both as same-position percentiles. A player with no
+    # recorded games scores 0 rather than riding the preseason prior. The
+    # preseason opportunity index is used only when no stats exist at all
+    # (preseason watchlist mode).
+    mid = latest // 2
     summaries = {}
     for p in players.values():
         games = grouped.get(p.get('gsisId'), [])
         if games:
             p['team'] = max(games, key=lambda r: r['week'])['team']
-        recent = [r for r in games if latest - 3 < r['week'] <= latest]
-        prior = [r for r in games if latest - 6 < r['week'] <= latest - 3]
+        def volume_of(r):
+            return r['attempts'] + r['carries'] if p['position'] == 'QB' else r['carries'] + r['targets'] if p['position'] == 'RB' else r['targets']
         def average(window):
-            return sum((r['attempts'] + r['carries'] if p['position'] == 'QB' else r['carries'] + r['targets'] if p['position'] == 'RB' else r['targets']) for r in window) / len(window) if window else 0
-        summaries[p['id']] = {'games': len(recent), 'volume': average(recent), 'trend': average(recent) - average(prior) if recent and prior else None,
-                              'confidence': 'Moderate' if len(recent) >= 3 else 'Low'}
+            return sum(volume_of(r) for r in window) / len(window) if window else 0
+        early = [r for r in games if r['week'] <= mid]
+        late = [r for r in games if r['week'] > mid]
+        # A trajectory needs games on both sides of the split; a player with
+        # games in only one half gets a neutral trend component (their volume
+        # percentile), so a single late game cannot mint a maximum trend.
+        summaries[p['id']] = {'games': len(late), 'volume': average(late),
+                              'trend': average(late) - average(early) if early and late else None,
+                              'season_games': len(games), 'season_volume': average(games),
+                              'confidence': 'Moderate' if len(games) >= 4 else 'Low'}
     scores = {}
     for p in players.values():
-        u = summaries[p['id']]
-        peers = [summaries[q['id']]['volume'] for q in players.values() if q['position'] == p['position'] and summaries[q['id']]['games']]
-        percentile = 100 * sum(v <= u['volume'] for v in peers) / len(peers) if u['games'] else 0
         prior = float(p.get('metrics', {}).get('opportunity', 0))
         if not math.isfinite(prior) or not 0 <= prior <= 100:
             raise ValueError('Invalid opportunity prior')
-        weight = min(.75, u['games'] * .25)
-        scores[p['id']] = prior * (1 - weight) + percentile * weight
+        if not grouped:
+            scores[p['id']] = prior
+            continue
+        u = summaries[p['id']]
+        if not u['season_games']:
+            scores[p['id']] = 0.0
+            continue
+        def percentile(value, key):
+            peers = [summaries[q['id']][key] for q in players.values()
+                     if q['position'] == p['position'] and summaries[q['id']]['season_games']
+                     and summaries[q['id']][key] is not None]
+            return 100 * sum(v <= value for v in peers) / len(peers) if peers else 0
+        pct_volume = percentile(u['volume'], 'volume')
+        pct_trend = percentile(u['trend'], 'trend') if u['trend'] is not None else pct_volume
+        scores[p['id']] = .7 * pct_volume + .3 * pct_trend
     mine = [p for p in players.values() if state['owners'].get(p['id'], {}).get('team') == state['myTeam']]
     result = {'waivers': [], 'trades': []}
     for p in players.values():
@@ -230,6 +255,7 @@ def research(state: dict, catalog: list[dict], snapshot: dict | None, through_we
                 'Not calibrated trade values, fantasy projections, or automatic drop advice.',
                 'Recorded-game averages exclude missing rows, including injury and bye gaps.',
                 'Partial weeks and small samples can distort usage. No snap/red-zone/injury adjustments.',
+                'Scores use season opportunity trends (late-half volume and trajectory percentiles); the preseason index applies only when no stats snapshot exists.',
                 'Week cutoff filters stats only; this is not a historical backtest of roster or preseason priors.'], **result}
 
 

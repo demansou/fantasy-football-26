@@ -41,6 +41,53 @@ class SeasonTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             research(STATE, CATALOG, {**snapshot, 'season': 2025})
 
+    def test_trend_scoring_rewards_rising_usage_over_prior(self):
+        def rows(pid, targets_by_week):
+            return [{'id': pid, 'name': pid.upper(), 'position': 'WR', 'team': 'SEA',
+                     'week': w, 'targets': t, 'carries': 0, 'attempts': 0}
+                    for w, t in targets_by_week.items()]
+        catalog = [
+            {'id': 'mine', 'gsisId': 'mine', 'name': 'MINE', 'position': 'WR', 'team': 'SEA', 'metrics': {'opportunity': 50}},
+            {'id': 'riser', 'gsisId': 'riser', 'name': 'RISER', 'position': 'WR', 'team': 'SEA', 'metrics': {'opportunity': 10}},
+            {'id': 'fader', 'gsisId': 'fader', 'name': 'FADER', 'position': 'WR', 'team': 'SEA', 'metrics': {'opportunity': 95}},
+        ]
+        state = {**STATE, 'owners': {'mine': {'team': 0, 'slot': 'Starter'}}, 'draft': []}
+        snapshot = {'season': 2026, 'latestWeek': 6, 'fetchedAt': 5,
+                    'rows': (rows('mine', {w: 5 for w in range(1, 7)})
+                             + rows('riser', {1: 2, 2: 2, 3: 2, 4: 10, 5: 10, 6: 10})
+                             + rows('fader', {1: 12, 2: 12, 3: 12, 4: 3, 5: 3, 6: 3}))}
+        result = research(state, catalog, snapshot)
+        by_id = {r['player_id']: r for r in result['waivers']}
+        self.assertGreater(by_id['riser']['screen_score'], by_id['fader']['screen_score'])
+        self.assertEqual(result['waivers'][0]['player_id'], 'riser')
+        self.assertGreater(by_id['riser']['trend'], 0)
+        self.assertLess(by_id['fader']['trend'], 0)
+
+    def test_zero_usage_scores_zero_once_stats_exist(self):
+        catalog = [
+            {'id': 'mine', 'gsisId': 'mine', 'name': 'MINE', 'position': 'WR', 'team': 'SEA', 'metrics': {'opportunity': 50}},
+            {'id': 'ghost', 'gsisId': 'ghost', 'name': 'GHOST', 'position': 'WR', 'team': 'SEA', 'metrics': {'opportunity': 99}},
+            {'id': 'live', 'gsisId': 'live', 'name': 'LIVE', 'position': 'WR', 'team': 'SEA', 'metrics': {'opportunity': 5}},
+        ]
+        state = {**STATE, 'owners': {'mine': {'team': 0, 'slot': 'Starter'}}, 'draft': []}
+        snapshot = {'season': 2026, 'latestWeek': 6, 'fetchedAt': 5,
+                    'rows': [{'id': pid, 'name': pid.upper(), 'position': 'WR', 'team': 'SEA',
+                              'week': w, 'targets': t, 'carries': 0, 'attempts': 0}
+                             for pid, t in (('mine', 5), ('live', 4)) for w in range(1, 7)]}
+        by_id = {r['player_id']: r for r in research(state, catalog, snapshot)['waivers']}
+        self.assertEqual(by_id['ghost']['screen_score'], 0)
+        self.assertGreater(by_id['live']['screen_score'], 0)
+
+    def test_preseason_mode_still_uses_prior(self):
+        catalog = [
+            {'id': 'low', 'gsisId': 'low', 'name': 'LOW', 'position': 'WR', 'team': 'SEA', 'metrics': {'opportunity': 10}},
+            {'id': 'high', 'gsisId': 'high', 'name': 'HIGH', 'position': 'WR', 'team': 'SEA', 'metrics': {'opportunity': 95}},
+        ]
+        state = {**STATE, 'owners': {}, 'draft': []}
+        result = research(state, catalog, None)
+        self.assertEqual(result['mode'], 'preseason watchlist')
+        self.assertEqual(result['waivers'][0]['player_id'], 'high')
+
     def test_parser_rejects_duplicates_and_wrong_season(self):
         with self.assertRaises(ValueError):
             parse_usage(CSV + CSV.splitlines(keepends=True)[1], 2026)
