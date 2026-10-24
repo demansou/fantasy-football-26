@@ -78,6 +78,30 @@ class SeasonTests(unittest.TestCase):
         self.assertEqual(by_id['ghost']['screen_score'], 0)
         self.assertGreater(by_id['live']['screen_score'], 0)
 
+    def test_early_only_player_is_unavailable_not_scored(self):
+        def rows(pid, targets_by_week):
+            return [{'id': pid, 'name': pid.upper(), 'position': 'WR', 'team': 'SEA',
+                     'week': w, 'targets': t, 'carries': 0, 'attempts': 0}
+                    for w, t in targets_by_week.items()]
+        catalog = [
+            {'id': 'live', 'gsisId': 'live', 'name': 'LIVE', 'position': 'WR', 'team': 'SEA', 'metrics': {'opportunity': 50}},
+            {'id': 'out', 'gsisId': 'out', 'name': 'OUT', 'position': 'WR', 'team': 'SEA', 'metrics': {'opportunity': 90}},
+            {'id': 'cand', 'gsisId': 'cand', 'name': 'CAND', 'position': 'WR', 'team': 'SEA', 'metrics': {'opportunity': 10}},
+            {'id': 'cand_out', 'gsisId': 'cand_out', 'name': 'CAND_OUT', 'position': 'WR', 'team': 'SEA', 'metrics': {'opportunity': 95}},
+        ]
+        state = {**STATE, 'owners': {'live': {'team': 0, 'slot': 'Starter'}, 'out': {'team': 0, 'slot': 'Bench'}}, 'draft': []}
+        snapshot = {'season': 2026, 'latestWeek': 6, 'fetchedAt': 5,
+                    'rows': (rows('live', {w: 5 for w in range(1, 7)})
+                             + rows('out', {w: 20 for w in range(1, 4)})
+                             + rows('cand', {w: 6 for w in range(1, 7)})
+                             + rows('cand_out', {w: 20 for w in range(1, 4)}))}
+        result = research(state, catalog, snapshot)
+        by_id = {r['player_id']: r for r in result['waivers']}
+        self.assertEqual(by_id['cand_out']['screen_score'], 0)
+        self.assertEqual(by_id['cand_out']['reason'], 'Unavailable: no recorded games in late half')
+        self.assertEqual(by_id['cand']['compare_with'], 'LIVE')
+        self.assertEqual(result['waivers'][0]['player_id'], 'cand')
+
     def test_preseason_mode_still_uses_prior(self):
         catalog = [
             {'id': 'low', 'gsisId': 'low', 'name': 'LOW', 'position': 'WR', 'team': 'SEA', 'metrics': {'opportunity': 10}},

@@ -187,7 +187,9 @@ def research(state: dict, catalog: list[dict], snapshot: dict | None, through_we
     # season's own opportunity series, not the preseason index. Each player is
     # scored on late-half volume (recent form) and trajectory (late-half minus
     # early-half average), both as same-position percentiles. A player with no
-    # recorded games scores 0 rather than riding the preseason prior. The
+    # recorded games in the late half is flagged unavailable, not scored:
+    # absence (injury, benching) is not declining usage, and such players are
+    # also excluded from peer percentiles and from baseline comparisons. The
     # preseason opportunity index is used only when no stats exist at all
     # (preseason watchlist mode).
     mid = latest // 2
@@ -208,6 +210,7 @@ def research(state: dict, catalog: list[dict], snapshot: dict | None, through_we
         summaries[p['id']] = {'games': len(late), 'volume': average(late),
                               'trend': average(late) - average(early) if early and late else None,
                               'season_games': len(games), 'season_volume': average(games),
+                              'unavailable': bool(grouped) and not late,
                               'confidence': 'Moderate' if len(games) >= 4 else 'Low'}
     scores = {}
     for p in players.values():
@@ -218,12 +221,12 @@ def research(state: dict, catalog: list[dict], snapshot: dict | None, through_we
             scores[p['id']] = prior
             continue
         u = summaries[p['id']]
-        if not u['season_games']:
+        if u['unavailable']:
             scores[p['id']] = 0.0
             continue
         def percentile(value, key):
             peers = [summaries[q['id']][key] for q in players.values()
-                     if q['position'] == p['position'] and summaries[q['id']]['season_games']
+                     if q['position'] == p['position'] and summaries[q['id']]['games']
                      and summaries[q['id']][key] is not None]
             return 100 * sum(v <= value for v in peers) / len(peers) if peers else 0
         pct_volume = percentile(u['volume'], 'volume')
@@ -235,15 +238,20 @@ def research(state: dict, catalog: list[dict], snapshot: dict | None, through_we
         owner = state['owners'].get(p['id'])
         if p['position'] not in ('QB','RB','WR','TE') or (owner and owner['team'] == state['myTeam']):
             continue
-        peers = [q for q in mine if q['position'] == p['position']]
+        peers = [q for q in mine if q['position'] == p['position'] and not summaries[q['id']]['unavailable']]
+        if not peers:
+            peers = [q for q in mine if q['position'] == p['position']]
         baseline = min(peers, key=lambda q: scores[q['id']]) if peers else None
         delta = scores[p['id']] - scores[baseline['id']] if baseline else scores[p['id']]
+        reason = ('Unavailable: no recorded games in late half' if summaries[p['id']]['unavailable']
+                  else 'Empty position' if not baseline
+                  else 'Investigate potential upgrade' if delta > 0 else 'Depth watch only')
         result['trades' if owner else 'waivers'].append({
             'player_id': p['id'], 'name': p['name'], 'position': p['position'], 'nfl_team': p['team'],
             'owner': state['teams'][owner['team']] if owner else None, **summaries[p['id']],
             'screen_score': round(scores[p['id']], 2), 'roster_fit_delta': round(delta, 2),
             'compare_with': baseline['name'] if baseline else None,
-            'reason': 'Empty position' if not baseline else 'Investigate potential upgrade' if delta > 0 else 'Depth watch only',
+            'reason': reason,
         })
     for values in result.values():
         values.sort(key=lambda r: (-r['roster_fit_delta'], -r['screen_score'], r['player_id']))
@@ -253,7 +261,7 @@ def research(state: dict, catalog: list[dict], snapshot: dict | None, through_we
             'unresolved_owned_ids': sorted(set(state['owners']) - set(players)),
             'limitations': ['Manual ownership; verify Yahoo availability and injuries.',
                 'Not calibrated trade values, fantasy projections, or automatic drop advice.',
-                'Recorded-game averages exclude missing rows, including injury and bye gaps.',
+                'Players with no recorded games in the late half are flagged unavailable rather than scored; absence is not treated as declining usage.',
                 'Partial weeks and small samples can distort usage. No snap/red-zone/injury adjustments.',
                 'Scores use season opportunity trends (late-half volume and trajectory percentiles); the preseason index applies only when no stats snapshot exists.',
                 'Week cutoff filters stats only; this is not a historical backtest of roster or preseason priors.'], **result}
